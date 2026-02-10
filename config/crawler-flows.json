@@ -1,0 +1,316 @@
+{
+  "flows": [
+    {
+      "id": "recorded-flow-01",
+      "title": "Recorded Flow",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Log In"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-02",
+      "title": "System",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "System"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Security"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "System"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Defaults"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Software Update"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "System"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "EP Service"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-03",
+      "title": "System",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "System"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-04",
+      "title": "Network",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Network"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "Network"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Protocols"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "Network"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-05",
+      "title": "Pins",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Pins"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-06",
+      "title": "Permissions",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Permissions"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Authentication and Accounting"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Advanced Settings"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Password Policy"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "Permissions"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Permissions"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-07",
+      "title": "Access Control",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Access Control"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-08",
+      "title": "Apps",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Apps"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-09",
+      "title": "Apps",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Apps"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Web Browser Setup"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Screen Default"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "Apps"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Subject"
+        },
+        {
+          "action": "click",
+          "role": "link",
+          "name": "Apps"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Edit Apps Screen of Device"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Add App"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-10",
+      "title": "Copy",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Copy"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Add App"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-11",
+      "title": "Email",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Email"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Add App"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Add App"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-12",
+      "title": "Remote Assistance",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Remote Assistance"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-13",
+      "title": "System",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "System"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Maintenance"
+        }
+      ],
+      "modalTriggers": []
+    },
+    {
+      "id": "recorded-flow-14",
+      "title": "Home",
+      "startUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "steps": [
+        {
+          "action": "click",
+          "role": "menuitem",
+          "name": "Home"
+        },
+        {
+          "action": "click",
+          "role": "button",
+          "name": "Support"
+        }
+      ],
+      "modalTriggers": []
+    }
+  ]
+}

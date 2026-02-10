@@ -1,0 +1,13 @@
+node_modules/
+dist/
+artifacts/
+devices/logs/
+devices/reports/
+customer_settings/
+.env
+state/auth-state.json
+*.log
+*.tmp
+*.swp
+*.swo
+coverage/

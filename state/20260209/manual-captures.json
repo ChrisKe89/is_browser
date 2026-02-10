@@ -1,0 +1,2354 @@
+{
+  "captures": [
+    {
+      "id": "capture-001",
+      "note": "login",
+      "capturedAt": "2026-02-09T17:30:39.904Z",
+      "url": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "title": "",
+      "modalTitles": [
+        "Log In"
+      ],
+      "clicksSinceLastCapture": [],
+      "controls": [
+        {
+          "label": "User ID",
+          "type": "text",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "User ID"
+            },
+            {
+              "kind": "role",
+              "role": "textbox",
+              "name": "User ID"
+            },
+            {
+              "kind": "css",
+              "value": "#loginName"
+            },
+            {
+              "kind": "css",
+              "value": "#loginName"
+            }
+          ],
+          "modalTitle": "Log In",
+          "value": "",
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Password",
+          "type": "text",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Password"
+            },
+            {
+              "kind": "role",
+              "role": "textbox",
+              "name": "Password"
+            },
+            {
+              "kind": "css",
+              "value": "#loginPsw"
+            },
+            {
+              "kind": "css",
+              "value": "#loginPsw"
+            }
+          ],
+          "modalTitle": "Log In",
+          "value": "",
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#loginCancelButton"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#loginCancelButton"
+            }
+          ],
+          "modalTitle": "Log In",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Log In",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Log In"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Log In"
+            },
+            {
+              "kind": "css",
+              "value": "#loginButton"
+            },
+            {
+              "kind": "text",
+              "value": "Log In"
+            },
+            {
+              "kind": "css",
+              "value": "#loginButton"
+            }
+          ],
+          "modalTitle": "Log In",
+          "value": "Log In",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-002",
+      "note": "Security Warning",
+      "capturedAt": "2026-02-09T17:31:02.190Z",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "title": "Home",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openDeviceInfoDetailsModalWindow"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openDeviceInfoDetailsModalWindow"
+            }
+          ],
+          "section": "Device Information Details",
+          "value": "Details",
+          "disabled": false
+        },
+        {
+          "label": "Settings",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Settings"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Settings"
+            },
+            {
+              "kind": "css",
+              "value": "#notificationSettingButton"
+            },
+            {
+              "kind": "text",
+              "value": "Settings"
+            },
+            {
+              "kind": "css",
+              "value": "#notificationSettingButton"
+            }
+          ],
+          "section": "Notifications Settings",
+          "value": "Settings",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#suppliesDetailButton"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#suppliesDetailButton"
+            }
+          ],
+          "section": "Supplies Details",
+          "value": "Details",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openBillingDetailsModalWindow"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openBillingDetailsModalWindow"
+            }
+          ],
+          "section": "Usage Counters Details",
+          "value": "Details",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-003",
+      "note": "home page bottom links",
+      "capturedAt": "2026-02-09T17:31:53.217Z",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "title": "Home",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openDeviceInfoDetailsModalWindow"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openDeviceInfoDetailsModalWindow"
+            }
+          ],
+          "section": "Device Information Details",
+          "value": "Details",
+          "disabled": false
+        },
+        {
+          "label": "Settings",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Settings"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Settings"
+            },
+            {
+              "kind": "css",
+              "value": "#notificationSettingButton"
+            },
+            {
+              "kind": "text",
+              "value": "Settings"
+            },
+            {
+              "kind": "css",
+              "value": "#notificationSettingButton"
+            }
+          ],
+          "section": "Notifications Settings",
+          "value": "Settings",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#suppliesDetailButton"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#suppliesDetailButton"
+            }
+          ],
+          "section": "Supplies Details",
+          "value": "Details",
+          "disabled": false
+        },
+        {
+          "label": "Details",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Details"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openBillingDetailsModalWindow"
+            },
+            {
+              "kind": "text",
+              "value": "Details"
+            },
+            {
+              "kind": "css",
+              "value": "#openBillingDetailsModalWindow"
+            }
+          ],
+          "section": "Usage Counters Details",
+          "value": "Details",
+          "disabled": false
+        },
+        {
+          "label": "Cloning",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cloning"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cloning"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningModal"
+            },
+            {
+              "kind": "text",
+              "value": "Cloning"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningModal"
+            }
+          ],
+          "value": "Cloning",
+          "disabled": false
+        },
+        {
+          "label": "Support",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Support"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Support"
+            },
+            {
+              "kind": "css",
+              "value": "#openSupport"
+            },
+            {
+              "kind": "text",
+              "value": "Support"
+            },
+            {
+              "kind": "css",
+              "value": "#openSupport"
+            }
+          ],
+          "value": "Support",
+          "disabled": false
+        },
+        {
+          "label": "Print File",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Print File"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Print File"
+            },
+            {
+              "kind": "css",
+              "value": "#openSubmitFileModal"
+            },
+            {
+              "kind": "text",
+              "value": "Print File"
+            },
+            {
+              "kind": "css",
+              "value": "#openSubmitFileModal"
+            }
+          ],
+          "value": "Print File",
+          "disabled": false
+        },
+        {
+          "label": "Plug-ins",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Plug-ins"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Plug-ins"
+            },
+            {
+              "kind": "css",
+              "value": "#openPluginModal"
+            },
+            {
+              "kind": "text",
+              "value": "Plug-ins"
+            },
+            {
+              "kind": "css",
+              "value": "#openPluginModal"
+            }
+          ],
+          "value": "Plug-ins",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-004",
+      "note": "support page - reboot, clone",
+      "capturedAt": "2026-02-09T17:32:16.668Z",
+      "url": "https://192.168.0.107/home/index.html#hashSupport/hashHome",
+      "title": "Support",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:31:56.495Z",
+          "text": "Support",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        },
+        {
+          "label": "Edit",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Edit"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Edit"
+            },
+            {
+              "kind": "css",
+              "value": "#supportInfoEdit"
+            },
+            {
+              "kind": "text",
+              "value": "Edit"
+            },
+            {
+              "kind": "css",
+              "value": "#supportInfoEdit"
+            }
+          ],
+          "value": "Edit",
+          "disabled": false
+        },
+        {
+          "label": "Restart Device",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Restart Device"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Restart Device"
+            },
+            {
+              "kind": "css",
+              "value": "#rebootButton"
+            },
+            {
+              "kind": "text",
+              "value": "Restart Device"
+            },
+            {
+              "kind": "css",
+              "value": "#rebootButton"
+            }
+          ],
+          "value": "Restart Device",
+          "disabled": false
+        },
+        {
+          "label": "Power Off Device",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Power Off Device"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Power Off Device"
+            },
+            {
+              "kind": "css",
+              "value": "#shutdownButton"
+            },
+            {
+              "kind": "text",
+              "value": "Power Off Device"
+            },
+            {
+              "kind": "css",
+              "value": "#shutdownButton"
+            }
+          ],
+          "value": "Power Off Device",
+          "disabled": false
+        },
+        {
+          "label": "Online Support",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Online Support"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Online Support"
+            },
+            {
+              "kind": "css",
+              "value": "#onlineSupportButton"
+            },
+            {
+              "kind": "text",
+              "value": "Online Support"
+            },
+            {
+              "kind": "css",
+              "value": "#onlineSupportButton"
+            }
+          ],
+          "value": "Online Support",
+          "disabled": false
+        },
+        {
+          "label": "Download OSS License Information",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Download OSS License Information"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Download OSS License Information"
+            },
+            {
+              "kind": "css",
+              "value": "#ossLicenseButton"
+            },
+            {
+              "kind": "text",
+              "value": "Download OSS License Information"
+            },
+            {
+              "kind": "css",
+              "value": "#ossLicenseButton"
+            }
+          ],
+          "value": "Download OSS License Information",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-005",
+      "note": "reboot confirm",
+      "capturedAt": "2026-02-09T17:32:27.354Z",
+      "url": "https://192.168.0.107/home/index.html#hashSupport/hashHome",
+      "title": "Support",
+      "modalTitles": [
+        "Confirmation"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:32:18.660Z",
+          "text": "Restart Device",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#supportRebootConfirmCancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#supportRebootConfirmCancel"
+            }
+          ],
+          "modalTitle": "Confirmation",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Restart",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Restart"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Restart"
+            },
+            {
+              "kind": "css",
+              "value": "#supportRebootConfirmOk"
+            },
+            {
+              "kind": "text",
+              "value": "Restart"
+            },
+            {
+              "kind": "css",
+              "value": "#supportRebootConfirmOk"
+            }
+          ],
+          "modalTitle": "Confirmation",
+          "value": "Restart",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-006",
+      "note": "clone - create",
+      "capturedAt": "2026-02-09T17:33:24.110Z",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "title": "Home",
+      "modalTitles": [
+        "Cloning"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:32:55.607Z",
+          "text": "Cloning",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Create",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Create"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            },
+            {
+              "kind": "text",
+              "value": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Create",
+          "disabled": false
+        },
+        {
+          "label": "Install",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Install"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            },
+            {
+              "kind": "text",
+              "value": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Install",
+          "disabled": false
+        },
+        {
+          "label": "Close",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Close"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            },
+            {
+              "kind": "text",
+              "value": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Close",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-007",
+      "note": "clone create 1",
+      "capturedAt": "2026-02-09T17:33:46.930Z",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "title": "Home",
+      "modalTitles": [
+        "Cloning",
+        "Create Clone File"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:33:25.766Z",
+          "text": "Create",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Create",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Create"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            },
+            {
+              "kind": "text",
+              "value": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Create",
+          "disabled": false
+        },
+        {
+          "label": "Install",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Install"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            },
+            {
+              "kind": "text",
+              "value": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Install",
+          "disabled": false
+        },
+        {
+          "label": "Close",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Close"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            },
+            {
+              "kind": "text",
+              "value": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Close",
+          "disabled": false
+        },
+        {
+          "label": "Create",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Create"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningExportBtn"
+            },
+            {
+              "kind": "text",
+              "value": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningExportBtn"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Create",
+          "disabled": false
+        },
+        {
+          "label": "Close",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Close"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningClose"
+            },
+            {
+              "kind": "text",
+              "value": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningClose"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Close",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-008",
+      "note": "clone - install",
+      "capturedAt": "2026-02-09T17:34:17.987Z",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "title": "Home",
+      "modalTitles": [
+        "Cloning",
+        "Install Clone File"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:33:48.934Z",
+          "text": "Close",
+          "role": "button",
+          "css": "#cloningClose"
+        },
+        {
+          "timestamp": "2026-02-09T17:33:51.637Z",
+          "text": "Install",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Create",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Create"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            },
+            {
+              "kind": "text",
+              "value": "Create"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningExportModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Create",
+          "disabled": false
+        },
+        {
+          "label": "Install",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Install"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            },
+            {
+              "kind": "text",
+              "value": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#openCloningIntallModal"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Install",
+          "disabled": false
+        },
+        {
+          "label": "Close",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Close"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            },
+            {
+              "kind": "text",
+              "value": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningViewClose"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Close",
+          "disabled": false
+        },
+        {
+          "label": "Install Clone File",
+          "type": "text",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Install Clone File"
+            },
+            {
+              "kind": "role",
+              "role": "textbox",
+              "name": "Install Clone File"
+            },
+            {
+              "kind": "css",
+              "value": "input:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "",
+          "required": false,
+          "readOnly": true,
+          "disabled": false
+        },
+        {
+          "label": "Browse",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Browse"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Browse"
+            },
+            {
+              "kind": "text",
+              "value": "Browse"
+            },
+            {
+              "kind": "css",
+              "value": "button:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Browse",
+          "disabled": false
+        },
+        {
+          "label": "Install",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Install"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningImportBtn"
+            },
+            {
+              "kind": "text",
+              "value": "Install"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningImportBtn"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Install",
+          "disabled": false
+        },
+        {
+          "label": "Close",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Close"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningCloseImport"
+            },
+            {
+              "kind": "text",
+              "value": "Close"
+            },
+            {
+              "kind": "css",
+              "value": "#cloningCloseImport"
+            }
+          ],
+          "modalTitle": "Cloning",
+          "value": "Close",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-009",
+      "note": "apps",
+      "capturedAt": "2026-02-09T17:35:04.413Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:34:55.844Z",
+          "text": "Edit Apps Screen of Device",
+          "css": "label:nth-of-type(1)"
+        },
+        {
+          "timestamp": "2026-02-09T17:35:00.530Z",
+          "text": "Edit Apps Screen of DeviceCopyEmailScanScan to FolderSend from FolderUSBCopy (ID Card)Scan to DesktopJob Flow SheetsRemo",
+          "role": "dialog",
+          "css": "div:nth-of-type(1)",
+          "label": "Edit Apps Screen of Device"
+        },
+        {
+          "timestamp": "2026-02-09T17:35:01.445Z",
+          "text": "Cancel",
+          "role": "button",
+          "css": "#appPositionCancel"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        },
+        {
+          "label": "Edit Apps Screen of Device",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Edit Apps Screen of Device"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Edit Apps Screen of Device"
+            },
+            {
+              "kind": "css",
+              "value": "#appposition"
+            },
+            {
+              "kind": "text",
+              "value": "Edit Apps Screen of Device"
+            },
+            {
+              "kind": "css",
+              "value": "#appposition"
+            }
+          ],
+          "value": "Edit Apps Screen of Device",
+          "disabled": false
+        },
+        {
+          "label": "Screen Default",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Screen Default"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Screen Default"
+            },
+            {
+              "kind": "css",
+              "value": "#preference"
+            },
+            {
+              "kind": "text",
+              "value": "Screen Default"
+            },
+            {
+              "kind": "css",
+              "value": "#preference"
+            }
+          ],
+          "value": "Screen Default",
+          "disabled": false
+        },
+        {
+          "label": "Web Browser Setup",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Web Browser Setup"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Web Browser Setup"
+            },
+            {
+              "kind": "css",
+              "value": "#cswebbrowser"
+            },
+            {
+              "kind": "text",
+              "value": "Web Browser Setup"
+            },
+            {
+              "kind": "css",
+              "value": "#cswebbrowser"
+            }
+          ],
+          "value": "Web Browser Setup",
+          "disabled": false
+        },
+        {
+          "label": "Enable Add-on Apps",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Enable Add-on Apps"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Enable Add-on Apps"
+            },
+            {
+              "kind": "css",
+              "value": "#customservice"
+            },
+            {
+              "kind": "text",
+              "value": "Enable Add-on Apps"
+            },
+            {
+              "kind": "css",
+              "value": "#customservice"
+            }
+          ],
+          "value": "Enable Add-on Apps",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-010",
+      "note": "edit home",
+      "capturedAt": "2026-02-09T17:35:15.557Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [
+        "Edit Apps Screen of Device"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:35:06.018Z",
+          "text": "Edit Apps Screen of Device",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "css",
+              "value": "label:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Save",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            },
+            {
+              "kind": "text",
+              "value": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Save",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-011",
+      "note": "edit home",
+      "capturedAt": "2026-02-09T17:36:05.070Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [
+        "Edit Apps Screen of Device"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:35:21.996Z",
+          "text": "Email",
+          "role": "menuitemradio",
+          "css": "div:nth-of-type(1)"
+        },
+        {
+          "timestamp": "2026-02-09T17:35:23.504Z",
+          "text": "Copy",
+          "role": "menuitemradio",
+          "css": "div:nth-of-type(2)"
+        },
+        {
+          "timestamp": "2026-02-09T17:35:26.971Z",
+          "text": "Scan",
+          "role": "menuitemradio",
+          "css": "div:nth-of-type(3)"
+        }
+      ],
+      "controls": [
+        {
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "css",
+              "value": "label:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Save",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            },
+            {
+              "kind": "text",
+              "value": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Save",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-012",
+      "note": "add home",
+      "capturedAt": "2026-02-09T17:36:11.744Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [
+        "Edit Apps Screen of Device"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:36:06.854Z",
+          "role": "button",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "css",
+              "value": "label:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionCancel"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Save",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            },
+            {
+              "kind": "text",
+              "value": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#appPositionSave"
+            }
+          ],
+          "modalTitle": "Edit Apps Screen of Device",
+          "value": "Save",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-013",
+      "note": "screen default",
+      "capturedAt": "2026-02-09T17:36:28.296Z",
+      "url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "title": "Screen Default",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:36:15.913Z",
+          "text": "Cancel",
+          "role": "button",
+          "css": "#appPositionCancel"
+        },
+        {
+          "timestamp": "2026-02-09T17:36:16.933Z",
+          "text": "Screen Default",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-014",
+      "note": "screen default list",
+      "capturedAt": "2026-02-09T17:36:46.754Z",
+      "url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "title": "Screen Default",
+      "modalTitles": [],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:36:30.627Z",
+          "text": "Home",
+          "role": "combobox",
+          "css": "a:nth-of-type(1)",
+          "label": "Screen Default"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Administrator",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Administrator"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Administrator"
+            },
+            {
+              "kind": "text",
+              "value": "Administrator"
+            },
+            {
+              "kind": "css",
+              "value": "a:nth-of-type(1)"
+            }
+          ],
+          "value": "Administrator",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-015",
+      "note": "web browser setup",
+      "capturedAt": "2026-02-09T17:37:03.758Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [
+        "Web Browser Setup"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:36:52.909Z",
+          "text": "You can specify the screen to be displayed when Device is powered on. Home Copy Copy (ID Card) Scan Scan to Folder Send ",
+          "role": "group",
+          "css": "#walkupScreenDropdownDiv",
+          "label": "You can specify the screen to be displayed when Device is powered on."
+        },
+        {
+          "timestamp": "2026-02-09T17:36:54.406Z",
+          "text": "Apps",
+          "role": "link",
+          "css": "a:nth-of-type(1)"
+        },
+        {
+          "timestamp": "2026-02-09T17:36:56.336Z",
+          "text": "Web Browser Setup",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Web Applications Version V4 V5 V5",
+          "type": "select",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Web Applications Version V4 V5 V5"
+            },
+            {
+              "kind": "role",
+              "role": "combobox",
+              "name": "Web Applications Version V4 V5 V5"
+            },
+            {
+              "kind": "css",
+              "value": "div:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "Web Applications Version V4 V5 V5",
+          "disabled": false,
+          "options": [
+            "V4",
+            "V5"
+          ]
+        },
+        {
+          "label": "Delete Persistent Cookie upon Closing",
+          "type": "checkbox",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Delete Persistent Cookie upon Closing"
+            },
+            {
+              "kind": "role",
+              "role": "checkbox",
+              "name": "Delete Persistent Cookie upon Closing"
+            },
+            {
+              "kind": "css",
+              "value": "#cookieDeletionToggle"
+            },
+            {
+              "kind": "css",
+              "value": "[name=\"cookieDeletionToggle\"]"
+            },
+            {
+              "kind": "css",
+              "value": "#cookieDeletionToggle"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "checked": true,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Clear Cache upon Closing",
+          "type": "checkbox",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Clear Cache upon Closing"
+            },
+            {
+              "kind": "role",
+              "role": "checkbox",
+              "name": "Clear Cache upon Closing"
+            },
+            {
+              "kind": "css",
+              "value": "#cacheDeletionToggle"
+            },
+            {
+              "kind": "css",
+              "value": "[name=\"cacheDeletionToggle\"]"
+            },
+            {
+              "kind": "css",
+              "value": "#cacheDeletionToggle"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "checked": true,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Use Cache",
+          "type": "checkbox",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Use Cache"
+            },
+            {
+              "kind": "role",
+              "role": "checkbox",
+              "name": "Use Cache"
+            },
+            {
+              "kind": "css",
+              "value": "#cacheToggle"
+            },
+            {
+              "kind": "css",
+              "value": "[name=\"cacheToggle\"]"
+            },
+            {
+              "kind": "css",
+              "value": "#cacheToggle"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "checked": false,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Save Cookies No Yes Warn User When Cookie Is Offered Warn User When Cookie Is Offered",
+          "type": "select",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save Cookies No Yes Warn User When Cookie Is Offered Warn User When Cookie Is Offered"
+            },
+            {
+              "kind": "role",
+              "role": "combobox",
+              "name": "Save Cookies No Yes Warn User When Cookie Is Offered Warn User When Cookie Is Offered"
+            },
+            {
+              "kind": "css",
+              "value": "div:nth-of-type(5)"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "Save Cookies No Yes Warn User When Cookie Is Offered Warn User When Cookie Is Offered",
+          "disabled": false,
+          "options": [
+            "No",
+            "Yes",
+            "Warn User When Cookie Is Offered"
+          ]
+        },
+        {
+          "label": "SSL Cert Verification Failure Stop Accessing the Site Warn User Before Accessing Warn User Before Accessing",
+          "type": "select",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "SSL Cert Verification Failure Stop Accessing the Site Warn User Before Accessing Warn User Before Accessing"
+            },
+            {
+              "kind": "role",
+              "role": "combobox",
+              "name": "SSL Cert Verification Failure Stop Accessing the Site Warn User Before Accessing Warn User Before Accessing"
+            },
+            {
+              "kind": "css",
+              "value": "div:nth-of-type(6)"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "SSL Cert Verification Failure Stop Accessing the Site Warn User Before Accessing Warn User Before Accessing",
+          "disabled": false,
+          "options": [
+            "Stop Accessing the Site",
+            "Warn User Before Accessing"
+          ]
+        },
+        {
+          "label": "Enable File Printing",
+          "type": "checkbox",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Enable File Printing"
+            },
+            {
+              "kind": "role",
+              "role": "checkbox",
+              "name": "Enable File Printing"
+            },
+            {
+              "kind": "css",
+              "value": "#filePrintingToggle"
+            },
+            {
+              "kind": "css",
+              "value": "[name=\"filePrintingToggle\"]"
+            },
+            {
+              "kind": "css",
+              "value": "#filePrintingToggle"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "checked": true,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Functional Code",
+          "type": "number",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Functional Code"
+            },
+            {
+              "kind": "role",
+              "role": "spinbutton",
+              "name": "Functional Code"
+            },
+            {
+              "kind": "css",
+              "value": "#functionCodeNumber"
+            },
+            {
+              "kind": "css",
+              "value": "[name=\"functionCodeNumber\"]"
+            },
+            {
+              "kind": "css",
+              "value": "#functionCodeNumber"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "0",
+          "min": 0,
+          "max": 65535,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Functional Code",
+          "type": "number",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Functional Code"
+            },
+            {
+              "kind": "role",
+              "role": "spinbutton",
+              "name": "Functional Code"
+            },
+            {
+              "kind": "css",
+              "value": "input:nth-of-type(1)"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "0",
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#cancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#cancel"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Save",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#save"
+            },
+            {
+              "kind": "text",
+              "value": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#save"
+            }
+          ],
+          "modalTitle": "Web Browser Setup",
+          "value": "Save",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "id": "capture-016",
+      "note": "enabled addons",
+      "capturedAt": "2026-02-09T17:37:19.292Z",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "title": "Apps",
+      "modalTitles": [
+        "Enable Add-on Apps"
+      ],
+      "clicksSinceLastCapture": [
+        {
+          "timestamp": "2026-02-09T17:37:06.832Z",
+          "text": "Web Applications Version V4 V5 V5",
+          "role": "combobox",
+          "css": "div:nth-of-type(1)"
+        },
+        {
+          "timestamp": "2026-02-09T17:37:08.496Z",
+          "text": "Cancel",
+          "role": "button",
+          "css": "#cancel"
+        },
+        {
+          "timestamp": "2026-02-09T17:37:09.459Z",
+          "text": "Enable Add-on Apps",
+          "css": "label:nth-of-type(1)"
+        }
+      ],
+      "controls": [
+        {
+          "label": "Enable",
+          "type": "checkbox",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Enable"
+            },
+            {
+              "kind": "role",
+              "role": "checkbox",
+              "name": "Enable"
+            },
+            {
+              "kind": "css",
+              "value": "#customServiceEnabled"
+            },
+            {
+              "kind": "css",
+              "value": "#customServiceEnabled"
+            }
+          ],
+          "modalTitle": "Enable Add-on Apps",
+          "checked": true,
+          "required": false,
+          "readOnly": false,
+          "disabled": false
+        },
+        {
+          "label": "Cancel",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Cancel"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#cancel"
+            },
+            {
+              "kind": "text",
+              "value": "Cancel"
+            },
+            {
+              "kind": "css",
+              "value": "#cancel"
+            }
+          ],
+          "modalTitle": "Enable Add-on Apps",
+          "value": "Cancel",
+          "disabled": false
+        },
+        {
+          "label": "Save",
+          "type": "button",
+          "selectors": [
+            {
+              "kind": "label",
+              "value": "Save"
+            },
+            {
+              "kind": "role",
+              "role": "button",
+              "name": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#save"
+            },
+            {
+              "kind": "text",
+              "value": "Save"
+            },
+            {
+              "kind": "css",
+              "value": "#save"
+            }
+          ],
+          "modalTitle": "Enable Add-on Apps",
+          "value": "Save",
+          "disabled": false
+        }
+      ]
+    }
+  ]
+}

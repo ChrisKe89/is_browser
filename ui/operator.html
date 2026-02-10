@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Printer Operator</title>
+    <style>
+      :root {
+        --bg: #f7f9fc;
+        --panel: #ffffff;
+        --text: #1f2937;
+        --muted: #4b5563;
+        --line: #d1d5db;
+        --accent: #0f766e;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #eff6ff 0%, var(--bg) 50%, #ffffff 100%);
+      }
+
+      main {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 1.25rem;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        margin: 0 0 0.75rem;
+      }
+
+      p {
+        margin: 0.4rem 0;
+        color: var(--muted);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <h1>Printer Operator</h1>
+        <p>Use the profile form to create and save account/variation settings into the database.</p>
+        <p><a href="/form.html">Open Profile Form</a></p>
+      </section>
+      <section class="panel">
+        <p>API endpoints:</p>
+        <p><a href="/api/profiles/schema" target="_blank" rel="noreferrer">/api/profiles/schema</a></p>
+        <p><a href="/settings-schema.json" target="_blank" rel="noreferrer">/settings-schema.json</a></p>
+      </section>
+    </main>
+  </body>
+</html>

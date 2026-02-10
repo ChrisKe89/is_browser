@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Printer Profile Form</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --line: #d1d5db;
+        --text: #111827;
+        --muted: #4b5563;
+        --accent: #0f766e;
+        --danger: #b91c1c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 45%, #ffffff 100%);
+      }
+
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.9rem;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+
+      h2 {
+        font-size: 1.05rem;
+        margin-bottom: 0.6rem;
+      }
+
+      h3 {
+        font-size: 0.95rem;
+        margin: 0.6rem 0;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .top-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(160px, 1fr));
+        gap: 0.75rem;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.32rem;
+      }
+
+      .field label {
+        font-weight: 600;
+        font-size: 0.86rem;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 0.48rem 0.58rem;
+        border: 1px solid #9ca3af;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        background: #fff;
+      }
+
+      .field textarea {
+        min-height: 66px;
+      }
+
+      .actions {
+        margin-top: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.5rem 0.9rem;
+        cursor: pointer;
+        background: #e5e7eb;
+        color: #111827;
+        font-weight: 600;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      details {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin-top: 0.75rem;
+        overflow: hidden;
+      }
+
+      summary {
+        cursor: pointer;
+        padding: 0.6rem 0.75rem;
+        font-weight: 700;
+        background: #f8fafc;
+      }
+
+      .page-content {
+        padding: 0.75rem;
+      }
+
+      .group {
+        border: 1px dashed #d1d5db;
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .settings-grid {
+        display: grid;
+        gap: 0.65rem;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      }
+
+      .setting-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.55rem;
+        background: #fff;
+      }
+
+      .setting-card.disabled {
+        opacity: 0.68;
+        background: #f9fafb;
+      }
+
+      .setting-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .setting-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .setting-id {
+        margin-top: 0.28rem;
+        color: var(--muted);
+        font-size: 0.72rem;
+        word-break: break-all;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .radio-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      #status {
+        margin-top: 0.7rem;
+        padding: 0.6rem;
+        border-radius: 8px;
+        background: #eef2ff;
+      }
+
+      .status-error {
+        color: var(--danger);
+      }
+
+      @media (max-width: 900px) {
+        .top-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .top-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <h1>Profile Form (DB-backed)</h1>
+        <p class="muted">
+          This form is generated from the UI map in the database (writeable/changeable fields only).
+        </p>
+        <div class="top-grid">
+          <div class="field">
+            <label for="accountNumber">Account</label>
+            <input id="accountNumber" name="accountNumber" type="text" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="variation">Variation</label>
+            <input id="variation" name="variation" type="text" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="displayName">Profile Name</label>
+            <input id="displayName" name="displayName" type="text" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="variationList">Existing Variations</label>
+            <input id="variationList" name="variationList" list="variationOptions" type="text" readonly />
+            <datalist id="variationOptions"></datalist>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="refreshSchemaBtn" type="button">Reload Schema</button>
+          <button id="loadProfileBtn" type="button">Load Profile</button>
+          <button id="enableAllBtn" type="button">Enable All</button>
+          <button id="disableAllBtn" type="button">Disable All</button>
+          <button id="saveProfileBtn" class="primary" type="button">Save Profile</button>
+        </div>
+        <div id="status" class="muted">Loading schema...</div>
+      </section>
+
+      <section id="schemaContainer" class="panel">
+        <h2>Settings</h2>
+        <div id="formPages"></div>
+      </section>
+    </main>
+
+    <script>
+      const statusEl = document.getElementById("status");
+      const formPagesEl = document.getElementById("formPages");
+      const accountEl = document.getElementById("accountNumber");
+      const variationEl = document.getElementById("variation");
+      const displayNameEl = document.getElementById("displayName");
+      const variationListEl = document.getElementById("variationList");
+      const variationOptionsEl = document.getElementById("variationOptions");
+
+      const controls = new Map();
+
+      function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.classList.toggle("status-error", Boolean(isError));
+      }
+
+      function sanitizeId(value) {
+        return value.replace(/[^a-zA-Z0-9_-]/g, "_");
+      }
+
+      function clearControls() {
+        controls.clear();
+      }
+
+      function createControlInput(setting) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "field";
+        const controlId = "setting_" + sanitizeId(setting.id);
+        const controlState = { touched: false, fromProfile: false };
+        const markTouched = () => {
+          controlState.touched = true;
+        };
+        let getValue = () => "";
+        let setValue = () => {};
+        const valueElements = [];
+        const setValueDisabled = (disabled) => {
+          valueElements.forEach((element) => {
+            element.disabled = disabled;
+          });
+        };
+
+        if (setting.controlType === "switch") {
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = controlId;
+          checkbox.addEventListener("change", markTouched);
+          wrapper.appendChild(checkbox);
+          valueElements.push(checkbox);
+          getValue = () => (checkbox.checked ? "On" : "Off");
+          setValue = (value) => {
+            controlState.fromProfile = true;
+            checkbox.checked = String(value).toLowerCase() === "on";
+          };
+        } else if (setting.controlType === "radio" && Array.isArray(setting.options) && setting.options.length) {
+          const group = document.createElement("div");
+          group.className = "radio-group";
+          const name = controlId + "_radio";
+          setting.options.forEach((optionValue, index) => {
+            const optionId = `${controlId}_${index}`;
+            const item = document.createElement("label");
+            item.className = "radio-option";
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = name;
+            input.id = optionId;
+            input.value = optionValue;
+            input.addEventListener("change", markTouched);
+            const text = document.createElement("span");
+            text.textContent = optionValue;
+            item.appendChild(input);
+            item.appendChild(text);
+            group.appendChild(item);
+            valueElements.push(input);
+          });
+          wrapper.appendChild(group);
+          getValue = () => {
+            const selected = group.querySelector(`input[name="${name}"]:checked`);
+            return selected ? selected.value : "";
+          };
+          setValue = (value) => {
+            controlState.fromProfile = true;
+            const expected = String(value);
+            const target = group.querySelector(`input[name="${name}"][value="${CSS.escape(expected)}"]`);
+            if (target) {
+              target.checked = true;
+            }
+          };
+        } else if (setting.controlType === "select" && Array.isArray(setting.options) && setting.options.length) {
+          const select = document.createElement("select");
+          select.id = controlId;
+          const empty = document.createElement("option");
+          empty.value = "";
+          empty.textContent = "-- select --";
+          select.appendChild(empty);
+          select.addEventListener("change", markTouched);
+          setting.options.forEach((optionValue) => {
+            const opt = document.createElement("option");
+            opt.value = optionValue;
+            opt.textContent = optionValue;
+            select.appendChild(opt);
+          });
+          wrapper.appendChild(select);
+          valueElements.push(select);
+          getValue = () => select.value;
+          setValue = (value) => {
+            controlState.fromProfile = true;
+            select.value = String(value);
+          };
+        } else if (setting.controlType === "textarea") {
+          const textarea = document.createElement("textarea");
+          textarea.id = controlId;
+          textarea.addEventListener("input", markTouched);
+          if (setting.pattern) {
+            textarea.setAttribute("pattern", setting.pattern);
+          }
+          wrapper.appendChild(textarea);
+          valueElements.push(textarea);
+          getValue = () => textarea.value;
+          setValue = (value) => {
+            controlState.fromProfile = true;
+            textarea.value = String(value ?? "");
+          };
+        } else {
+          const input = document.createElement("input");
+          input.id = controlId;
+          input.type = setting.controlType === "number" ? "number" : "text";
+          input.addEventListener("input", markTouched);
+          if (setting.controlType === "number") {
+            if (typeof setting.min === "number") input.min = String(setting.min);
+            if (typeof setting.max === "number") input.max = String(setting.max);
+          } else if (setting.pattern) {
+            input.pattern = setting.pattern;
+          }
+          wrapper.appendChild(input);
+          valueElements.push(input);
+          getValue = () => input.value;
+          setValue = (value) => {
+            controlState.fromProfile = true;
+            input.value = String(value ?? "");
+          };
+        }
+
+        controls.set(setting.id, {
+          type: setting.controlType,
+          getValue,
+          setValue,
+          isTouched: () => controlState.touched,
+          hasProfileValue: () => controlState.fromProfile,
+          setValueDisabled
+        });
+
+        return wrapper;
+      }
+
+      function renderSchemaPages(pages) {
+        formPagesEl.innerHTML = "";
+        clearControls();
+
+        if (!Array.isArray(pages) || pages.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "muted";
+          empty.textContent = "No writeable settings found in the database schema.";
+          formPagesEl.appendChild(empty);
+          return;
+        }
+
+        pages.forEach((page, pageIndex) => {
+          const details = document.createElement("details");
+          details.open = pageIndex < 3;
+
+          const summary = document.createElement("summary");
+          summary.textContent = `${page.title || page.id} (${page.groups?.length || 0} groups)`;
+          details.appendChild(summary);
+
+          const content = document.createElement("div");
+          content.className = "page-content";
+
+          const pageMeta = document.createElement("p");
+          pageMeta.className = "muted";
+          pageMeta.textContent = page.url || "";
+          content.appendChild(pageMeta);
+
+          const groups = Array.isArray(page.groups) ? page.groups : [];
+          groups.forEach((group) => {
+            const groupWrap = document.createElement("div");
+            groupWrap.className = "group";
+
+            const heading = document.createElement("h3");
+            heading.textContent = `Type: ${group.controlType}`;
+            groupWrap.appendChild(heading);
+
+            const grid = document.createElement("div");
+            grid.className = "settings-grid";
+
+            const settings = Array.isArray(group.settings) ? group.settings : [];
+            settings.forEach((setting) => {
+              const card = document.createElement("div");
+              card.className = "setting-card";
+
+              const header = document.createElement("div");
+              header.className = "setting-header";
+
+              const label = document.createElement("label");
+              label.textContent = setting.label || setting.id;
+              header.appendChild(label);
+
+              const enabledWrap = document.createElement("label");
+              enabledWrap.className = "setting-toggle";
+              const enabledInput = document.createElement("input");
+              enabledInput.type = "checkbox";
+              enabledInput.checked = true;
+              const enabledText = document.createElement("span");
+              enabledText.textContent = "Enabled";
+              enabledWrap.appendChild(enabledInput);
+              enabledWrap.appendChild(enabledText);
+              header.appendChild(enabledWrap);
+
+              card.appendChild(header);
+
+              card.appendChild(createControlInput(setting));
+
+              const idTag = document.createElement("div");
+              idTag.className = "setting-id";
+              idTag.textContent = setting.id;
+              card.appendChild(idTag);
+
+              const control = controls.get(setting.id);
+              if (control) {
+                const setEnabledState = (enabled) => {
+                  enabledInput.checked = enabled;
+                  card.classList.toggle("disabled", !enabled);
+                  control.setValueDisabled(!enabled);
+                };
+                enabledInput.addEventListener("change", () => {
+                  setEnabledState(enabledInput.checked);
+                });
+                controls.set(setting.id, {
+                  ...control,
+                  isEnabled: () => enabledInput.checked,
+                  setEnabled: (enabled) => {
+                    setEnabledState(Boolean(enabled));
+                  }
+                });
+                setEnabledState(true);
+              }
+
+              grid.appendChild(card);
+            });
+
+            groupWrap.appendChild(grid);
+            content.appendChild(groupWrap);
+          });
+
+          details.appendChild(content);
+          formPagesEl.appendChild(details);
+        });
+      }
+
+      function collectValues() {
+        const values = [];
+        for (const [settingId, control] of controls.entries()) {
+          const raw = control.getValue();
+          const enabled = control.isEnabled ? control.isEnabled() : true;
+
+          if (!enabled) {
+            values.push({ settingId, value: String(raw ?? ""), enabled: false });
+            continue;
+          }
+
+          if (
+            control.type === "switch" &&
+            !control.isTouched() &&
+            !control.hasProfileValue()
+          ) {
+            continue;
+          }
+          if (control.type !== "switch" && (raw === null || raw === undefined || String(raw).trim() === "")) {
+            continue;
+          }
+          values.push({ settingId, value: String(raw), enabled: true });
+        }
+        return values;
+      }
+
+      function applyProfileValues(profile) {
+        const valuesById = new Map((profile.values || []).map((item) => [item.settingId, item]));
+        controls.forEach((control, settingId) => {
+          const value = valuesById.get(settingId);
+          if (!value) return;
+          control.setValue(value.value);
+          if (control.setEnabled) {
+            control.setEnabled(value.enabled !== false);
+          }
+        });
+      }
+
+      async function loadVariationList() {
+        const account = accountEl.value.trim();
+        variationOptionsEl.innerHTML = "";
+        variationListEl.value = "";
+        if (!account) return;
+
+        try {
+          const response = await fetch(`/api/profiles/list?accountNumber=${encodeURIComponent(account)}`);
+          const data = await response.json();
+          const variations = Array.isArray(data.profiles) ? data.profiles : [];
+          const names = variations.map((item) => item.variation).filter(Boolean);
+          names.forEach((variation) => {
+            const option = document.createElement("option");
+            option.value = variation;
+            variationOptionsEl.appendChild(option);
+          });
+          variationListEl.value = names.join(", ");
+        } catch {
+          variationListEl.value = "";
+        }
+      }
+
+      function setAllEnabled(enabled) {
+        controls.forEach((control) => {
+          if (control.setEnabled) {
+            control.setEnabled(Boolean(enabled));
+          }
+        });
+        setStatus(enabled ? "All settings enabled in form." : "All settings disabled in form.");
+      }
+
+      async function loadSchema(forceRefresh = false) {
+        try {
+          setStatus("Loading schema...");
+          const response = await fetch(`/api/profiles/schema${forceRefresh ? "?refresh=1" : ""}`);
+          const data = await response.json();
+          renderSchemaPages(data.pages || []);
+          const imported = data.bootstrap?.imported ? `imported map (${data.bootstrap.mapPath || "unknown"})` : "using existing DB schema";
+          setStatus(`Schema loaded: ${controls.size} controls, ${imported}.`);
+        } catch (error) {
+          setStatus(`Failed to load schema: ${String(error)}`, true);
+        }
+      }
+
+      async function loadProfile() {
+        const accountNumber = accountEl.value.trim();
+        const variation = variationEl.value.trim();
+        if (!accountNumber || !variation) {
+          setStatus("Account and Variation are required to load a profile.", true);
+          return;
+        }
+        try {
+          const response = await fetch("/api/profiles/get", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accountNumber, variation })
+          });
+          if (response.status === 404) {
+            setStatus("Profile not found. Enter values and Save Profile to create one.");
+            return;
+          }
+          if (!response.ok) {
+            const data = await response.json();
+            setStatus(data.error || "Failed to load profile.", true);
+            return;
+          }
+          const data = await response.json();
+          if (data.profile?.displayName) {
+            displayNameEl.value = data.profile.displayName;
+          }
+          applyProfileValues(data.profile || { values: [] });
+          setStatus(`Profile loaded: ${accountNumber} / ${variation}`);
+        } catch (error) {
+          setStatus(`Failed to load profile: ${String(error)}`, true);
+        }
+      }
+
+      async function saveProfile() {
+        const accountNumber = accountEl.value.trim();
+        const variation = variationEl.value.trim();
+        const displayName = displayNameEl.value.trim();
+        if (!accountNumber || !variation) {
+          setStatus("Account and Variation are required.", true);
+          return;
+        }
+
+        const payload = {
+          accountNumber,
+          variation,
+          displayName: displayName || undefined,
+          values: collectValues()
+        };
+
+        try {
+          const response = await fetch("/api/profiles/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            const validationText = Array.isArray(data.fieldErrors)
+              ? data.fieldErrors.map((item) => `${item.field}: ${item.message}`).join(" | ")
+              : "";
+            setStatus(data.error + (validationText ? ` (${validationText})` : ""), true);
+            return;
+          }
+          await loadVariationList();
+          setStatus(
+            `Saved ${payload.values.length} values to profile ${data.profile.accountNumber}/${data.profile.variation}.`
+          );
+        } catch (error) {
+          setStatus(`Failed to save profile: ${String(error)}`, true);
+        }
+      }
+
+      document.getElementById("refreshSchemaBtn").addEventListener("click", () => loadSchema(true));
+      document.getElementById("loadProfileBtn").addEventListener("click", loadProfile);
+      document.getElementById("enableAllBtn").addEventListener("click", () => setAllEnabled(true));
+      document.getElementById("disableAllBtn").addEventListener("click", () => setAllEnabled(false));
+      document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
+      accountEl.addEventListener("blur", loadVariationList);
+
+      loadSchema(false).then(loadVariationList);
+    </script>
+  </body>
+</html>

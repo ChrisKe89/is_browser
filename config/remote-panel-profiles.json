@@ -1,0 +1,14 @@
+{
+  "profiles": [
+    {
+      "id": "default",
+      "name": "Default Profile",
+      "viewport": { "width": 1280, "height": 720 },
+      "steps": [
+        { "action": "click", "x": 200, "y": 180, "delayMs": 200 },
+        { "action": "click", "x": 360, "y": 320, "delayMs": 200 },
+        { "action": "key", "key": "Enter", "delayMs": 200 }
+      ]
+    }
+  ]
+}

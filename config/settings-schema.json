@@ -1,0 +1,128 @@
+{
+  "version": "1.0",
+  "options": {
+    "defaultDeviceLogMode": "all-time"
+  },
+  "sections": [
+    {
+      "id": "customer",
+      "title": "Customer Info",
+      "fields": [
+        {
+          "id": "customer_name",
+          "label": "Customer Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "account_number",
+          "label": "Account Number",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "script_variant",
+          "label": "Script Variant",
+          "type": "text",
+          "default": "default"
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "title": "Network",
+      "fields": [
+        {
+          "id": "http_proxy",
+          "label": "HTTP Proxy",
+          "type": "text",
+          "settingId": "network.http_proxy",
+          "default": ""
+        },
+        {
+          "id": "dns_primary",
+          "label": "Primary DNS",
+          "type": "text",
+          "settingId": "network.dns_primary"
+        },
+        {
+          "id": "dns_secondary",
+          "label": "Secondary DNS",
+          "type": "text",
+          "settingId": "network.dns_secondary"
+        }
+      ]
+    },
+    {
+      "id": "features",
+      "title": "Features",
+      "fields": [
+        {
+          "id": "enable_email",
+          "label": "Enable Email",
+          "type": "checkbox",
+          "settingId": "apps.email.enabled",
+          "default": true
+        },
+        {
+          "id": "email_address",
+          "label": "Email From Address",
+          "type": "text",
+          "settingId": "apps.email.from_address",
+          "visibleIf": {
+            "fieldId": "enable_email",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "nvm",
+      "title": "Remote Panel (NVM)",
+      "fields": [
+        {
+          "id": "enable_remote_panel",
+          "label": "Enable Remote Panel Steps",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "id": "remote_panel_profile",
+          "label": "Remote Panel Profile",
+          "type": "select",
+          "default": "default",
+          "options": ["default"],
+          "visibleIf": {
+            "fieldId": "enable_remote_panel",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "run_options",
+      "title": "Run Options",
+      "fields": [
+        {
+          "id": "console_visible",
+          "label": "Show Console Output",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "id": "headless_mode",
+          "label": "Headless Mode",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "id": "device_log_mode",
+          "label": "Device Log Mode",
+          "type": "select",
+          "options": ["all-time", "daily"],
+          "default": "all-time"
+        }
+      ]
+    }
+  ]
+}

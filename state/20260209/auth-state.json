@@ -1,0 +1,15 @@
+{
+  "cookies": [
+    {
+      "name": "ssid",
+      "value": "71c4b7a6ab78867cb91d05b5f0e153a59aa1c133",
+      "domain": "192.168.0.107",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

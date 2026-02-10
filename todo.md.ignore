@@ -1,0 +1,91 @@
+# Printer UI Map to Profile Runner - TODO
+
+Last updated: 2026-02-09
+
+## Scope
+Build a database-backed configuration system that loads captured UI map data, lets users save reusable profiles, and applies profile values to printer WebUI pages with deterministic Playwright execution and run logging.
+
+## P0 - Foundation
+- [ ] Create DB migration for core UI map tables.
+  - Deliverables: `ui_page`, `ui_setting`, `ui_setting_option`, `ui_setting_selector`, `ui_page_nav_step`.
+  - Acceptance criteria: schema applies cleanly on empty DB and supports FK constraints/cascade behavior described in spec.
+
+- [ ] Create DB migration for profiles and apply run auditing.
+  - Deliverables: `config_profile`, `config_profile_value`, `apply_run`, `apply_run_item`.
+  - Acceptance criteria: one profile stores one value per setting; run and per-setting outcome can be recorded.
+
+- [ ] Implement JSON import pipeline from capture files into DB.
+  - Deliverables: importer for `pages[]`, `fields[]`, `constraints.enum[]`, `selectors[]`, `navPath[]`.
+  - Acceptance criteria: importer is idempotent or safely re-runnable; imported row counts match source structures.
+
+- [ ] Normalize switch settings as options.
+  - Deliverables: for every `control_type='switch'`, ensure `On` and `Off` options exist.
+  - Acceptance criteria: switch values are stored exactly like select/radio values in `config_profile_value`.
+
+## P1 - Profile Management
+- [ ] Implement profile CRUD.
+  - Deliverables: create/read/update/delete profile metadata and values.
+  - Acceptance criteria: profile names are unique; profile updates refresh `updated_at`.
+
+- [ ] Build profile editor form.
+  - Deliverables: page listing settings grouped by `ui_page`, with input type based on `control_type`.
+  - Acceptance criteria: `text` uses text input; `select/radio/switch` use options from `ui_setting_option`; save writes `config_profile_value`.
+
+- [ ] Add profile value validation.
+  - Deliverables: validation layer before save/apply.
+  - Acceptance criteria:
+    - `select/radio/switch` must match allowed options.
+    - `text` accepts string values.
+    - invalid values return clear per-setting errors.
+
+## P1 - Apply Runner
+- [ ] Implement page navigation executor.
+  - Deliverables: `goto` and `click` execution from `ui_page_nav_step` in `step_order`.
+  - Acceptance criteria: runner can reach each target page using stored nav steps; missing click target fails with actionable error.
+
+- [ ] Implement selector resolution with priority fallback.
+  - Deliverables: resolver supporting `css`, `label`, `text`, `role`.
+  - Acceptance criteria: selectors are attempted in ascending `priority`; first match is used; unresolved setting fails with setting/page context.
+
+- [ ] Implement control-type application handlers.
+  - Deliverables: apply logic for `text`, `select`, `radio`, `switch`.
+  - Acceptance criteria:
+    - `select` tries native select then dropdown text fallback.
+    - `radio` supports input check and text click fallback.
+    - `switch` supports `aria-checked`, checkbox, and last-resort toggle.
+
+- [ ] Implement page-level save/apply action model.
+  - Deliverables: choose and implement one approach:
+    - virtual `ui_setting` like `__apply_button__`, or
+    - dedicated `ui_page_action` table.
+  - Acceptance criteria: pages requiring apply/save are committed reliably after setting changes.
+
+## P2 - Observability and Reliability
+- [ ] Persist run lifecycle and per-setting outcomes.
+  - Deliverables: writes to `apply_run` and `apply_run_item` for success/skipped/failed states.
+  - Acceptance criteria: every apply attempt creates one run record and one item per attempted setting with message text.
+
+- [ ] Add retry and error classification strategy.
+  - Deliverables: bounded retries for transient UI failures and clear terminal errors for permanent failures.
+  - Acceptance criteria: transient failures retry without masking persistent selector/value issues.
+
+- [ ] Add integration tests for importer + runner core paths.
+  - Deliverables: automated tests covering schema import, selector resolution order, control handlers, and run logging.
+  - Acceptance criteria: tests pass locally and cover critical apply flow behavior.
+
+## P2 - Documentation
+- [ ] Document data model and apply flow.
+  - Deliverables: update README/docs with table purpose, profile lifecycle, and runner behavior.
+  - Acceptance criteria: operator can import map, create profile, run apply, and inspect failures from docs alone.
+
+- [ ] Add changelog entry for profile-driven apply system.
+  - Deliverables: `CHANGELOG.md` update using current unreleased section/versioning approach.
+  - Acceptance criteria: release notes summarize schema additions, profile UI, and apply logging.
+
+## Execution Order
+1. Schema migrations (core + profile/run tables)
+2. Import pipeline
+3. Profile CRUD and form
+4. Apply runner (navigation -> selector resolution -> control handlers -> page apply action)
+5. Run logging and retries
+6. Tests and docs
