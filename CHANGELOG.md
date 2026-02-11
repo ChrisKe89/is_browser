@@ -6,10 +6,10 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 ### Added
-- Three-product monorepo structure with explicit top-level product folders: `crawler/`, `settings-authoring/`, and `apply-runner/`.
+- Three-product monorepo structure with explicit top-level product folders: `crawler/`, `is_form/`, and `is_application/`.
 - Shared contract package (`packages/contracts`) with versioned schemas for UI Map, Profile, and Apply Run payloads.
 - Shared storage/platform packages (`packages/storage`, `packages/platform`) to isolate product logic from common runtime and persistence concerns.
-- Standalone smoke tests for crawler map contract output, settings-authoring boot/save flow, and apply-runner dry-run plan generation.
+- Standalone smoke tests for crawler map contract output, is_form boot/save flow, and is_application dry-run plan generation.
 - Architecture documentation for product boundaries, data contracts, and developer workflow (`docs/Architecture.md`).
 - Tools workspace (`tools/recordings`, `tools/scripts`, `tools/samples`) with README replacing legacy artifact-path usage.
 - SQLite migration flow for profile-driven apply (`npm run db:migrate`) with UI map, profile, and run-audit tables.
@@ -42,6 +42,11 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+- Finalized workspace layout under `apps/*` and `packages/*` with npm workspaces and per-workspace `package.json` files.
+- Renamed shared packages to `@is-browser/contract`, `@is-browser/env`, `@is-browser/browser`, and `@is-browser/sqlite-store`; updated imports across apps/tests.
+- Moved legacy root assets/config/tests into app/package ownership and `tools/samples` (`customer-map.csv`, sample settings, schema JSON).
+- Removed legacy combined server entrypoint and root single-app scripts in favor of workspace-scoped scripts.
+- Renamed root TypeScript config to `tsconfig.base.json` and updated path aliases for workspace packages.
 - Runtime entrypoints and npm scripts now execute from product directories instead of `src/`.
 - Deploy workflow path filters now target product/package directories created by the three-product split.
 - Apply runner now builds a deterministic apply plan before execution and fails fast when UI map schema versions are incompatible.

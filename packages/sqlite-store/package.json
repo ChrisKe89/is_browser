@@ -1,0 +1,16 @@
+{
+  "name": "@is-browser/sqlite-store",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "tsx --test test/*.test.js"
+  },
+  "dependencies": {
+    "@is-browser/contract": "file:../contract",
+    "@is-browser/env": "file:../env",
+    "zod": "^3.23.8"
+  }
+}

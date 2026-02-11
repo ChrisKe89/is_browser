@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@is-browser/contract": ["packages/contract/src/index.ts"],
+      "@is-browser/env": ["packages/env/src/index.ts"],
+      "@is-browser/browser": ["packages/browser/src/index.ts"],
+      "@is-browser/sqlite-store": ["packages/sqlite-store/src/index.ts"]
+    },
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "apps/**/*.ts",
+    "packages/**/*.ts",
+    "tools/**/*.ts"
+  ]
+}
