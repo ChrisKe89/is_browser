@@ -17,6 +17,13 @@ Thanks for helping improve this project. Keep changes focused and avoid introduc
 - `npm run lint` - Alias to typecheck (no formatting changes).
 - `npm run build` - Compile TypeScript output.
 
+## Product Layout
+- `crawler/` - printer UI crawl + map generation.
+- `settings-authoring/` - form + DB profile authoring.
+- `apply-runner/` - operator UX + apply execution.
+- `packages/contracts/` - shared schema contracts.
+- `packages/storage/` and `packages/platform/` - shared persistence/runtime helpers.
+
 ## Code Style
 - Indentation is 2 spaces.
 - Avoid reformatting unrelated files.

@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-const INPUT = "artifacts/recorded-flow.ts";
+const INPUT = "tools/recordings/recorded-flow.ts";
 const OUTPUT = "config/crawler-flows.json";
 
 const SKIP_LABEL_RE = /save|apply|restart|cancel|close|disable|enable|start|ok|delete|reset|logout|log out|bb registration/i;

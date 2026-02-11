@@ -1,45 +1,39 @@
-# Task Aggregation (2026-02-10)
+# Task Aggregation (2026-02-11)
 
-This file merges global AGENTS directives with repository TODO items, deduplicated and prioritized for execution.
+This file merges repository AGENTS directives and current TODO items into one deduplicated execution list.
 
 ## Discovery Results
+
 - Located AGENTS files:
   - `AGENTS.md` (repo root)
-- No additional `AGENTS.md` files found under `./projects`, `./apps`, or `./packages` (directories not present in this repository).
+- No additional `AGENTS.md` files were found under `projects/`, `apps/`, or `packages/`.
 
-## Aggregated Task Queue
+## Aggregated Queue
 
-### Priority 1 - Required foundation and quality gates
-- [x] Add CI workflow running install, lint, test, and build.
-  - Completed: 2026-02-09
-  - File: `.github/workflows/ci.yml`
-- [x] Implement TODO `TSK-001` through `TSK-004` (schema + importer foundations).
-  - Completed: 2026-02-10
-  - Files: `src/db/migrations.ts`, `src/db/importer.ts`, `src/db/migrate.ts`, `src/db/importMap.ts`, `test/db.test.js`
-- [x] Implement TODO `TSK-005` through `TSK-007` (profile CRUD + validation).
-  - Completed: 2026-02-10
-  - Files: `src/db/profiles.ts`, `src/server/index.ts`, `test/profiles.test.js`
-- [x] Implement TODO `TSK-008` through `TSK-013` (navigation, locator fallback, apply behavior, retries, run auditing).
-  - Completed: 2026-02-10
-  - Files: `src/runner/engine.ts`, `src/runner/applySettings.ts`, `src/schema/types.ts`, `src/runner/retry.ts`, `src/db/runAudit.ts`, `test/runner-engine.test.js`, `test/retry.test.js`, `test/run-audit.test.js`
-- [x] Implement TODO `TSK-014` integration tests for importer and runner core flow.
-  - Completed: 2026-02-10
-  - Files: `test/apply.integration.test.js`
+### Priority 1 - Architecture Separation (Completed 2026-02-11)
 
-### Priority 2 - Documentation and release hygiene
-- [x] Update operator docs for profile-driven workflow (`TSK-015`).
-  - Completed: 2026-02-10
-  - Files: `docs/OperatorProfileApplyWorkflow.md`, `README.md`
-- [x] Add release notes for profile-driven apply functionality (`TSK-016`).
-  - Completed: 2026-02-10
-  - File: `CHANGELOG.md`
-- [x] Keep `README.md` and `CHANGELOG.md` synchronized with behavior changes in each PR.
-  - Completed for this implementation cycle: 2026-02-10
-  - Ongoing policy: continue enforcing on every PR.
+- [x] `TSK-001` Create explicit three-product folder structure.
+- [x] `TSK-002` Extract crawler into standalone `crawler/` product.
+- [x] `TSK-003` Define shared contract package for UI Map, Profile, and Apply Run.
+- [x] `TSK-004` Refactor settings form + DB into standalone `settings-authoring/` product.
+- [x] `TSK-005` Refactor apply UX into standalone `apply-runner/` product with schema compatibility checks.
+- [x] `TSK-006` Enforce DB-only profile values at apply time.
+- [x] `TSK-007` Replace ambiguous artifact paths with `tools/recordings`, `tools/scripts`, and `tools/samples`.
+- [x] `TSK-008` Add standalone smoke tests for crawler, settings-authoring, and apply-runner.
+- [x] `TSK-009` Publish architecture + data model docs for new contributors.
 
-### Priority 3 - Ongoing maintenance
-- [ ] Quarterly dependency/security review (`npm outdated`, `npm audit`) and stale-link/docs audit.
+### Priority 2 - Quality Gates (Completed 2026-02-11)
+
+- [x] Typecheck/lint passes locally (`npm run lint`).
+- [x] Full test suite passes locally (`npm test`).
+- [x] Build passes locally (`npm run build`).
+- [x] CI workflow and deploy workflow path filters aligned to new folder structure.
+
+### Priority 3 - Ongoing Maintenance
+
+- [ ] Quarterly dependency/security audit (`npm outdated`, `npm audit`) and stale-link documentation sweep.
 
 ## Notes
-- The repository already satisfies required baseline files: `.editorconfig`, `.gitignore`, `LICENSE`, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, and `SECURITY.md`.
-- Coverage target (>=90%) is currently documented as a pending exemption in `README.md` and `CONTRIBUTING.md`.
+
+- Baseline repository requirements remain present: `.editorconfig`, `.gitignore`, `LICENSE`, `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`.
+- Coverage instrumentation is still not enforced in tooling; target remains documented as >=90%.

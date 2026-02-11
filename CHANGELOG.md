@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 ### Added
+- Three-product monorepo structure with explicit top-level product folders: `crawler/`, `settings-authoring/`, and `apply-runner/`.
+- Shared contract package (`packages/contracts`) with versioned schemas for UI Map, Profile, and Apply Run payloads.
+- Shared storage/platform packages (`packages/storage`, `packages/platform`) to isolate product logic from common runtime and persistence concerns.
+- Standalone smoke tests for crawler map contract output, settings-authoring boot/save flow, and apply-runner dry-run plan generation.
+- Architecture documentation for product boundaries, data contracts, and developer workflow (`docs/Architecture.md`).
+- Tools workspace (`tools/recordings`, `tools/scripts`, `tools/samples`) with README replacing legacy artifact-path usage.
 - SQLite migration flow for profile-driven apply (`npm run db:migrate`) with UI map, profile, and run-audit tables.
 - UI map importer (`npm run db:import-map`) that upserts pages/settings, imports selectors/nav steps, and normalizes switch options to shared option storage.
 - Database-focused tests covering migration shape, import idempotency, switch normalization, and profile identity uniqueness.
@@ -36,6 +42,11 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+- Runtime entrypoints and npm scripts now execute from product directories instead of `src/`.
+- Deploy workflow path filters now target product/package directories created by the three-product split.
+- Apply runner now builds a deterministic apply plan before execution and fails fast when UI map schema versions are incompatible.
+- Settings-authoring schema bootstrap now returns a clear `503` error when no UI map is available and no schema is loaded.
+- Error capture outputs now write under `tools/recordings/` paths.
 - Documentation refresh: `README.md` now includes explicit Quick Start, Installation, Usage, Configuration, Examples, and Troubleshooting sections.
 - Contribution guide now documents CI workflow location and required local quality gates (`lint`, `test`, `build`).
 - Crawler/runner auth state usage is now opt-in via `USE_AUTH_STATE` (defaults to credential-based login from env vars).

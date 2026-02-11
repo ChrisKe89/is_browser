@@ -11,8 +11,8 @@ import {
   getProfileEditorPages,
   listProfiles,
   saveProfile
-} from "../src/db/profiles.js";
-import { importUiMapToDatabase } from "../src/db/importer.js";
+} from "../packages/storage/src/profiles.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-profile-"));
@@ -227,3 +227,4 @@ test("enabled setting with missing value is persisted and skipped during apply s
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

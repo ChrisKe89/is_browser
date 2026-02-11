@@ -5,13 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "src/config/**"
-      - "src/discovery/**"
-      - "src/db/**"
-      - "src/runner/**"
-      - "src/server/httpUtils.ts"
-      - "src/server/operator.ts"
-      - "src/server/operatorServer.ts"
+      - "apply-runner/**"
+      - "crawler/src/login.ts"
+      - "packages/storage/**"
+      - "packages/platform/**"
+      - "packages/contracts/**"
       - "ui/operator.html"
       - "package.json"
       - "package-lock.json"

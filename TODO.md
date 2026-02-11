@@ -6,8 +6,9 @@
 
 ---
 
-### [ ] TSK-001 — Create explicit three-product folder structure
+### [x] TSK-001 — Create explicit three-product folder structure
 - relates-to: PRD §4, §6
+- completed: 2026-02-11
 - do:
   - Introduce top-level folders for:
     - crawler
@@ -20,8 +21,9 @@
 
 ---
 
-### [ ] TSK-002 — Extract crawler into a standalone product
+### [x] TSK-002 — Extract crawler into a standalone product
 - relates-to: PRD §4.1, §7
+- completed: 2026-02-11
 - do:
   - Move crawler entrypoints and logic into crawler product
   - Remove DB and apply dependencies
@@ -31,8 +33,9 @@
 
 ---
 
-### [ ] TSK-003 — Define shared contract package
+### [x] TSK-003 — Define shared contract package
 - relates-to: PRD §5
+- completed: 2026-02-11
 - do:
   - Create contract schemas for:
     - UI Map
@@ -45,8 +48,9 @@
 
 ---
 
-### [ ] TSK-004 — Refactor settings form + DB into standalone authoring product
+### [x] TSK-004 — Refactor settings form + DB into standalone authoring product
 - relates-to: PRD §4.2, §7
+- completed: 2026-02-11
 - do:
   - Ensure form loads UI Map as schema input
   - Ensure DB stores values only (no selectors)
@@ -56,8 +60,9 @@
 
 ---
 
-### [ ] TSK-005 — Refactor apply UX into standalone runner product
+### [x] TSK-005 — Refactor apply UX into standalone runner product
 - relates-to: PRD §4.3, §7
+- completed: 2026-02-11
 - do:
   - Ensure apply reads:
     - UI Map for schema + selectors
@@ -69,8 +74,9 @@
 
 ---
 
-### [ ] TSK-006 — Enforce DB-only values at apply time
+### [x] TSK-006 — Enforce DB-only values at apply time
 - relates-to: PRD §4.3, §8
+- completed: 2026-02-11
 - do:
   - Remove or hard-disable non-DB runtime value sources
 - done-when:
@@ -78,21 +84,23 @@
 
 ---
 
-### [ ] TSK-007 — Rename ambiguous folders to intent-driven names
+### [x] TSK-007 — Rename ambiguous folders to intent-driven names
 - relates-to: PRD §6, §9
+- completed: 2026-02-11
 - do:
-  - Replace `artifacts/` with:
+  - Replace the legacy capture folder with:
     - tools/recordings
     - tools/scripts
     - tools/samples
 - done-when:
-  - No references to `artifacts/` remain
+  - No references to the legacy capture path remain
   - tools folder has README explaining purpose
 
 ---
 
-### [ ] TSK-008 — Add standalone smoke tests per product
+### [x] TSK-008 — Add standalone smoke tests per product
 - relates-to: PRD §7, §8
+- completed: 2026-02-11
 - do:
   - Add non-printer-dependent tests for:
     - crawler output validation
@@ -103,8 +111,9 @@
 
 ---
 
-### [ ] TSK-009 — Write architecture and data model docs
+### [x] TSK-009 — Write architecture and data model docs
 - relates-to: PRD §9
+- completed: 2026-02-11
 - do:
   - Add concise docs explaining:
     - system architecture
@@ -112,3 +121,6 @@
     - developer workflow
 - done-when:
   - New contributors can orient without tribal knowledge
+
+
+

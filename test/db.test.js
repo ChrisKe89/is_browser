@@ -4,8 +4,8 @@ import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
-import { migrateDatabase } from "../src/db/migrations.js";
-import { importUiMapToDatabase } from "../src/db/importer.js";
+import { migrateDatabase } from "../packages/storage/src/migrations.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-db-"));
@@ -163,3 +163,4 @@ test("import rejects invalid payload with clear context", async () => {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

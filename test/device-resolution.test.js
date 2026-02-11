@@ -10,9 +10,9 @@ import {
   searchAccounts,
   upsertDeviceResolutionRecords,
   variationMatchesModelRequirement
-} from "../src/db/deviceResolution.js";
-import { saveProfile } from "../src/db/profiles.js";
-import { importUiMapToDatabase } from "../src/db/importer.js";
+} from "../packages/storage/src/deviceResolution.js";
+import { saveProfile } from "../packages/storage/src/profiles.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-resolution-"));
@@ -114,3 +114,4 @@ test("account search includes profile and resolution account numbers", async () 
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

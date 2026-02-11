@@ -1,5 +1,0 @@
-import { startFormServer } from "./formServer.js";
-import { startOperatorServer } from "./operatorServer.js";
-
-startOperatorServer();
-startFormServer();

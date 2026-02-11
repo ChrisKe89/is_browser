@@ -10,7 +10,7 @@ import {
   parseSwitchTarget,
   rankSelectors,
   resolveLocatorByPriority
-} from "../src/runner/engine.js";
+} from "../apply-runner/src/runner/engine.js";
 
 function createMockLocator({
   count = 0,
@@ -308,3 +308,4 @@ test("buildPageCommitActionMap prefers Save-like actions per page", () => {
   assert.ok(chosen);
   assert.equal(chosen?.label, "Save");
 });
+

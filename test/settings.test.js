@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveCustomerFolder, resolveSettingsFromCsv } from "../src/runner/settings.js";
-import { splitProductCodeAndSerial } from "../src/runner/logging.js";
+import { resolveCustomerFolder, resolveSettingsFromCsv } from "../apply-runner/src/runner/settings.js";
+import { splitProductCodeAndSerial } from "../apply-runner/src/runner/logging.js";
 
 test("resolveCustomerFolder sanitizes names", () => {
   const folder = resolveCustomerFolder("Acme/Corp", "1000:1");
@@ -18,3 +18,4 @@ test("splitProductCodeAndSerial splits combined value", () => {
   assert.equal(productCode, "TC101894");
   assert.equal(serial, "043240");
 });
+

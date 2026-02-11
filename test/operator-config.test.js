@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
-import { getOperatorDiscoveryConfig, saveOperatorDiscoveryConfig } from "../src/db/operatorConfig.js";
+import { getOperatorDiscoveryConfig, saveOperatorDiscoveryConfig } from "../packages/storage/src/operatorConfig.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-opcfg-"));
@@ -34,3 +34,4 @@ test("operator discovery config persists subnet ranges, manual IPs, and csv mode
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

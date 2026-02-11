@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classifyApplyError, shouldRetryFailure } from "../src/runner/retry.js";
+import { classifyApplyError, shouldRetryFailure } from "../apply-runner/src/runner/retry.js";
 
 test("classifyApplyError marks timeout as transient", () => {
   const classified = classifyApplyError(new Error("locator.click: Timeout 30000ms exceeded"));
@@ -41,3 +41,4 @@ test("shouldRetryFailure only retries bounded transient failures", () => {
     false
   );
 });
+

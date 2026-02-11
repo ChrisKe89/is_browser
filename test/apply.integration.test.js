@@ -4,8 +4,8 @@ import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
-import { importUiMapToDatabase } from "../src/db/importer.js";
-import { applySettings } from "../src/runner/applySettings.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
+import { applySettings } from "../apply-runner/src/runner/applySettings.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-apply-int-"));
@@ -226,7 +226,7 @@ function createFakeRuntime(map, config) {
       isLoginPage: async () => false,
       login: async () => {},
       runRemotePanel: async () => {},
-      writeDeviceLog: async () => "artifacts/test-log.json",
+      writeDeviceLog: async () => "tools/recordings/test-log.json",
       appendDeviceReport: async () => "devices/reports/test.csv"
     }
   };
@@ -404,3 +404,5 @@ test("integration: runner records failed run when first setting terminally fails
     await removeWithRetry(tempDir);
   }
 });
+
+

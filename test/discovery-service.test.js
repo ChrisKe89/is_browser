@@ -3,14 +3,14 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
-import { importUiMapToDatabase } from "../src/db/importer.js";
-import { saveProfile } from "../src/db/profiles.js";
-import { upsertDeviceResolutionRecords } from "../src/db/deviceResolution.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
+import { saveProfile } from "../packages/storage/src/profiles.js";
+import { upsertDeviceResolutionRecords } from "../packages/storage/src/deviceResolution.js";
 import {
   addManualDevice,
   discoverDevicesFromSubnets,
   expandSubnetRanges
-} from "../src/discovery/service.js";
+} from "../apply-runner/src/discovery/service.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-discovery-"));
@@ -116,3 +116,4 @@ test("addManualDevice requires reachable host and validates IPv4", async () => {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

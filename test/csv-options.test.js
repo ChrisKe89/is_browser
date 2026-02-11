@@ -4,8 +4,8 @@ import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
-import { importUiMapToDatabase } from "../src/db/importer.js";
-import { importFieldOptionsFromCsvFile } from "../src/db/csvOptions.js";
+import { importUiMapToDatabase } from "../packages/storage/src/importer.js";
+import { importFieldOptionsFromCsvFile } from "../packages/storage/src/csvOptions.js";
 
 async function makeTempPaths() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-csv-options-"));
@@ -76,3 +76,4 @@ test("csv option import enriches select/radio setting options", async () => {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

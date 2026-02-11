@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
-import { createFormServer } from "../src/server/formServer.js";
-import { createOperatorServer } from "../src/server/operatorServer.js";
+import { createFormServer } from "../settings-authoring/src/server/formServer.js";
+import { createOperatorServer } from "../apply-runner/src/server/operatorServer.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-server-split-"));
@@ -97,3 +97,4 @@ test("form product exposes form API surface and excludes operator API surface", 
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+

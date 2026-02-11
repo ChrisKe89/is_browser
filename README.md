@@ -23,7 +23,7 @@ cp .env.example .env
 npm run db:migrate
 ```
 
-5. Start the operator server:
+5. Start both products:
 
 ```bash
 npm run server
@@ -51,6 +51,17 @@ cp .env.example .env
 - Run tests: `npm test`
 - Typecheck/lint: `npm run lint`
 
+## Architecture
+
+- `crawler/`: standalone UI crawler that emits versioned UI maps.
+- `settings-authoring/`: standalone form + DB profile authoring product.
+- `apply-runner/`: standalone operator UX + apply runner product.
+- `packages/contracts/`: shared versioned schemas and validation.
+- `packages/storage/`: shared SQLite services for map import, profiles, and run audit.
+- `packages/platform/`: shared runtime helpers (`env`, HTTP utilities, Playwright helpers).
+
+Detailed architecture and contract docs: `docs/Architecture.md`.
+
 ## CI/CD Workflows
 
 - Quality gate workflow: `.github/workflows/ci.yml`
@@ -62,7 +73,7 @@ cp .env.example .env
 Deployment behavior:
 - Each product workflow runs independently on `main` pushes relevant to its product paths.
 - Each workflow can be run manually through `workflow_dispatch`.
-- If deployment webhook secrets are not configured, workflows still build and publish product artifacts.
+- If deployment webhook secrets are not configured, workflows still build and publish product bundles.
 
 ## Configuration
 
@@ -119,7 +130,7 @@ By default, crawler/runner uses `PRINTER_USER` + `PRINTER_PASS` login logic. Set
 npm run map:ui
 ```
 
-Outputs `state/printer-ui-map.json` and saves screenshots on errors in `artifacts/`.
+Outputs `state/printer-ui-map.json` and saves screenshots on errors in `tools/recordings/`.
 
 ## Persist UI Map + Profiles (SQLite)
 
@@ -265,7 +276,8 @@ Some devices report a combined product code + serial string. The system will spl
 - SNMP identity missing: verify `SNMP_COMMUNITY`, `SNMP_VERSION`, and network ACL/firewall access.
 
 ## Documentation
-- PRD: `tasks/prd-printer-webui-automation.md`
+- PRD: `tasks/PRD-Three-Product-Architecture.md`
+- Architecture and data model: `docs/Architecture.md`
 - Implementation plan: `docs/ImplementationPlan.md`
 - Operator profile workflow: `docs/OperatorProfileApplyWorkflow.md`
 - UAT scenarios: `docs/UAT.md`
@@ -285,3 +297,4 @@ Coverage is not enforced yet (target ≥90%). This is documented in `CONTRIBUTIN
 ```bash
 npm run mcp:server
 ```
+

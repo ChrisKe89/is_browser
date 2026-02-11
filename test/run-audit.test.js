@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
 import { DatabaseSync } from "node:sqlite";
-import { startRunAudit } from "../src/db/runAudit.js";
+import { startRunAudit } from "../packages/storage/src/runAudit.js";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-runaudit-"));
@@ -86,3 +86,4 @@ test("run audit persists lifecycle and item outcomes", async () => {
     await removeWithRetry(tempDir);
   }
 });
+

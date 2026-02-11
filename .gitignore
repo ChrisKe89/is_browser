@@ -1,6 +1,7 @@
 node_modules/
 dist/
-artifacts/
+tools/recordings/*.png
+tools/recordings/*.json
 devices/logs/
 devices/reports/
 customer_settings/
