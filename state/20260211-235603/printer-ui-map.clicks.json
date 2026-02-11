@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-11T12:56:22.026Z",
+    "printerUrl": "http://192.168.0.107",
+    "schemaVersion": "1.1"
+  },
+  "pages": [
+    {
+      "id": "home-home-index-html",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ]
+    }
+  ],
+  "fields": []
+}

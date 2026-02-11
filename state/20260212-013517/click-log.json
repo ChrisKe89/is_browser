@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-11T14:35:28.895Z",
+    "baseUrl": "http://192.168.0.107",
+    "runPath": "C:\\Dev\\is_browser\\state\\20260212-013517",
+    "clickCount": 7
+  },
+  "clicks": [
+    {
+      "index": 1,
+      "timestamp": "2026-02-11T14:35:19.808Z",
+      "target": "Log In",
+      "kind": "link",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "button",
+          "name": "Log In"
+        },
+        {
+          "kind": "css",
+          "value": "nav.xux-utilityLinksNav > ul.xux-utilityLinks > li > a.xux-loginout"
+        }
+      ],
+      "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+      "inFrame": false,
+      "newFieldIds": []
+    },
+    {
+      "index": 2,
+      "timestamp": "2026-02-11T14:35:20.890Z",
+      "target": "Log In",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#loginButton"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "inFrame": false,
+      "newFieldIds": []
+    },
+    {
+      "index": 3,
+      "timestamp": "2026-02-11T14:35:21.556Z",
+      "target": "Close",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#securityAlertConfirmKoDefault"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "inFrame": false,
+      "newFieldIds": [
+        "device-details-modal.device-name",
+        "device-details-modal.manufacturer-asset-tag",
+        "device-details-modal.customer-asset-tag",
+        "device-details-modal.device-email-address",
+        "device-details-modal.comment",
+        "device-details-modal.location",
+        "device-details-modal.latitude",
+        "device-details-modal.longitude",
+        "device-details-modal.name",
+        "device-details-modal.email",
+        "device-details-modal.phone"
+      ]
+    },
+    {
+      "index": 4,
+      "timestamp": "2026-02-11T14:35:21.854Z",
+      "target": "Close",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#securityAlertConfirmKoDefault"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "inFrame": false,
+      "newFieldIds": []
+    },
+    {
+      "index": 5,
+      "timestamp": "2026-02-11T14:35:22.337Z",
+      "target": "Close",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#securityAlertConfirmSnmpDefault"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+      "inFrame": false,
+      "newFieldIds": []
+    },
+    {
+      "index": 6,
+      "timestamp": "2026-02-11T14:35:24.736Z",
+      "target": "Details",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#openDeviceInfoDetailsModalWindow"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "inFrame": false,
+      "newFieldIds": []
+    },
+    {
+      "index": 7,
+      "timestamp": "2026-02-11T14:35:27.242Z",
+      "target": "Cancel",
+      "kind": "button",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#deviceDetailsCancel"
+        }
+      ],
+      "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+      "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+      "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+      "inFrame": false,
+      "newFieldIds": []
+    }
+  ]
+}

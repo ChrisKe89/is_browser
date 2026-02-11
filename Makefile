@@ -10,6 +10,8 @@ help:
 	@echo "  make build              Build all workspaces"
 	@echo "  make dev-all            Run is_form + is_application together"
 	@echo "  make is-mapper-map      Run is_mapper UI map"
+	@echo "  make is-mapper-manual   Run is_mapper manual click map"
+	@echo "  make is-mapper-yaml     Export navigation/layout YAML from map"
 	@echo "  make is-mapper-dev      Run is_mapper dev mode"
 	@echo "  make form-dev           Start is_form server"
 	@echo "  make apply-dev          Start is_application server"
@@ -44,6 +46,18 @@ is-mapper-map:
 .PHONY: is-mapper-dev
 is-mapper-dev:
 	npm -w apps/is_mapper run dev
+
+.PHONY: is-mapper-yaml
+is-mapper-yaml:
+	npm run is_mapper:yaml
+
+.PHONY: is-mapper-manual
+is-mapper-manual:
+ifeq ($(OS),Windows_NT)
+	cmd /C "set IS_MAPPER_LOCATION=$(LOCATION) && set IS_MAPPER_SCREENSHOT=$(SCREENSHOT) && npm -w apps/is_mapper run is_mapper:manual"
+else
+	IS_MAPPER_LOCATION=$(LOCATION) IS_MAPPER_SCREENSHOT=$(SCREENSHOT) npm -w apps/is_mapper run is_mapper:manual
+endif
 
 .PHONY: form-dev
 form-dev:

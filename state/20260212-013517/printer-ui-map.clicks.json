@@ -1,0 +1,1665 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-11T14:35:28.895Z",
+    "printerUrl": "http://192.168.0.107",
+    "schemaVersion": "1.1",
+    "capturedAt": "2026-02-11T14:35:28.895Z",
+    "version": "ui-graph-1",
+    "runId": "20260212-013517"
+  },
+  "pages": [
+    {
+      "id": "home-home-index-html",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Log In"
+          },
+          "label": "Log In",
+          "kind": "link",
+          "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:19.808Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#loginButton"
+          },
+          "label": "Log In",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:20.890Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.556Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.854Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmSnmpDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:22.337Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#openDeviceInfoDetailsModalWindow"
+          },
+          "label": "Details",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:24.736Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#deviceDetailsCancel"
+          },
+          "label": "Cancel",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:27.242Z"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Log In"
+          },
+          "label": "Log In",
+          "kind": "link",
+          "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:19.808Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#loginButton"
+          },
+          "label": "Log In",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:20.890Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.556Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.854Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmSnmpDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:22.337Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#openDeviceInfoDetailsModalWindow"
+          },
+          "label": "Details",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:24.736Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#deviceDetailsCancel"
+          },
+          "label": "Cancel",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:27.242Z"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "device-details-modal.comment",
+      "fieldId": "6319f8f63139aa60",
+      "label": "Comment",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Comment"
+        },
+        {
+          "kind": "label",
+          "value": "Comment"
+        },
+        {
+          "kind": "css",
+          "value": "#commentInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "6319f8f63139aa60",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.customer-asset-tag",
+      "fieldId": "ae59ee49a49a63ad",
+      "label": "Customer Asset Tag",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Customer Asset Tag"
+        },
+        {
+          "kind": "label",
+          "value": "Customer Asset Tag"
+        },
+        {
+          "kind": "css",
+          "value": "#customerAssetInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "ae59ee49a49a63ad",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.device-email-address",
+      "fieldId": "02bf744216ad7d36",
+      "label": "Device Email Address",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Device Email Address"
+        },
+        {
+          "kind": "label",
+          "value": "Device Email Address"
+        },
+        {
+          "kind": "css",
+          "value": "#localEmailInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "02bf744216ad7d36",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.device-name",
+      "fieldId": "be4294d054962c73",
+      "label": "Device Name*",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Device Name*"
+        },
+        {
+          "kind": "label",
+          "value": "Device Name*"
+        },
+        {
+          "kind": "css",
+          "value": "#deviceNameInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "be4294d054962c73",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "Test_Printer",
+      "currentValue": "Test_Printer",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.manufacturer-asset-tag",
+      "fieldId": "0496e6f39cc0b21c",
+      "label": "Manufacturer Asset Tag",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Manufacturer Asset Tag"
+        },
+        {
+          "kind": "label",
+          "value": "Manufacturer Asset Tag"
+        },
+        {
+          "kind": "css",
+          "value": "#providerAssetInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "0496e6f39cc0b21c",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.latitude",
+      "fieldId": "9acd101e654ab683",
+      "label": "Latitude",
+      "type": "number",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Latitude"
+        },
+        {
+          "kind": "label",
+          "value": "Latitude"
+        },
+        {
+          "kind": "css",
+          "value": "#latitudeInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "9acd101e654ab683",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "number",
+      "valueType": "number",
+      "defaultValue": 0,
+      "currentValue": 0,
+      "constraints": {
+        "min": -90,
+        "max": 90
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.location",
+      "fieldId": "c9a9981e4cf35b7e",
+      "label": "Location",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Location"
+        },
+        {
+          "kind": "label",
+          "value": "Location"
+        },
+        {
+          "kind": "css",
+          "value": "#locationInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "c9a9981e4cf35b7e",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.longitude",
+      "fieldId": "62288e7a44e51d3a",
+      "label": "Longitude",
+      "type": "number",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Longitude"
+        },
+        {
+          "kind": "label",
+          "value": "Longitude"
+        },
+        {
+          "kind": "css",
+          "value": "#longitudeInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "62288e7a44e51d3a",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "number",
+      "valueType": "number",
+      "defaultValue": 0,
+      "currentValue": 0,
+      "constraints": {
+        "min": -180,
+        "max": 180
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.email",
+      "fieldId": "7576f00b3422988d",
+      "label": "Email",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Email"
+        },
+        {
+          "kind": "label",
+          "value": "Email"
+        },
+        {
+          "kind": "css",
+          "value": "#adminEmailInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "7576f00b3422988d",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.name",
+      "fieldId": "b3ce2f4910da0f68",
+      "label": "Name",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Name"
+        },
+        {
+          "kind": "label",
+          "value": "Name"
+        },
+        {
+          "kind": "css",
+          "value": "#adminNameInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "b3ce2f4910da0f68",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "device-details-modal.phone",
+      "fieldId": "d9c6e043d922240f",
+      "label": "Phone",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Phone"
+        },
+        {
+          "kind": "label",
+          "value": "Phone"
+        },
+        {
+          "kind": "css",
+          "value": "#adminPhoneInput"
+        }
+      ],
+      "pageId": "device-details-modal",
+      "selectorKey": "d9c6e043d922240f",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "",
+      "currentValue": "",
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "click",
+        "runId": "20260212-013517"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "node-d123921af01f",
+      "kind": "page",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "https://192.168.0.107/home/index.html#hashHome",
+        "Log In",
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Log In"
+          },
+          "label": "Log In",
+          "kind": "link",
+          "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:19.808Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#loginButton"
+          },
+          "label": "Log In",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:20.890Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.556Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.854Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmSnmpDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:22.337Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#openDeviceInfoDetailsModalWindow"
+          },
+          "label": "Details",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:24.736Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#deviceDetailsCancel"
+          },
+          "label": "Cancel",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:27.242Z"
+        }
+      ],
+      "groups": [],
+      "actions": [],
+      "fingerprint": "d123921af01fb2b147687e01d50a6d66886f7d44"
+    },
+    {
+      "nodeId": "node-3c11363ba64e",
+      "kind": "modal",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "https://192.168.0.107/home/index.html#hashHome",
+        "Log In",
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Log In"
+          },
+          "label": "Log In",
+          "kind": "link",
+          "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:19.808Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#loginButton"
+          },
+          "label": "Log In",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:20.890Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.556Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmKoDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:21.854Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#securityAlertConfirmSnmpDefault"
+          },
+          "label": "Close",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+          "timestamp": "2026-02-11T14:35:22.337Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#openDeviceInfoDetailsModalWindow"
+          },
+          "label": "Details",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:24.736Z"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "css",
+            "value": "#deviceDetailsCancel"
+          },
+          "label": "Cancel",
+          "kind": "button",
+          "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+          "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+          "timestamp": "2026-02-11T14:35:27.242Z"
+        }
+      ],
+      "groups": [
+        {
+          "groupId": "group:device-details",
+          "title": "Device Details",
+          "order": 1,
+          "fields": [
+            {
+              "id": "device-details-modal.comment",
+              "fieldId": "6319f8f63139aa60",
+              "label": "Comment",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Comment"
+                },
+                {
+                  "kind": "label",
+                  "value": "Comment"
+                },
+                {
+                  "kind": "css",
+                  "value": "#commentInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "6319f8f63139aa60",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.customer-asset-tag",
+              "fieldId": "ae59ee49a49a63ad",
+              "label": "Customer Asset Tag",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Customer Asset Tag"
+                },
+                {
+                  "kind": "label",
+                  "value": "Customer Asset Tag"
+                },
+                {
+                  "kind": "css",
+                  "value": "#customerAssetInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "ae59ee49a49a63ad",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.device-email-address",
+              "fieldId": "02bf744216ad7d36",
+              "label": "Device Email Address",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Device Email Address"
+                },
+                {
+                  "kind": "label",
+                  "value": "Device Email Address"
+                },
+                {
+                  "kind": "css",
+                  "value": "#localEmailInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "02bf744216ad7d36",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.device-name",
+              "fieldId": "be4294d054962c73",
+              "label": "Device Name*",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Device Name*"
+                },
+                {
+                  "kind": "label",
+                  "value": "Device Name*"
+                },
+                {
+                  "kind": "css",
+                  "value": "#deviceNameInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "be4294d054962c73",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "Test_Printer",
+              "currentValue": "Test_Printer",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.manufacturer-asset-tag",
+              "fieldId": "0496e6f39cc0b21c",
+              "label": "Manufacturer Asset Tag",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Manufacturer Asset Tag"
+                },
+                {
+                  "kind": "label",
+                  "value": "Manufacturer Asset Tag"
+                },
+                {
+                  "kind": "css",
+                  "value": "#providerAssetInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "0496e6f39cc0b21c",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "groupId": "group:device-location",
+          "title": "Device Location",
+          "order": 2,
+          "fields": [
+            {
+              "id": "device-details-modal.latitude",
+              "fieldId": "9acd101e654ab683",
+              "label": "Latitude",
+              "type": "number",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Latitude"
+                },
+                {
+                  "kind": "label",
+                  "value": "Latitude"
+                },
+                {
+                  "kind": "css",
+                  "value": "#latitudeInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "9acd101e654ab683",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "number",
+              "valueType": "number",
+              "defaultValue": 0,
+              "currentValue": 0,
+              "constraints": {
+                "min": -90,
+                "max": 90
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.location",
+              "fieldId": "c9a9981e4cf35b7e",
+              "label": "Location",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Location"
+                },
+                {
+                  "kind": "label",
+                  "value": "Location"
+                },
+                {
+                  "kind": "css",
+                  "value": "#locationInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "c9a9981e4cf35b7e",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.longitude",
+              "fieldId": "62288e7a44e51d3a",
+              "label": "Longitude",
+              "type": "number",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Longitude"
+                },
+                {
+                  "kind": "label",
+                  "value": "Longitude"
+                },
+                {
+                  "kind": "css",
+                  "value": "#longitudeInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "62288e7a44e51d3a",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "number",
+              "valueType": "number",
+              "defaultValue": 0,
+              "currentValue": 0,
+              "constraints": {
+                "min": -180,
+                "max": 180
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "groupId": "group:system-administrator",
+          "title": "System Administrator",
+          "order": 3,
+          "fields": [
+            {
+              "id": "device-details-modal.email",
+              "fieldId": "7576f00b3422988d",
+              "label": "Email",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Email"
+                },
+                {
+                  "kind": "label",
+                  "value": "Email"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminEmailInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "7576f00b3422988d",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.name",
+              "fieldId": "b3ce2f4910da0f68",
+              "label": "Name",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Name"
+                },
+                {
+                  "kind": "label",
+                  "value": "Name"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminNameInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "b3ce2f4910da0f68",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "device-details-modal.phone",
+              "fieldId": "d9c6e043d922240f",
+              "label": "Phone",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Phone"
+                },
+                {
+                  "kind": "label",
+                  "value": "Phone"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminPhoneInput"
+                }
+              ],
+              "pageId": "device-details-modal",
+              "selectorKey": "d9c6e043d922240f",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "",
+              "currentValue": "",
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "click",
+                "runId": "20260212-013517"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "3c11363ba64ea3f4fe21cdefdae744c5777270e6"
+    }
+  ],
+  "edges": [
+    {
+      "fromNodeId": "node-d123921af01f",
+      "toNodeId": "node-3c11363ba64e",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Log In"
+        },
+        "label": "Log In",
+        "kind": "link",
+        "urlBefore": "http://192.168.0.107/home/index.html#hashHome",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+        "frameUrl": "http://192.168.0.107/home/index.html#hashHome",
+        "timestamp": "2026-02-11T14:35:19.808Z"
+      },
+      "edgeType": "navigate"
+    },
+    {
+      "fromNodeId": "node-3c11363ba64e",
+      "toNodeId": "node-3c11363ba64e",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "css",
+          "value": "#loginButton"
+        },
+        "label": "Log In",
+        "kind": "button",
+        "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+        "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+        "timestamp": "2026-02-11T14:35:20.890Z"
+      },
+      "edgeType": "navigate"
+    },
+    {
+      "fromNodeId": "node-3c11363ba64e",
+      "toNodeId": "node-3c11363ba64e",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "css",
+          "value": "#securityAlertConfirmKoDefault"
+        },
+        "label": "Close",
+        "kind": "button",
+        "urlBefore": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+        "frameUrl": "https://192.168.0.107/wuilib/login.html?path=/home/index.html&hash=hashHome#hashLogin",
+        "timestamp": "2026-02-11T14:35:21.556Z"
+      },
+      "edgeType": "navigate"
+    },
+    {
+      "fromNodeId": "node-3c11363ba64e",
+      "toNodeId": "node-3c11363ba64e",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "css",
+          "value": "#openDeviceInfoDetailsModalWindow"
+        },
+        "label": "Details",
+        "kind": "button",
+        "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+        "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+        "timestamp": "2026-02-11T14:35:24.736Z"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node-3c11363ba64e",
+      "toNodeId": "node-3c11363ba64e",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "css",
+          "value": "#deviceDetailsCancel"
+        },
+        "label": "Cancel",
+        "kind": "button",
+        "urlBefore": "https://192.168.0.107/home/index.html#hashHome",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome",
+        "frameUrl": "https://192.168.0.107/home/index.html#hashHome",
+        "timestamp": "2026-02-11T14:35:27.242Z"
+      },
+      "edgeType": "expand_section"
+    }
+  ]
+}

@@ -1,7 +1,18 @@
 # AGENTS.md
 
 ## Purpose
-This file gives lightweight guidance for working in this repository. Keep it minimal and flexible.
+Lightweight guidance for working in this repository. Keep it minimal and flexible. Prefer linking to `README.md`/`docs/` over duplicating long runbooks here.
+
+## Repo Basics
+- Runtime: Node.js (see `README.md`; CI uses Node 22).
+- Package manager: `npm` (keep `package-lock.json` as source of truth).
+- Workspace layout:
+  - `apps/is_mapper/` — Playwright crawler that generates UI maps.
+  - `apps/is_form/` — profile authoring form + DB workflows.
+  - `apps/is_application/` — operator UX + apply runner + discovery scan.
+  - `packages/*` — shared libraries (`contract`, `sqlite-store`, `env`, `browser`).
+- Build artifacts:
+  - `dist/` and `state/` are generated outputs; don’t edit them directly.
 
 ## General Guidelines
 - Do not introduce heavy process or ceremony.
@@ -20,6 +31,32 @@ This file gives lightweight guidance for working in this repository. Keep it min
 - Do not ignore errors; surface them with a concise explanation.
 - Do not leave temporary files or debug artifacts in the repo.
 - Do not leave failing tests unmentioned.
+
+## Documentation Expectations (lightweight)
+- If you change user-facing commands, env vars, ports, or workflows, update `README.md` in the same change.
+- Prefer documenting “how to run it” via Make targets.
+
+## Architectural Governance (Required)
+
+This repository follows a strict documentation hierarchy:
+
+PRD.md  
+→ TechnicalStrategy.md  
+→ Architecture.md  
+→ prd-feature-*.md  
+→ App READMEs  
+→ Root README.md  
+
+Rules:
+
+- PRD and TechnicalStrategy documents are architectural sources of truth.
+- Feature work must not redefine system architecture.
+- Data model or contract changes require updating TechnicalStrategy.md first.
+- Root README must remain high-level and must not accumulate operational detail.
+- Profiles must not embed Playwright selectors or automation logic.
+- UI mapping output (JSON/YAML) is derived and must not be manually edited.
+
+If uncertain whether a change affects architecture, assume it does and surface it explicitly.
 
 ## Communication
 - Do not be vague about changes; list key files modified.

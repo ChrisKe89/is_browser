@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-11T12:52:51.828Z",
+    "printerUrl": "http://192.168.0.107",
+    "schemaVersion": "1.1",
+    "capturedAt": "2026-02-11T13:57:31.561Z",
+    "version": "ui-graph-1",
+    "mapperVersion": "0.3.0",
+    "runId": "20260211-235032"
+  },
+  "pages": [
+    {
+      "id": "home-home-index-html",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ]
+    }
+  ],
+  "fields": [],
+  "nodes": [
+    {
+      "nodeId": "node-4f0457ad8eab",
+      "kind": "page",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "https://192.168.0.107/home/index.html#hashHome"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [],
+      "fingerprint": "4f0457ad8eab608ac3951e1292e6e77f64bf35c4"
+    }
+  ],
+  "edges": []
+}

@@ -1,43 +1,182 @@
-# Three-Product Architecture
+# Architecture – is_browser
 
-## Product Boundaries
+This document describes the structural architecture of is_browser and how its components interact.
 
-- `is_mapper/`: maps printer UI pages/settings/selectors into a versioned `ui-map.json`.
-- `is_form/`: form + DB product for authoring profiles from a UI map.
-- `is_application/`: operator UX and runner that applies profile values using UI map selectors.
-- `packages/contract/`: shared data contracts and validation for UI Map, Profile, and Apply Run.
-- `packages/sqlite-store/`: shared SQLite persistence services used by authoring and runner products.
-- `packages/env/` and `packages/browser/`: shared runtime helpers (env loading, HTTP utils, Playwright browser helpers).
+It implements the strategy defined in:
 
-## Data Contracts
+* PRD 
+* Technical Strategy Document 
 
-- UI Map (`packages/contract/src/uiMap.ts`)
-  - Canonical schema for pages, nav steps, fields, selectors, constraints.
-  - Versioned with `UI_MAP_SCHEMA_VERSION` (`1.1`) and compatibility checks.
-- Profile (`packages/contract/src/profile.ts`)
-  - Identity (`accountNumber` + `variation`), value entries, value-map projection.
-  - Validation used by profile save/read/build flows.
-- Apply Run (`packages/contract/src/applyRun.ts`)
-  - Run start/finish/item schemas and status enums.
-  - Validation used by run-audit persistence.
+---
 
-## Runtime Independence
+## 1. Logical Architecture Layers
 
-- Crawler runs with printer + browser only.
-- Settings authoring runs with UI map + DB only.
-- Apply runner runs with UI map + profile DB values only.
-- Apply from inline JSON settings is disabled (`POST /api/start` returns `410`).
+The platform is structured into five logical layers:
 
-## Developer Workflow
+1. UI Mapping Layer (is_mapper)
+2. Knowledge Graph Model
+3. Configuration Storage Layer
+4. Application Engine (is_application)
+5. Operator Interface
 
-1. Capture auth state if needed: `npm run auth:capture`.
-2. Crawl and generate map: `make is-mapper-map`.
-3. Import map to DB: `make db-import-map`.
-4. Start authoring + operator products: `make dev-all`.
-5. Author profiles in form UI and apply from operator UI or `make apply-settings`.
+These layers must remain strictly separated.
 
-## Tooling Layout
+---
 
-- `tools/recordings`: interaction recordings and error captures.
-- `tools/scripts`: manual capture/map utility scripts.
-- `tools/samples`: sample/manual support files.
+## 2. UI Mapping Layer – is_mapper
+
+Responsibility:
+
+* Crawl printer WebUI.
+* Build canonical knowledge graph.
+* Capture navigation paths, groups, fields, constraints.
+* Generate JSON map.
+* Generate YAML derived views.
+
+Outputs:
+
+* Versioned UI Map (JSON)
+* YAML navigation view
+* YAML layout view
+
+This layer defines system truth.
+
+No downstream component may redefine UI structure.
+
+---
+
+## 3. Knowledge Graph Model
+
+The knowledge graph is defined in `packages/contract`.
+
+It includes:
+
+* Nodes (pages, modals)
+* Groups
+* Fields
+* Selectors
+* Actions
+* Edges (navigation relationships)
+
+The graph:
+
+* Is model-specific.
+* Is firmware-aware.
+* Must be deterministic.
+* Must produce stable identifiers across repeated runs.
+
+---
+
+## 4. Configuration Storage Layer
+
+Implemented via `packages/sqlite-store`.
+
+Responsibilities:
+
+* Store profiles by model + customer + variation.
+* Persist apply run audits.
+* Version profiles.
+* Maintain separation from UI structure.
+
+Profiles reference `fieldId` only.
+They do not contain selectors or navigation logic.
+
+---
+
+## 5. Application Engine – is_application
+
+Responsibilities:
+
+* Load profile.
+* Resolve target device via SNMP.
+* Navigate using stored navPath.
+* Apply changes using stored selectors.
+* Respect modal save scopes.
+* Produce structured logs.
+* Persist run outcomes.
+
+Application engine must:
+
+* Verify landing node identity before applying.
+* Only modify defined fields.
+* Confirm final state.
+
+It must not bypass the knowledge graph abstraction.
+
+---
+
+## 6. Form Product – is_form
+
+Responsibilities:
+
+* Load UI map schema from DB.
+* Render configuration form grouped by UI structure.
+* Validate values against UI constraints.
+* Save profiles.
+
+The form product:
+
+* Does not define UI structure.
+* Does not contain automation logic.
+
+---
+
+## 7. Shared Packages
+
+#### packages/contract
+
+Canonical schemas:
+
+* UI Map
+* Profile
+* Apply Run
+
+#### packages/sqlite-store
+
+Persistence layer.
+
+#### packages/browser
+
+Playwright helpers.
+
+#### packages/env
+
+Environment loading.
+
+---
+
+## 8. Runtime Independence
+
+Each product may run independently:
+
+* is_mapper requires printer + browser.
+* is_form requires UI map + DB.
+* is_application requires UI map + profile DB + printer.
+
+No product may depend on runtime state of another.
+
+---
+
+## 9. Data Flow Overview
+
+1. Mapper produces UI Map.
+2. UI Map imported into DB.
+3. Form product uses DB schema to create profiles.
+4. Operator resolves device identity.
+5. Application engine loads profile.
+6. Engine uses UI Map to navigate and apply.
+7. Run audit stored.
+
+---
+
+## 10. Governance Alignment
+
+Architecture must remain aligned with:
+
+* Deterministic identity requirements 
+* Separation of concerns 
+* Documentation hierarchy 
+
+Any change affecting data contracts requires Technical Strategy update first.
+
+---

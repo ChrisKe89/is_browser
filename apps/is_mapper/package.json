@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "is_mapper:map": "tsx src/index.ts",
+    "is_mapper:manual": "tsx src/index.ts --manual",
     "dev": "tsx src/index.ts",
     "auth:capture": "tsx src/auth/capture.ts",
     "test": "tsx --test test/*.test.js"

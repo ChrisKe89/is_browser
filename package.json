@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "is_mapper:map": "npm -w apps/is_mapper run is_mapper:map",
+    "is_mapper:yaml": "tsx tools/export-ui-yaml.ts",
     "form:dev": "npm -w apps/is_form run form:dev",
     "apply:dev": "npm -w apps/is_application run apply:dev",
     "dev:all": "concurrently \"npm -w apps/is_form run form:dev\" \"npm -w apps/is_application run apply:dev\"",

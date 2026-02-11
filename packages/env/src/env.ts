@@ -1,6 +1,16 @@
 import dotenv from "dotenv";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-dotenv.config();
+const THIS_FILE_DIR = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT_ENV_PATH = path.resolve(THIS_FILE_DIR, "../../../.env");
+
+if (existsSync(REPO_ROOT_ENV_PATH)) {
+  dotenv.config({ path: REPO_ROOT_ENV_PATH });
+} else {
+  dotenv.config();
+}
 
 export const PRINTER_URL = process.env.PRINTER_URL ?? "http://192.168.0.107";
 export const PRINTER_USER = process.env.PRINTER_USER ?? "";

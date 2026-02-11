@@ -6,6 +6,10 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 ### Added
+- Manual click-mapping mode for `is_mapper` with `--manual`, `--location`, and `--screenshot` flags, per-run artifacts (`printer-ui-map.clicks.json`, `click-log.json`, optional screenshots), and new mapper docs under `docs/is_mapper/`.
+- Mapper field capture metadata for defaults/current values and dedupe: `selectorKey`, `groupKey`, `valueType`, `defaultValue`, `currentValue`, and normalized `options[]`.
+- Mapper capture-quality improvements: robust `currentValue` extraction per control type, non-empty label derivation with `labelQuality`, modal action discovery for save/cancel/close scope, and textbox constraint/hint capture (`min`, `max`, `step`, `maxLength`, `pattern`, `inputMode`, `rangeHint`).
+- UI map schema additive extensions for `page.breadcrumbs`, `field.labelQuality`, `field.hints`, `field.rangeHint`, and expanded field constraints to preserve backward compatibility while retaining richer mapper output.
 - Three-product monorepo structure with explicit top-level product folders: `crawler/`, `is_form/`, and `is_application/`.
 - Shared contract package (`packages/contracts`) with versioned schemas for UI Map, Profile, and Apply Run payloads.
 - Shared storage/platform packages (`packages/storage`, `packages/platform`) to isolate product logic from common runtime and persistence concerns.

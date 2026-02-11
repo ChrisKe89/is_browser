@@ -12,15 +12,23 @@ import {
 } from "@is-browser/env";
 import { writeMap } from "@is-browser/contract";
 import {
+  type NavStep,
   type FieldEntry,
   type PageEntry,
   type Selector,
   type UiMap
 } from "@is-browser/contract";
-import { buildSelectorCandidates, roleForType, slugify, uniqueId } from "./utils.js";
+import { slugify, uniqueId } from "./utils.js";
 import { isLoginPage, login } from "./login.js";
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { URL } from "node:url";
+import { discoverFieldCandidates } from "./mapping/fieldDiscovery.js";
+import { parseMapperCliArgs, type MapperCliOptions } from "./cli.js";
+import { runManualMapper } from "./manual.js";
+import { fieldFingerprint } from "./mapping/fingerprint.js";
+import { attachCanonicalGraph } from "./graph.js";
+import { buildYamlViews, validateMapForYaml } from "./yamlViews.js";
 
 const OUTPUT_PATH = process.env.MAP_PATH ?? "state/printer-ui-map.json";
 const TAB_SKIP_RE = /logout|log out|delete|reset|save|apply|submit|cancel|ok/i;
@@ -39,8 +47,20 @@ const MODAL_CLOSE_RE = /cancel|close|done|ok/i;
 
 type QueueItem = {
   url: string;
-  navPath: { action: "goto" | "click"; selector?: Selector; url?: string }[];
+  navPath: Array<{
+    action: "goto" | "click";
+    selector?: Selector;
+    url?: string;
+    label?: string;
+    kind?: NavStep["kind"];
+    urlBefore?: string;
+    urlAfter?: string;
+    frameUrl?: string;
+    timestamp?: string;
+  }>;
 };
+
+type SnapshotRecorder = (page: import("playwright").Page, pageId: string) => Promise<void>;
 
 type CrawlFlow = {
   id: string;
@@ -53,6 +73,122 @@ type CrawlFlow = {
 type CrawlFlowsConfig = {
   flows: CrawlFlow[];
 };
+
+function mergeOptions(
+  existing: FieldEntry["options"] = [],
+  incoming: FieldEntry["options"] = []
+): FieldEntry["options"] {
+  const merged = new Map<string, { value: string; label?: string }>();
+  for (const option of [...existing, ...incoming]) {
+    const value = option.value.trim();
+    if (!value) continue;
+    const prior = merged.get(value);
+    if (!prior) {
+      merged.set(value, { value, label: option.label });
+      continue;
+    }
+    if (!prior.label && option.label) {
+      prior.label = option.label;
+    }
+  }
+  return Array.from(merged.values()).sort((a, b) => a.value.localeCompare(b.value));
+}
+
+function mergeFieldMetadata(
+  existing: FieldEntry,
+  incoming: Omit<FieldEntry, "id" | "pageId">
+): void {
+  if (incoming.constraints) {
+    existing.constraints = {
+      ...(existing.constraints ?? {}),
+      ...incoming.constraints
+    };
+  }
+  const existingEnum = existing.constraints?.enum ?? [];
+  const incomingEnum = incoming.constraints?.enum ?? [];
+  const mergedEnum = Array.from(new Set([...existingEnum, ...incomingEnum])).sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  if (mergedEnum.length > 0) {
+    existing.constraints = { ...(existing.constraints ?? {}), enum: mergedEnum };
+  }
+  if (incoming.options?.length) {
+    existing.options = mergeOptions(existing.options, incoming.options);
+  }
+  if (incoming.currentValue !== undefined) {
+    existing.currentValue = incoming.currentValue;
+  }
+  if (incoming.labelQuality && (existing.labelQuality === undefined || existing.labelQuality === "missing")) {
+    existing.labelQuality = incoming.labelQuality;
+  }
+  if (incoming.rangeHint && !existing.rangeHint) {
+    existing.rangeHint = incoming.rangeHint;
+  }
+  if (incoming.hints?.length) {
+    const mergedHints = new Set([...(existing.hints ?? []), ...incoming.hints]);
+    existing.hints = Array.from(mergedHints.values());
+  }
+  if (incoming.valueType) {
+    existing.valueType = incoming.valueType;
+  }
+  if (incoming.controlType) {
+    existing.controlType = incoming.controlType;
+  }
+  if (incoming.visibility) {
+    existing.visibility = incoming.visibility;
+  }
+  if (incoming.readonly !== undefined) {
+    existing.readonly = incoming.readonly;
+  }
+  if (incoming.groupTitle && !existing.groupTitle) {
+    existing.groupTitle = incoming.groupTitle;
+  }
+  if (incoming.groupOrder && !existing.groupOrder) {
+    existing.groupOrder = incoming.groupOrder;
+  }
+  if (incoming.actions && !existing.actions) {
+    existing.actions = incoming.actions;
+  }
+}
+
+async function readBreadcrumbTrail(
+  page: import("playwright").Page,
+  scope?: import("playwright").Locator
+): Promise<string[] | undefined> {
+  const root = scope ?? page.locator("body");
+  const crumbItems = root.locator(
+    "nav[aria-label*='breadcrumb' i] li, nav[aria-label*='breadcrumb' i] a, [role='navigation'][aria-label*='breadcrumb' i] li, .breadcrumb li, .breadcrumbs li"
+  );
+  const count = await crumbItems.count();
+  const labels: string[] = [];
+  const seen = new Set<string>();
+  for (let i = 0; i < count; i += 1) {
+    const text = (await crumbItems.nth(i).innerText().catch(() => "")).replace(/\s+/g, " ").trim();
+    if (!text || text.length > 80) continue;
+    const key = text.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    labels.push(text);
+  }
+  if (labels.length > 0) {
+    return labels;
+  }
+
+  const container = root.locator(
+    "nav[aria-label*='breadcrumb' i], [role='navigation'][aria-label*='breadcrumb' i], .breadcrumb, .breadcrumbs"
+  ).first();
+  if (!(await container.count())) {
+    return undefined;
+  }
+  const text = (await container.innerText().catch(() => "")).replace(/\s+/g, " ").trim();
+  if (!text) return undefined;
+  const split = text
+    .split(/(?:\s[>»/]\s|[>»/])/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0 && part.length <= 80);
+  return split.length > 0 ? split : undefined;
+}
 
 async function discoverLinks(page: import("playwright").Page, pageUrl: string) {
   const selector =
@@ -105,105 +241,83 @@ async function mapPage(
   pageId: string,
   usedFieldIds: Set<string>,
   knownFieldKeys: Set<string>,
-  expandChoices: boolean,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  _expandChoices: boolean,
+  discoveredFrom: "scan" | "variant" | "click",
+  runId: string,
   scope?: import("playwright").Locator
 ): Promise<{ fields: FieldEntry[]; actions: FieldEntry["actions"] }> {
+  const { candidates, actions } = await discoverFieldCandidates(page, scope);
   const fieldEntries: FieldEntry[] = [];
 
-  const root = scope ?? page.locator("body");
-  const inputs = root.locator(
-    "input, textarea, select, [role='textbox'], [role='combobox'], [role='checkbox'], [role='radio'], [role='spinbutton']"
-  );
-  const count = await inputs.count();
-
-  for (let i = 0; i < count; i += 1) {
-    const element = inputs.nth(i);
-    if (!(await element.isVisible().catch(() => false))) {
-      continue;
+  for (const candidate of candidates) {
+    const key = candidate.selectorKey ?? fieldFingerprint(candidate.type, candidate.selectors, candidate.label);
+    const defaultValue =
+      defaultsBySelectorKey.get(key) ??
+      candidate.currentValue ??
+      null;
+    if (!defaultsBySelectorKey.has(key)) {
+      defaultsBySelectorKey.set(key, defaultValue);
     }
 
-    const tag = (await element.evaluate((el) => el.tagName)).toLowerCase();
-    const roleAttr = (await element.getAttribute("role"))?.toLowerCase();
-    const typeAttr = (await element.getAttribute("type"))?.toLowerCase();
-
-    if (tag === "input" && (typeAttr === "hidden" || typeAttr === "submit")) {
-      continue;
-    }
-
-    let fieldType: FieldEntry["type"] = "text";
-    if (tag === "textarea") fieldType = "textarea";
-    else if (tag === "select") fieldType = "select";
-    else if (typeAttr === "checkbox") fieldType = "checkbox";
-    else if (typeAttr === "radio") fieldType = "radio";
-    else if (typeAttr === "number") fieldType = "number";
-    else if (typeAttr === "button") fieldType = "button";
-    else if (roleAttr === "checkbox") fieldType = "checkbox";
-    else if (roleAttr === "radio") fieldType = "radio";
-    else if (roleAttr === "combobox") fieldType = "select";
-    else if (roleAttr === "spinbutton") fieldType = "number";
-    else if (roleAttr === "button") fieldType = "button";
-
-    const { label, selectors } = await buildSelectorCandidates(page, element);
-
-    const role = roleForType(fieldType);
-    if (role && label) {
-      selectors.unshift({ kind: "role", role, name: label });
-    }
-
-    if (selectors.length === 0) continue;
-
-    const labelSlug = slugify(label ?? (await element.getAttribute("name")) ?? "field");
-    const fieldId = uniqueId(`${pageId}.${labelSlug}`, usedFieldIds);
-
-    const constraints: FieldEntry["constraints"] = {};
-    const min = await element.getAttribute("min");
-    const max = await element.getAttribute("max");
-    const pattern = await element.getAttribute("pattern");
-    const readOnly = (await element.getAttribute("readonly")) !== null || (await element.getAttribute("disabled")) !== null;
-
-    if (min) constraints.min = Number(min);
-    if (max) constraints.max = Number(max);
-    if (pattern) constraints.pattern = pattern;
-    if (readOnly) constraints.readOnly = true;
-
-    if (fieldType === "select") {
-      const options = element.locator("option");
-      const optionCount = await options.count();
-      const values: string[] = [];
-      for (let j = 0; j < optionCount; j += 1) {
-        const option = options.nth(j);
-        const value = (await option.getAttribute("value")) ?? (await option.innerText());
-        if (value) values.push(value.trim());
+    const existing = fieldsBySelectorKey.get(key);
+    if (knownFieldKeys.has(key)) {
+      if (existing) {
+        mergeFieldMetadata(existing, {
+          label: candidate.label,
+          labelQuality: candidate.labelQuality,
+          type: candidate.type,
+          selectors: candidate.selectors,
+          selectorKey: key,
+          groupKey: candidate.groupKey,
+          groupTitle: candidate.groupTitle,
+          groupOrder: candidate.groupOrder,
+          constraints: candidate.constraints,
+          options: candidate.options,
+          hints: candidate.hints,
+          rangeHint: candidate.rangeHint,
+          valueType: candidate.valueType,
+          defaultValue,
+          currentValue: candidate.currentValue,
+          controlType: candidate.controlType,
+          readonly: candidate.readonly,
+          visibility: candidate.visibility,
+          source: existing.source ?? { discoveredFrom, runId }
+        });
       }
-      if (values.length > 0) constraints.enum = values;
+      continue;
     }
-
-    const key = `${pageId}|${fieldType}|${(label ?? "").toLowerCase()}`;
-    if (!knownFieldKeys.has(key)) {
-      knownFieldKeys.add(key);
-      fieldEntries.push({
-        id: fieldId,
-        label: label,
-        type: fieldType,
-        selectors,
-        pageId,
-        constraints: Object.keys(constraints).length ? constraints : undefined
-      });
-    }
+    knownFieldKeys.add(key);
+    const fieldId = uniqueId(`${pageId}.${slugify(candidate.label ?? "field")}`, usedFieldIds);
+    const entry: FieldEntry = {
+      id: fieldId,
+      label: candidate.label,
+      labelQuality: candidate.labelQuality,
+      type: candidate.type,
+      selectors: candidate.selectors,
+      pageId,
+      selectorKey: key,
+      groupKey: candidate.groupKey,
+      groupTitle: candidate.groupTitle,
+      groupOrder: candidate.groupOrder,
+      constraints: candidate.constraints,
+      options: candidate.options,
+      hints: candidate.hints,
+      rangeHint: candidate.rangeHint,
+      valueType: candidate.valueType,
+      defaultValue,
+      currentValue: candidate.currentValue,
+      controlType: candidate.controlType,
+      readonly: candidate.readonly,
+      visibility: candidate.visibility,
+      source: { discoveredFrom, runId }
+    };
+    fieldsBySelectorKey.set(key, entry);
+    fieldEntries.push(entry);
   }
 
-  const actionButtons = root.getByRole("button", { name: /save|apply|ok|submit/i });
-  const actionCount = await actionButtons.count();
-  const actions: FieldEntry["actions"] = [];
-
-  for (let i = 0; i < actionCount; i += 1) {
-    const button = actionButtons.nth(i);
-    const label = (await button.innerText()).trim();
-    if (!label) continue;
-    actions.push({ selector: { kind: "role", role: "button", name: label }, label });
-  }
-
-  return { fields: fieldEntries, actions: actions.length ? actions : undefined };
+  return { fields: fieldEntries, actions };
 }
 
 async function expandWithChoiceVariants(
@@ -211,8 +325,58 @@ async function expandWithChoiceVariants(
   pageId: string,
   usedFieldIds: Set<string>,
   knownFieldKeys: Set<string>,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
+  runId: string,
   scope?: import("playwright").Locator
 ): Promise<FieldEntry[]> {
+  const visibleKeys = async (): Promise<Set<string>> => {
+    const { candidates } = await discoverFieldCandidates(page, scope ?? page.locator("body"));
+    return new Set(
+      candidates.map((candidate) =>
+        candidate.selectorKey ?? fieldFingerprint(candidate.type, candidate.selectors, candidate.label)
+      )
+    );
+  };
+
+  const attachDependency = (
+    controllerKey: string,
+    whenValue: string,
+    beforeKeys: Set<string>,
+    afterKeys: Set<string>
+  ): void => {
+    const controller = fieldsBySelectorKey.get(controllerKey);
+    if (!controller) return;
+
+    const reveals = Array.from(afterKeys)
+      .filter((key) => !beforeKeys.has(key) && key !== controllerKey)
+      .map((key) => fieldsBySelectorKey.get(key)?.fieldId ?? fieldsBySelectorKey.get(key)?.id)
+      .filter((id): id is string => Boolean(id));
+    const hides = Array.from(beforeKeys)
+      .filter((key) => !afterKeys.has(key) && key !== controllerKey)
+      .map((key) => fieldsBySelectorKey.get(key)?.fieldId ?? fieldsBySelectorKey.get(key)?.id)
+      .filter((id): id is string => Boolean(id));
+
+    if (reveals.length === 0 && hides.length === 0) return;
+
+    const dependency = {
+      when: whenValue,
+      reveals: reveals.length ? reveals : undefined,
+      hides: hides.length ? hides : undefined
+    };
+    const existing = controller.dependencies ?? [];
+    const duplicate = existing.some(
+      (entry) =>
+        entry.when === dependency.when &&
+        JSON.stringify(entry.reveals ?? []) === JSON.stringify(dependency.reveals ?? []) &&
+        JSON.stringify(entry.hides ?? []) === JSON.stringify(dependency.hides ?? [])
+    );
+    if (!duplicate) {
+      controller.dependencies = [...existing, dependency];
+    }
+  };
+
   const extraFields: FieldEntry[] = [];
 
   const root = scope ?? page.locator("body");
@@ -220,27 +384,104 @@ async function expandWithChoiceVariants(
   const selectCount = await selects.count();
   for (let i = 0; i < selectCount; i += 1) {
     const select = selects.nth(i);
+    const { candidates: selectCandidates } = await discoverFieldCandidates(page, root);
+    const matchingSelect = selectCandidates.find(
+      (candidate) =>
+        candidate.type === "select" &&
+        candidate.selectors.some((selector) => selector.kind === "css" && selector.value?.startsWith("#"))
+    );
+    const controllerKey =
+      matchingSelect?.selectorKey ??
+      fieldFingerprint("select", [{ kind: "css", value: `select:nth-of-type(${i + 1})` }], matchingSelect?.label);
+    const originalValue = await select.inputValue().catch(() => "");
     const options = select.locator("option");
     const optionCount = await options.count();
     for (let j = 0; j < optionCount; j += 1) {
       const option = options.nth(j);
       const value = (await option.getAttribute("value")) ?? (await option.innerText());
       if (!value) continue;
+      const before = await visibleKeys();
       await select.selectOption(value).catch(() => null);
+      await page.waitForLoadState("networkidle", { timeout: timeoutMs }).catch(() => null);
       await page.waitForTimeout(150);
-      const { fields } = await mapPage(page, pageId, usedFieldIds, knownFieldKeys, false, root);
+      const { fields } = await mapPage(
+        page,
+        pageId,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        false,
+        "variant",
+        runId,
+        root
+      );
       extraFields.push(...fields);
+      const after = await visibleKeys();
+      attachDependency(controllerKey, value, before, after);
+    }
+    if (originalValue) {
+      await select.selectOption(originalValue).catch(() => null);
+      await page.waitForTimeout(100);
     }
   }
 
   const radios = root.locator("input[type='radio']");
   const radioCount = await radios.count();
+  const groups = new Map<string, { radios: ReturnType<typeof radios.nth>[]; originalValue: string | null }>();
   for (let i = 0; i < radioCount; i += 1) {
     const radio = radios.nth(i);
-    await radio.check().catch(() => null);
-    await page.waitForTimeout(150);
-    const { fields } = await mapPage(page, pageId, usedFieldIds, knownFieldKeys, false, root);
-    extraFields.push(...fields);
+    if (!(await radio.isVisible().catch(() => false))) continue;
+    const name = (await radio.getAttribute("name")) ?? `__radio_group_${i}`;
+    const value = (await radio.getAttribute("value")) ?? `option-${i + 1}`;
+    const checked = await radio.isChecked().catch(() => false);
+    const existing = groups.get(name);
+    if (!existing) {
+      groups.set(name, { radios: [radio], originalValue: checked ? value : null });
+      continue;
+    }
+    existing.radios.push(radio);
+    if (checked) {
+      existing.originalValue = value;
+    }
+  }
+
+  for (const [groupName, group] of groups) {
+    const controllerKey = fieldFingerprint(
+      "radio",
+      [{ kind: "css", value: `input[type='radio'][name="${groupName}"]` }],
+      groupName
+    );
+    for (const radio of group.radios) {
+      const before = await visibleKeys();
+      await radio.check().catch(() => null);
+      await page.waitForLoadState("networkidle", { timeout: timeoutMs }).catch(() => null);
+      await page.waitForTimeout(150);
+      const { fields } = await mapPage(
+        page,
+        pageId,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        false,
+        "variant",
+        runId,
+        root
+      );
+      extraFields.push(...fields);
+      const radioValue = (await radio.getAttribute("value")) ?? groupName;
+      const after = await visibleKeys();
+      attachDependency(controllerKey, radioValue, before, after);
+    }
+
+    if (group.originalValue !== null) {
+      const originalRadio = root.locator(
+        `input[type='radio'][name=\"${groupName}\"][value=\"${group.originalValue}\"]`
+      ).first();
+      await originalRadio.check().catch(() => null);
+      await page.waitForTimeout(100);
+    }
   }
 
   return extraFields;
@@ -253,7 +494,12 @@ async function mapTabs(
   usedPageIds: Set<string>,
   usedFieldIds: Set<string>,
   knownFieldKeys: Set<string>,
-  navPath: QueueItem["navPath"]
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
+  navPath: QueueItem["navPath"],
+  runId: string,
+  recordSnapshot: SnapshotRecorder
 ): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
   const tabLocator = page.locator("[role='tab']");
   const tabCount = await tabLocator.count();
@@ -274,7 +520,7 @@ async function mapTabs(
     if (seen.has(label)) continue;
     seen.add(label);
 
-    await tab.click({ timeout: NAV_TIMEOUT_MS }).catch(() => null);
+    await tab.click({ timeout: timeoutMs }).catch(() => null);
     await page.waitForTimeout(200);
 
     const tabPageId = uniqueId(`${basePageId}.${slugify(label)}`, usedPageIds);
@@ -284,7 +530,12 @@ async function mapTabs(
       tabPageId,
       usedFieldIds,
       knownFieldKeys,
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
       CRAWL_EXPAND_CHOICES
+      ,
+      "scan",
+      runId
     );
     tabFields.forEach((field) => {
       if (actions && actions.length) {
@@ -294,19 +545,38 @@ async function mapTabs(
     });
 
     if (CRAWL_EXPAND_CHOICES) {
-      const extra = await expandWithChoiceVariants(page, tabPageId, usedFieldIds, knownFieldKeys);
+      const extra = await expandWithChoiceVariants(
+        page,
+        tabPageId,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs
+        ,
+        runId
+      );
       extra.forEach((field) => fields.push(field));
     }
 
+    const breadcrumbs = await readBreadcrumbTrail(page);
     pages.push({
       id: tabPageId,
       title: tabTitle,
       url: page.url(),
+      breadcrumbs,
       navPath: [
         ...navPath,
-        { action: "click", selector: { kind: "role", role: "tab", name: label } }
+        {
+          action: "click",
+          selector: { kind: "role", role: "tab", name: label },
+          label,
+          kind: "tab",
+          urlAfter: page.url()
+        }
       ]
     });
+    await recordSnapshot(page, tabPageId);
   }
 
   return { pages, fields };
@@ -327,7 +597,12 @@ async function runCrawlFlows(
   page: import("playwright").Page,
   usedPageIds: Set<string>,
   usedFieldIds: Set<string>,
-  knownFieldKeys: Set<string>
+  knownFieldKeys: Set<string>,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
+  runId: string,
+  recordSnapshot: SnapshotRecorder
 ): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
@@ -337,10 +612,10 @@ async function runCrawlFlows(
     try {
       if (activePage.isClosed()) {
         activePage = await activePage.context().newPage();
-        activePage.context().setDefaultTimeout(NAV_TIMEOUT_MS);
-        activePage.context().setDefaultNavigationTimeout(NAV_TIMEOUT_MS);
+        activePage.context().setDefaultTimeout(timeoutMs);
+        activePage.context().setDefaultNavigationTimeout(timeoutMs);
       }
-      await activePage.goto(flow.startUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+      await activePage.goto(flow.startUrl, { waitUntil: "networkidle", timeout: timeoutMs });
       if (await isLoginPage(activePage)) {
         await login(activePage);
       }
@@ -359,7 +634,9 @@ async function runCrawlFlows(
           await activePage.waitForLoadState("networkidle").catch(() => null);
           navPath.push({
             action: "click",
-            selector: { kind: "role", role: step.role, name: step.name }
+            selector: { kind: "role", role: step.role, name: step.name },
+            label: step.name,
+            kind: step.role === "menuitem" ? "menu" : step.role
           });
         }
       }
@@ -371,7 +648,12 @@ async function runCrawlFlows(
         pageId,
         usedFieldIds,
         knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
         CRAWL_EXPAND_CHOICES
+        ,
+        "scan",
+        runId
       );
       pageFields.forEach((field) => {
         if (actions && actions.length) {
@@ -381,16 +663,29 @@ async function runCrawlFlows(
       });
 
       if (CRAWL_EXPAND_CHOICES) {
-        const extra = await expandWithChoiceVariants(activePage, pageId, usedFieldIds, knownFieldKeys);
+        const extra = await expandWithChoiceVariants(
+          activePage,
+          pageId,
+          usedFieldIds,
+          knownFieldKeys,
+          defaultsBySelectorKey,
+          fieldsBySelectorKey,
+          timeoutMs
+          ,
+          runId
+        );
         extra.forEach((field) => fields.push(field));
       }
 
+      const breadcrumbs = await readBreadcrumbTrail(activePage);
       pages.push({
         id: pageId,
         title: title || undefined,
         url: activePage.url(),
+        breadcrumbs,
         navPath
       });
+      await recordSnapshot(activePage, pageId);
 
       const modalResults = await mapModalTriggers(
         activePage,
@@ -398,8 +693,13 @@ async function runCrawlFlows(
         usedPageIds,
         usedFieldIds,
         knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs,
         navPath,
-        inferModalTriggerLabels(flow)
+        inferModalTriggerLabels(flow),
+        runId,
+        recordSnapshot
       );
       modalResults.pages.forEach((modalPage) => pages.push(modalPage));
       modalResults.fields.forEach((modalField) => fields.push(modalField));
@@ -447,19 +747,24 @@ async function runMenuTraversal(
   baseUrl: string,
   usedPageIds: Set<string>,
   usedFieldIds: Set<string>,
-  knownFieldKeys: Set<string>
+  knownFieldKeys: Set<string>,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
+  runId: string,
+  recordSnapshot: SnapshotRecorder
 ): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
 
-  await page.goto(baseUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+  await page.goto(baseUrl, { waitUntil: "networkidle", timeout: timeoutMs });
   if (await isLoginPage(page)) {
     await login(page);
   }
 
   const menuLabels = await collectMenuLabels(page);
   for (const item of menuLabels) {
-    await page.goto(baseUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+    await page.goto(baseUrl, { waitUntil: "networkidle", timeout: timeoutMs });
     if (await isLoginPage(page)) {
       await login(page);
     }
@@ -474,7 +779,12 @@ async function runMenuTraversal(
     const pageId = uniqueId(slugify(title), usedPageIds);
     const navPath: QueueItem["navPath"] = [
       { action: "goto", url: baseUrl },
-      { action: "click", selector: { kind: "role", role: item.role, name: item.label } }
+      {
+        action: "click",
+        selector: { kind: "role", role: item.role, name: item.label },
+        label: item.label,
+        kind: item.role
+      }
     ];
 
     const { fields: pageFields, actions } = await mapPage(
@@ -482,7 +792,12 @@ async function runMenuTraversal(
       pageId,
       usedFieldIds,
       knownFieldKeys,
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
       CRAWL_EXPAND_CHOICES
+      ,
+      "scan",
+      runId
     );
     pageFields.forEach((field) => {
       if (actions && actions.length) {
@@ -492,16 +807,29 @@ async function runMenuTraversal(
     });
 
     if (CRAWL_EXPAND_CHOICES) {
-      const extra = await expandWithChoiceVariants(page, pageId, usedFieldIds, knownFieldKeys);
+      const extra = await expandWithChoiceVariants(
+        page,
+        pageId,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs
+        ,
+        runId
+      );
       extra.forEach((field) => fields.push(field));
     }
 
+    const breadcrumbs = await readBreadcrumbTrail(page);
     pages.push({
       id: pageId,
       title: title || undefined,
       url: page.url(),
+      breadcrumbs,
       navPath
     });
+    await recordSnapshot(page, pageId);
 
     const modalResults = await mapModalTriggers(
       page,
@@ -509,7 +837,13 @@ async function runMenuTraversal(
       usedPageIds,
       usedFieldIds,
       knownFieldKeys,
-      navPath
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
+      timeoutMs,
+      navPath,
+      undefined,
+      runId,
+      recordSnapshot
     );
     modalResults.pages.forEach((modalPage) => pages.push(modalPage));
     modalResults.fields.forEach((modalField) => fields.push(modalField));
@@ -524,8 +858,13 @@ async function mapModalTriggers(
   usedPageIds: Set<string>,
   usedFieldIds: Set<string>,
   knownFieldKeys: Set<string>,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
   navPath: QueueItem["navPath"],
-  triggerLabels?: string[]
+  triggerLabels: string[] | undefined,
+  runId: string,
+  recordSnapshot: SnapshotRecorder
 ): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
@@ -578,7 +917,11 @@ async function mapModalTriggers(
       modalPageId,
       usedFieldIds,
       knownFieldKeys,
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
       CRAWL_EXPAND_CHOICES,
+      "scan",
+      runId,
       modalRoot
     );
     modalFields.forEach((field) => {
@@ -594,20 +937,33 @@ async function mapModalTriggers(
         modalPageId,
         usedFieldIds,
         knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs,
+        runId,
         modalRoot
       );
       extra.forEach((field) => fields.push(field));
     }
 
+    const breadcrumbs = await readBreadcrumbTrail(page, modalRoot);
     pages.push({
       id: modalPageId,
       title: modalTitle || undefined,
       url: page.url(),
+      breadcrumbs,
       navPath: [
         ...navPath,
-        { action: "click", selector: { kind: "role", role: "button", name: label } }
+        {
+          action: "click",
+          selector: { kind: "role", role: "button", name: label },
+          label,
+          kind: "button",
+          urlAfter: page.url()
+        }
       ]
     });
+    await recordSnapshot(page, modalPageId);
 
     const closeButton = modalRoot.getByRole("button", { name: MODAL_CLOSE_RE }).first();
     if (await closeButton.count()) {
@@ -641,23 +997,38 @@ function normalizeUrl(url: string): string {
   return parsed.toString();
 }
 
-async function run(): Promise<void> {
+async function runCrawler(opts: MapperCliOptions): Promise<void> {
   requireCreds();
-  await mkdir("tools/recordings", { recursive: true });
+  const runId = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);
+  const snapshotRoot = path.join("tools", "recordings", `crawler-${runId}`, "nodes");
+  await mkdir(snapshotRoot, { recursive: true });
   const browser = await openBrowser();
   const page = await newPage(browser);
+  const crawlerUrl = opts.url || PRINTER_URL;
+  const timeoutMs = opts.timeoutMs || NAV_TIMEOUT_MS;
+  const crawlMaxPages = typeof opts.maxClicks === "number" ? opts.maxClicks : CRAWL_MAX_PAGES;
 
   const visited = new Set<string>();
   const usedFieldIds = new Set<string>();
   const knownFieldKeys = new Set<string>();
+  const defaultsBySelectorKey = new Map<string, FieldEntry["defaultValue"]>();
+  const fieldsBySelectorKey = new Map<string, FieldEntry>();
   const usedPageIds = new Set<string>();
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
+  const snapshotsByPageId = new Map<string, string>();
 
-  const queue: QueueItem[] = [{ url: PRINTER_URL, navPath: [{ action: "goto", url: PRINTER_URL }] }];
+  const recordSnapshot: SnapshotRecorder = async (activePage, pageId) => {
+    if (snapshotsByPageId.has(pageId)) return;
+    const shotPath = path.join(snapshotRoot, `${slugify(pageId)}.png`);
+    await activePage.screenshot({ path: shotPath, fullPage: true }).catch(() => null);
+    snapshotsByPageId.set(pageId, shotPath);
+  };
+
+  const queue: QueueItem[] = [{ url: crawlerUrl, navPath: [{ action: "goto", url: crawlerUrl }] }];
   for (const seed of CRAWL_SEED_PATHS) {
     try {
-      const seedUrl = new URL(seed, PRINTER_URL).toString();
+      const seedUrl = new URL(seed, crawlerUrl).toString();
       queue.push({
         url: seedUrl,
         navPath: [{ action: "goto", url: seedUrl }]
@@ -668,8 +1039,8 @@ async function run(): Promise<void> {
   }
 
   while (queue.length > 0) {
-    if (pages.length >= CRAWL_MAX_PAGES) {
-      console.warn(`Reached CRAWL_MAX_PAGES=${CRAWL_MAX_PAGES}. Stopping crawl.`);
+    if (pages.length >= crawlMaxPages) {
+      console.warn(`Reached crawl cap=${crawlMaxPages}. Stopping crawl.`);
       break;
     }
     const item = queue.shift();
@@ -678,7 +1049,7 @@ async function run(): Promise<void> {
     if (visited.has(normalized)) continue;
 
     try {
-      await page.goto(item.url, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+      await page.goto(item.url, { waitUntil: "networkidle", timeout: timeoutMs });
 
       if (await isLoginPage(page)) {
         await login(page);
@@ -695,7 +1066,11 @@ async function run(): Promise<void> {
         pageId,
         usedFieldIds,
         knownFieldKeys,
-        CRAWL_EXPAND_CHOICES
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        CRAWL_EXPAND_CHOICES,
+        "scan",
+        runId
       );
       pageFields.forEach((field) => {
         if (actions && actions.length) {
@@ -705,16 +1080,28 @@ async function run(): Promise<void> {
       });
 
       if (CRAWL_EXPAND_CHOICES) {
-        const extra = await expandWithChoiceVariants(page, pageId, usedFieldIds, knownFieldKeys);
+        const extra = await expandWithChoiceVariants(
+          page,
+          pageId,
+          usedFieldIds,
+          knownFieldKeys,
+          defaultsBySelectorKey,
+          fieldsBySelectorKey,
+          timeoutMs,
+          runId
+        );
         extra.forEach((field) => fields.push(field));
       }
 
+      const breadcrumbs = await readBreadcrumbTrail(page);
       pages.push({
         id: pageId,
         title,
         url: page.url(),
+        breadcrumbs,
         navPath: item.navPath
       });
+      await recordSnapshot(page, pageId);
 
       const tabResults = await mapTabs(
         page,
@@ -723,7 +1110,12 @@ async function run(): Promise<void> {
         usedPageIds,
         usedFieldIds,
         knownFieldKeys,
-        item.navPath
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs,
+        item.navPath,
+        runId,
+        recordSnapshot
       );
       tabResults.pages.forEach((tabPage) => pages.push(tabPage));
       tabResults.fields.forEach((tabField) => fields.push(tabField));
@@ -734,7 +1126,13 @@ async function run(): Promise<void> {
         usedPageIds,
         usedFieldIds,
         knownFieldKeys,
-        item.navPath
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs,
+        item.navPath,
+        undefined,
+        runId,
+        recordSnapshot
       );
       modalResults.pages.forEach((modalPage) => pages.push(modalPage));
       modalResults.fields.forEach((modalField) => fields.push(modalField));
@@ -745,7 +1143,12 @@ async function run(): Promise<void> {
         if (link.text) {
           navPath.push({
             action: "click",
-            selector: { kind: "role", role: "link", name: link.text }
+            selector: { kind: "role", role: "link", name: link.text },
+            label: link.text,
+            kind: "link",
+            urlBefore: page.url(),
+            urlAfter: link.href,
+            timestamp: new Date().toISOString()
           });
         } else {
           navPath.push({ action: "goto", url: link.href });
@@ -763,11 +1166,33 @@ async function run(): Promise<void> {
     }
   }
 
+  if (CRAWL_MENU_TRAVERSE) {
+    const menuResults = await runMenuTraversal(
+      page,
+      crawlerUrl,
+      usedPageIds,
+      usedFieldIds,
+      knownFieldKeys,
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
+      timeoutMs,
+      runId,
+      recordSnapshot
+    );
+    menuResults.pages.forEach((menuPage) => pages.push(menuPage));
+    menuResults.fields.forEach((menuField) => fields.push(menuField));
+  }
+
   const flowResults = await runCrawlFlows(
     page,
     usedPageIds,
     usedFieldIds,
-    knownFieldKeys
+    knownFieldKeys,
+    defaultsBySelectorKey,
+    fieldsBySelectorKey,
+    timeoutMs,
+    runId,
+    recordSnapshot
   );
   flowResults.pages.forEach((flowPage) => pages.push(flowPage));
   flowResults.fields.forEach((flowField) => fields.push(flowField));
@@ -775,21 +1200,45 @@ async function run(): Promise<void> {
   const map: UiMap = {
     meta: {
       generatedAt: new Date().toISOString(),
-      printerUrl: PRINTER_URL,
+      printerUrl: crawlerUrl,
       schemaVersion: "1.1"
     },
     pages,
     fields
   };
 
+  attachCanonicalGraph(map, {
+    runId,
+    capturedAt: new Date().toISOString(),
+    mapperVersion: process.env.npm_package_version,
+    snapshotsByPageId
+  });
+
+  const outputDir = path.dirname(OUTPUT_PATH);
+  await mkdir(outputDir, { recursive: true });
   await writeMap(OUTPUT_PATH, map);
+  validateMapForYaml(map, (warning) => console.warn(`[yaml-validation] ${warning}`));
+  const { navigationYaml, layoutYaml } = buildYamlViews(map);
+  const navigationYamlPath = path.join(outputDir, "ui-tree.navigation.yaml");
+  const layoutYamlPath = path.join(outputDir, "ui-tree.layout.yaml");
+  await writeFile(navigationYamlPath, navigationYaml, "utf8");
+  await writeFile(layoutYamlPath, layoutYaml, "utf8");
   await browser.close();
   console.log(`Wrote ${OUTPUT_PATH} (${pages.length} pages, ${fields.length} fields)`);
+  console.log(`Wrote ${navigationYamlPath}`);
+  console.log(`Wrote ${layoutYamlPath}`);
 }
 
-run().catch((err) => {
+try {
+  const cliOptions = parseMapperCliArgs(process.argv.slice(2));
+  const runner = cliOptions.manual ? runManualMapper(cliOptions) : runCrawler(cliOptions);
+  runner.catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+} catch (err) {
   console.error(err);
   process.exit(1);
-});
+}
 
 

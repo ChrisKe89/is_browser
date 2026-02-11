@@ -1,0 +1,12 @@
+-
+  ref: node-4f0457ad8eab
+  title: Home
+  breadcrumb:
+    - "https://192.168.0.107/home/index.html#hashHome"
+  container:
+    type: page
+    title: Home
+  groups:
+    []
+  actions:
+    []
