@@ -1,0 +1,18 @@
+{
+  "name": "@is-browser/is_application",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "apply:dev": "tsx src/server/operator.ts",
+    "apply:settings": "tsx src/runner/apply.ts",
+    "discovery:scan": "tsx src/discovery/cli.ts",
+    "read:settings": "tsx src/runner/read.ts",
+    "test": "tsx --test test/**/*.test.js"
+  },
+  "dependencies": {
+    "@is-browser/browser": "file:../../packages/browser",
+    "@is-browser/contract": "file:../../packages/contract",
+    "@is-browser/env": "file:../../packages/env",
+    "@is-browser/sqlite-store": "file:../../packages/sqlite-store"
+  }
+}

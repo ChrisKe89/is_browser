@@ -6,7 +6,9 @@ This file merges repository AGENTS directives and current TODO items into one de
 
 - Located AGENTS files:
   - `AGENTS.md` (repo root)
-- No additional `AGENTS.md` files were found under `projects/`, `apps/`, or `packages/`.
+  - `apps/is_mapper/AGENTS.md`
+  - `apps/is_form/AGENTS.md`
+  - `apps/is_application/AGENTS.md`
 
 ## Aggregated Queue
 
@@ -15,11 +17,11 @@ This file merges repository AGENTS directives and current TODO items into one de
 - [x] `TSK-001` Create explicit three-product folder structure.
 - [x] `TSK-002` Extract crawler into standalone `crawler/` product.
 - [x] `TSK-003` Define shared contract package for UI Map, Profile, and Apply Run.
-- [x] `TSK-004` Refactor settings form + DB into standalone `settings-authoring/` product.
-- [x] `TSK-005` Refactor apply UX into standalone `apply-runner/` product with schema compatibility checks.
+- [x] `TSK-004` Refactor settings form + DB into standalone `is_form/` product.
+- [x] `TSK-005` Refactor apply UX into standalone `is_application/` product with schema compatibility checks.
 - [x] `TSK-006` Enforce DB-only profile values at apply time.
 - [x] `TSK-007` Replace ambiguous artifact paths with `tools/recordings`, `tools/scripts`, and `tools/samples`.
-- [x] `TSK-008` Add standalone smoke tests for crawler, settings-authoring, and apply-runner.
+- [x] `TSK-008` Add standalone smoke tests for crawler, is_form, and is_application.
 - [x] `TSK-009` Publish architecture + data model docs for new contributors.
 
 ### Priority 2 - Quality Gates (Completed 2026-02-11)

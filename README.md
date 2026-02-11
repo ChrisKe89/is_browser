@@ -7,7 +7,7 @@ This tool crawls a printer WebUI and builds a JSON map of pages and settings fie
 1. Install dependencies:
 
 ```bash
-npm install
+make install
 ```
 
 2. Create `.env`:
@@ -20,13 +20,13 @@ cp .env.example .env
 4. Run DB migrations:
 
 ```bash
-npm run db:migrate
+make db-migrate
 ```
 
 5. Start both products:
 
 ```bash
-npm run server
+make dev-all
 ```
 
 ## Installation
@@ -36,44 +36,38 @@ npm run server
 - First-time setup:
 
 ```bash
-npm install
+make install
 cp .env.example .env
 ```
 
 ## Usage
 
-- Both products (operator + form): `npm run server`
-- Operator product only: `npm run server:operator`
-- Form product only: `npm run server:form`
-- Capture auth state (optional): `npm run auth:capture`
-- Crawl printer UI and generate map: `npm run map:ui`
-- Apply DB-backed profile settings: `npm run apply:settings`
-- Run tests: `npm test`
+- Both products (operator + form): run `make dev-all`
+- Operator product only: `make apply-dev`
+- Form product only: `make form-dev`
+- Capture auth state (optional): `npm -w apps/is_mapper run auth:capture`
+- Crawl printer UI and generate map: `make is-mapper-map`
+- Apply DB-backed profile settings: `make apply-settings`
+- Run tests: `make test`
 - Typecheck/lint: `npm run lint`
 
 ## Architecture
 
-- `crawler/`: standalone UI crawler that emits versioned UI maps.
-- `settings-authoring/`: standalone form + DB profile authoring product.
-- `apply-runner/`: standalone operator UX + apply runner product.
-- `packages/contracts/`: shared versioned schemas and validation.
-- `packages/storage/`: shared SQLite services for map import, profiles, and run audit.
-- `packages/platform/`: shared runtime helpers (`env`, HTTP utilities, Playwright helpers).
+- `apps/is_mapper/`: standalone UI crawler that emits versioned UI maps.
+- `apps/is_form/`: standalone form + DB profile authoring product.
+- `apps/is_application/`: standalone operator UX + apply runner product.
+- `packages/contract/`: shared versioned schemas and validation.
+- `packages/sqlite-store/`: shared SQLite services for map import, profiles, and run audit.
+- `packages/env/` + `packages/browser/`: shared runtime helpers (`env`, HTTP utilities, Playwright helpers).
 
 Detailed architecture and contract docs: `docs/Architecture.md`.
 
 ## CI/CD Workflows
 
 - Quality gate workflow: `.github/workflows/ci.yml`
-- Operator product deployment workflow: `.github/workflows/deploy-operator.yml`
-- Form product deployment workflow: `.github/workflows/deploy-form.yml`
-- Operator deployment webhook secret (optional): `OPERATOR_DEPLOY_WEBHOOK_URL`
-- Form deployment webhook secret (optional): `FORM_DEPLOY_WEBHOOK_URL`
 
 Deployment behavior:
-- Each product workflow runs independently on `main` pushes relevant to its product paths.
-- Each workflow can be run manually through `workflow_dispatch`.
-- If deployment webhook secrets are not configured, workflows still build and publish product bundles.
+- CI runs lint, tests, and TypeScript build on pushes and pull requests.
 
 ## Configuration
 
@@ -99,26 +93,26 @@ Core environment variables:
 Start both products locally:
 
 ```bash
-npm run server
+make dev-all
 ```
 
 Default URLs:
 - Operator UI: http://localhost:5050/
 - Settings form: http://localhost:5051/
-- You can also start each product independently with `npm run server:operator` and `npm run server:form`.
+- You can also start each product independently with `make apply-dev` and `make form-dev`.
 - The form is DB-backed and saves profile values under `Account` + `Variation`.
 - Operator UI includes subnet-range discovery, manual IP add/remove, account/variation resolution, and run-state console.
 
 Settings schema and remote panel profiles:
-- `config/settings-schema.json`
-- `config/remote-panel-profiles.json`
+- `tools/samples/settings-schema.json`
+- `apps/is_application/config/remote-panel-profiles.json`
 
 ## Capture Auth State (Cookies)
 
 If direct navigation fails due to auth, capture a browser storage state:
 
 ```bash
-npm run auth:capture
+npm -w apps/is_mapper run auth:capture
 ```
 
 Log in manually, then press Enter in the terminal to save `state/auth-state.json`.
@@ -127,7 +121,7 @@ By default, crawler/runner uses `PRINTER_USER` + `PRINTER_PASS` login logic. Set
 ## Generate UI Map
 
 ```bash
-npm run map:ui
+make is-mapper-map
 ```
 
 Outputs `state/printer-ui-map.json` and saves screenshots on errors in `tools/recordings/`.
@@ -137,19 +131,19 @@ Outputs `state/printer-ui-map.json` and saves screenshots on errors in `tools/re
 Run schema migrations:
 
 ```bash
-npm run db:migrate
+make db-migrate
 ```
 
 Import the captured UI map into relational tables:
 
 ```bash
-npm run db:import-map
+make db-import-map
 ```
 
 Import a specific click-map + field CSV from a dated capture folder:
 
 ```bash
-MAP_PATH=state/20260210/printer-ui-map.clicks.json MAP_FIELD_CSV_PATH=state/20260210/printer-ui-map.clicks.fields.csv npm run db:import-map
+MAP_PATH=state/20260210/printer-ui-map.clicks.json MAP_FIELD_CSV_PATH=state/20260210/printer-ui-map.clicks.fields.csv make db-import-map
 ```
 
 Defaults:
@@ -198,18 +192,18 @@ Schema bootstrap behavior:
 - If a matching fields CSV is found, select/radio options are merged from that CSV.
 
 ## Crawler Flows (Deep Settings)
-Some settings only appear after clicking through the UI. Define these paths in `config/crawler-flows.json`.
+Some settings only appear after clicking through the UI. Define these paths in `apps/is_mapper/config/crawler-flows.json`.
 
 ## Apply Settings
 
 ```bash
-npm run apply:settings
+make apply-settings
 ```
 
 `apply:settings` now loads settings only from DB profiles. Provide the profile identity in env vars:
 
 ```bash
-APPLY_ACCOUNT_NUMBER=10001 APPLY_VARIATION=base MAP_PATH=state/printer-ui-map.json npm run apply:settings
+APPLY_ACCOUNT_NUMBER=10001 APPLY_VARIATION=base MAP_PATH=state/printer-ui-map.json make apply-settings
 ```
 
 Optional apply env vars:
@@ -232,19 +226,19 @@ Runner behavior highlights:
 Start operator UI + form:
 
 ```bash
-npm run server
+make dev-all
 ```
 
 Apply one account/variation from DB:
 
 ```bash
-APPLY_ACCOUNT_NUMBER=10001 APPLY_VARIATION=base npm run apply:settings
+APPLY_ACCOUNT_NUMBER=10001 APPLY_VARIATION=base make apply-settings
 ```
 
 Import a dated click-map + field CSV:
 
 ```bash
-MAP_PATH=state/20260210/printer-ui-map.clicks.json MAP_FIELD_CSV_PATH=state/20260210/printer-ui-map.clicks.fields.csv npm run db:import-map
+MAP_PATH=state/20260210/printer-ui-map.clicks.json MAP_FIELD_CSV_PATH=state/20260210/printer-ui-map.clicks.fields.csv make db-import-map
 ```
 
 ## Device Discovery
@@ -267,7 +261,7 @@ Some devices report a combined product code + serial string. The system will spl
 
 ## Troubleshooting
 
-- `POST /api/start` returns `410`: expected behavior; use `POST /api/start/profile` or `npm run apply:settings` with DB profile identity.
+- `POST /api/start` returns `410`: expected behavior; use `POST /api/start/profile` or `make apply-settings` with DB profile identity.
 - `GET /api/profiles/*` returns `404` on operator product: expected behavior; profile APIs are served by the form product.
 - `POST /api/discover` or `POST /api/start/profile` returns `404` on form product: expected behavior; apply/discovery APIs are served by the operator product.
 - Profile schema is empty: call `GET /api/profiles/schema`; the server bootstraps map data from `MAP_PATH` or latest click-map fallback.
@@ -297,4 +291,5 @@ Coverage is not enforced yet (target ≥90%). This is documented in `CONTRIBUTIN
 ```bash
 npm run mcp:server
 ```
+
 

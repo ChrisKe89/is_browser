@@ -1,0 +1,16 @@
+{
+  "name": "@is-browser/is_form",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "form:dev": "tsx src/server/form.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:import-map": "tsx src/db/importMap.ts",
+    "test": "tsx --test test/*.test.js"
+  },
+  "dependencies": {
+    "@is-browser/contract": "file:../../packages/contract",
+    "@is-browser/env": "file:../../packages/env",
+    "@is-browser/sqlite-store": "file:../../packages/sqlite-store"
+  }
+}

@@ -24,3 +24,14 @@ This file gives lightweight guidance for working in this repository. Keep it min
 ## Communication
 - Do not be vague about changes; list key files modified.
 - Do not omit limitations or assumptions.
+
+## Makefile-first workflow (required)
+- Prefer `make <target>` over direct `npm` commands when a Make target exists.
+- Only use `npm -w <workspace> run <script>` if there is no Make target for the action.
+- Keep Make targets as the canonical developer interface for:
+  - install/bootstrap
+  - build
+  - test
+  - dev/start for each app
+  - clean/reset
+- When adding a new script, add a Make target for it (or update an existing one).

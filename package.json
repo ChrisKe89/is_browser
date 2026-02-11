@@ -1,37 +1,26 @@
 {
-  "name": "printer-ui-mapper",
-  "version": "0.2.0",
+  "name": "is-browser",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "map:ui": "tsx crawler/src/index.ts",
-    "map:manual": "tsx tools/scripts/manual-variation-capture.ts",
-    "map:manual:clicks": "tsx tools/scripts/manual-click-capture.ts",
-    "map:graph:clicks": "tsx tools/scripts/build-click-map-graph.ts",
-    "apply:settings": "tsx apply-runner/src/runner/apply.ts",
-    "read:settings": "tsx apply-runner/src/runner/read.ts",
-    "auth:capture": "tsx crawler/src/capture.ts",
-    "server": "tsx apply-runner/src/server/index.ts",
-    "server:operator": "tsx apply-runner/src/server/operator.ts",
-    "server:form": "tsx settings-authoring/src/server/form.ts",
-    "discover:devices": "tsx apply-runner/src/discovery/cli.ts",
-    "db:migrate": "tsx settings-authoring/src/db/migrate.ts",
-    "db:import-map": "tsx settings-authoring/src/db/importMap.ts",
-    "mcp:server": "npx @playwright/mcp@latest",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "is_mapper:map": "npm -w apps/is_mapper run is_mapper:map",
+    "form:dev": "npm -w apps/is_form run form:dev",
+    "apply:dev": "npm -w apps/is_application run apply:dev",
+    "dev:all": "concurrently \"npm -w apps/is_form run form:dev\" \"npm -w apps/is_application run apply:dev\"",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "tsc -p tsconfig.base.json --noEmit",
     "lint": "npm run typecheck",
-    "test": "tsx --test",
-    "build": "tsc -p tsconfig.json"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.2",
-    "dotenv": "^16.4.5",
-    "playwright": "^1.50.0",
-    "zod": "^3.23.8"
+    "build": "tsc -p tsconfig.base.json"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.2",
+    "concurrently": "^9.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.9.3"
   }

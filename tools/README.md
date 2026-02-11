@@ -5,6 +5,6 @@
 - `tools/samples`: Sample/manual assets that support troubleshooting and local experimentation.
 
 This folder contains operational tooling only. Product runtime code lives under:
-- `crawler/`
-- `settings-authoring/`
-- `apply-runner/`
+- `is_mapper/`
+- `is_form/`
+- `is_application/`

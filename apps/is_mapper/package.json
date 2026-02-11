@@ -1,0 +1,16 @@
+{
+  "name": "@is-browser/is_mapper",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "is_mapper:map": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "auth:capture": "tsx src/auth/capture.ts",
+    "test": "tsx --test test/*.test.js"
+  },
+  "dependencies": {
+    "@is-browser/browser": "file:../../packages/browser",
+    "@is-browser/contract": "file:../../packages/contract",
+    "@is-browser/env": "file:../../packages/env"
+  }
+}

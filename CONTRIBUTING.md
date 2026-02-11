@@ -3,26 +3,25 @@
 Thanks for helping improve this project. Keep changes focused and avoid introducing new tooling unless necessary.
 
 ## Setup
-1. Install dependencies: `npm install`
+1. Install dependencies: `make install`
 2. Copy env file: `cp .env.example .env`
 
 ## Development Scripts
-- `npm run map:ui` - Crawl the printer WebUI and generate `state/printer-ui-map.json`.
-- `npm run apply:settings` - Apply a DB-backed profile (`APPLY_ACCOUNT_NUMBER` + `APPLY_VARIATION`) to a device.
-- `npm run server` - Start both local products (operator + form).
-- `npm run server:operator` - Start the operator product only.
-- `npm run server:form` - Start the form product only.
+- `make is-mapper-map` - Crawl the printer WebUI and generate `state/printer-ui-map.json`.
+- `make apply-settings` - Apply a DB-backed profile (`APPLY_ACCOUNT_NUMBER` + `APPLY_VARIATION`) to a device.
+- `make form-dev` - Start the is_form product.
+- `make apply-dev` - Start the is_application product.
 - `npm run typecheck` - TypeScript typecheck (no emit).
-- `npm test` - Run unit tests.
+- `make test` - Run unit tests.
 - `npm run lint` - Alias to typecheck (no formatting changes).
-- `npm run build` - Compile TypeScript output.
+- `make build` - Compile TypeScript output.
 
 ## Product Layout
-- `crawler/` - printer UI crawl + map generation.
-- `settings-authoring/` - form + DB profile authoring.
-- `apply-runner/` - operator UX + apply execution.
-- `packages/contracts/` - shared schema contracts.
-- `packages/storage/` and `packages/platform/` - shared persistence/runtime helpers.
+- `apps/is_mapper/` - printer UI crawl + map generation.
+- `apps/is_form/` - form + DB profile authoring.
+- `apps/is_application/` - operator UX + apply execution.
+- `packages/contract/` - shared schema contracts.
+- `packages/sqlite-store/`, `packages/env/`, and `packages/browser/` - shared persistence/runtime helpers.
 
 ## Code Style
 - Indentation is 2 spaces.
@@ -35,16 +34,10 @@ Document any changes that impact testability and add tests for new modules where
 
 ## CI & Quality Gates
 - CI quality workflow lives at `.github/workflows/ci.yml`.
-- Product deployment workflows live at:
-  - `.github/workflows/deploy-operator.yml`
-  - `.github/workflows/deploy-form.yml`
-- Optional deployment webhooks:
-  - `OPERATOR_DEPLOY_WEBHOOK_URL`
-  - `FORM_DEPLOY_WEBHOOK_URL`
 - Required local checks before PR:
   - `npm run lint`
-  - `npm test`
-  - `npm run build`
+  - `make test`
+  - `make build`
 - Keep docs in sync with behavior changes:
   - Update `README.md` and `CHANGELOG.md` in the same change when user-facing behavior or workflows change.
 

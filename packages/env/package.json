@@ -1,0 +1,14 @@
+{
+  "name": "@is-browser/env",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node -e \"console.log('No tests in @is-browser/env')\""
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
