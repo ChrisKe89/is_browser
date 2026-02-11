@@ -116,6 +116,15 @@ test("shouldContributeToBreadcrumb keeps meaningful nav labels", () => {
     }),
     true
   );
+  assert.equal(
+    shouldContributeToBreadcrumb({
+      action: "click",
+      kind: "modal_open",
+      label: "Device Details",
+      selector: { kind: "role", role: "button", name: "Device Details" }
+    }),
+    true
+  );
 });
 
 test("shouldContributeToBreadcrumb rejects option-like blobs and unknown steps", () => {

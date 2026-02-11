@@ -17,7 +17,12 @@ test("click log: screenshot path is optional", () => {
         selectors: [{ kind: "css", value: "button.advanced" }],
         urlBefore: "http://127.0.0.1",
         urlAfter: "http://127.0.0.1",
+        nodeIdBefore: "permissions",
+        nodeIdAfter: "advanced-modal",
+        transitionType: "open_modal",
         newFieldIds: ["page.advanced"],
+        newlyVisibleFieldIds: ["page.advanced"],
+        newlyDiscoveredFieldIds: ["page.advanced"],
         screenshotPath: "permissions/20260211-120000/screenshots/click-0001.png"
       },
       {
@@ -27,6 +32,9 @@ test("click log: screenshot path is optional", () => {
         selectors: [{ kind: "css", value: "button.apply" }],
         urlBefore: "http://127.0.0.1",
         urlAfter: "http://127.0.0.1",
+        nodeIdBefore: "advanced-modal",
+        nodeIdAfter: "permissions",
+        transitionType: "close_modal",
         newFieldIds: []
       }
     ]
@@ -34,5 +42,8 @@ test("click log: screenshot path is optional", () => {
 
   const serialized = JSON.parse(JSON.stringify(log));
   assert.equal(serialized.clicks[0].screenshotPath.includes("click-0001.png"), true);
+  assert.equal(serialized.clicks[0].nodeIdBefore, "permissions");
+  assert.equal(serialized.clicks[0].transitionType, "open_modal");
   assert.equal(Object.hasOwn(serialized.clicks[1], "screenshotPath"), false);
+  assert.equal(Object.hasOwn(serialized.clicks[1], "newlyVisibleFieldIds"), false);
 });

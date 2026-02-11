@@ -21,6 +21,10 @@ function sampleMap() {
         id: "failed-log-modal",
         title: "Failed Access Log",
         url: "http://127.0.0.1/#/permissions",
+        actions: [
+          { selector: { kind: "role", role: "button", name: "Save" }, label: "Save" },
+          { selector: { kind: "role", role: "button", name: "Cancel" }, label: "Cancel" }
+        ],
         navPath: [
           { action: "goto", url: "http://127.0.0.1/#/permissions" },
           {
@@ -72,11 +76,23 @@ test("canonical graph: emits nodes and edges with grouped content", () => {
     clickLog: {
       clicks: [
         {
+          target: "Security Alert",
+          kind: "system_alert",
+          selectors: [{ kind: "css", value: "#securityAlertConfirm" }],
+          urlBefore: "http://127.0.0.1/#/permissions",
+          urlAfter: "http://127.0.0.1/#/permissions",
+          transitionType: "dismiss_alert",
+          newFieldIds: []
+        },
+        {
           target: "Failed Access Log",
           kind: "button",
           selectors: [{ kind: "role", role: "button", name: "Failed Access Log" }],
           urlBefore: "http://127.0.0.1/#/permissions",
           urlAfter: "http://127.0.0.1/#/permissions",
+          nodeIdBefore: "permissions",
+          nodeIdAfter: "failed-log-modal",
+          transitionType: "open_modal",
           newFieldIds: ["failed.failedAttempts"]
         }
       ]
@@ -87,7 +103,11 @@ test("canonical graph: emits nodes and edges with grouped content", () => {
   assert.ok(Array.isArray(map.edges));
   assert.equal(map.nodes.length, 2);
   assert.equal(map.nodes[0].groups.length > 0, true);
-  assert.equal(map.edges.length >= 1, true);
+  assert.equal(map.edges.length, 1);
+  assert.equal(map.edges[0].edgeType, "open_modal");
+  const modalNode = map.nodes.find((node) => node.title === "Failed Access Log");
+  assert.equal(modalNode?.actions.some((action) => action.kind === "save"), true);
+  assert.equal(modalNode?.actions.some((action) => action.kind === "cancel"), true);
   assert.equal(map.meta.runId, "20260212-000000");
 });
 

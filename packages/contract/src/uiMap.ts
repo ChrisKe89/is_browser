@@ -15,11 +15,33 @@ export const NavStepSchema = z.object({
   selector: SelectorSchema.optional(),
   url: z.string().optional(),
   label: z.string().optional(),
-  kind: z.enum(["tab", "link", "button", "menu", "row", "icon", "unknown"]).optional(),
+  kind: z
+    .enum([
+      "tab",
+      "link",
+      "button",
+      "menu",
+      "row",
+      "icon",
+      "radio_select",
+      "dropdown_trigger",
+      "combobox",
+      "modal_open",
+      "modal_close",
+      "dismiss_alert",
+      "system_alert",
+      "unknown"
+    ])
+    .optional(),
   urlBefore: z.string().optional(),
   urlAfter: z.string().optional(),
   frameUrl: z.string().optional(),
   timestamp: z.string().optional()
+});
+
+const DiscoverableActionSchema = z.object({
+  selector: SelectorSchema,
+  label: z.string().optional()
 });
 
 export const PageSchema = z.object({
@@ -27,7 +49,8 @@ export const PageSchema = z.object({
   title: z.string().optional(),
   url: z.string(),
   breadcrumbs: z.array(z.string()).optional(),
-  navPath: z.array(NavStepSchema).optional()
+  navPath: z.array(NavStepSchema).optional(),
+  actions: z.array(DiscoverableActionSchema).optional()
 });
 
 export const FieldSchema = z.object({
@@ -101,12 +124,7 @@ export const FieldSchema = z.object({
     })
     .optional(),
   actions: z
-    .array(
-      z.object({
-        selector: SelectorSchema,
-        label: z.string().optional()
-      })
-    )
+    .array(DiscoverableActionSchema)
     .optional()
 });
 
@@ -146,7 +164,7 @@ export const EdgeSchema = z.object({
   fromNodeId: z.string(),
   toNodeId: z.string(),
   trigger: NavStepSchema,
-  edgeType: z.enum(["navigate", "open_modal", "close_modal", "tab_switch", "expand_section"])
+  edgeType: z.enum(["navigate", "open_modal", "close_modal", "tab_switch", "dismiss_alert", "expand_section"])
 });
 
 export const MapSchema = z.object({

@@ -565,6 +565,7 @@ async function mapTabs(
       title: tabTitle,
       url: page.url(),
       breadcrumbs,
+      actions,
       navPath: [
         ...navPath,
         {
@@ -683,6 +684,7 @@ async function runCrawlFlows(
         title: title || undefined,
         url: activePage.url(),
         breadcrumbs,
+        actions,
         navPath
       });
       await recordSnapshot(activePage, pageId);
@@ -827,6 +829,7 @@ async function runMenuTraversal(
       title: title || undefined,
       url: page.url(),
       breadcrumbs,
+      actions,
       navPath
     });
     await recordSnapshot(page, pageId);
@@ -952,6 +955,7 @@ async function mapModalTriggers(
       title: modalTitle || undefined,
       url: page.url(),
       breadcrumbs,
+      actions,
       navPath: [
         ...navPath,
         {
@@ -1099,6 +1103,7 @@ async function runCrawler(opts: MapperCliOptions): Promise<void> {
         title,
         url: page.url(),
         breadcrumbs,
+        actions,
         navPath: item.navPath
       });
       await recordSnapshot(page, pageId);

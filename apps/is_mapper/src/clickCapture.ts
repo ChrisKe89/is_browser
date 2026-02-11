@@ -1,14 +1,31 @@
 import { type Page } from "playwright";
 
+export type CapturedClickKind =
+  | "tab"
+  | "link"
+  | "button"
+  | "menu"
+  | "row"
+  | "icon"
+  | "radio_select"
+  | "dropdown_trigger"
+  | "combobox"
+  | "modal_open"
+  | "modal_close"
+  | "dismiss_alert"
+  | "system_alert"
+  | "unknown";
+
 export type CapturedClick = {
   timestamp: string;
   target: string;
-  kind?: "tab" | "link" | "button" | "menu" | "row" | "icon" | "unknown";
+  kind?: CapturedClickKind;
   selectors: Array<{ kind: "role" | "label" | "css"; role?: string; name?: string; value?: string }>;
   urlBefore: string;
   frameUrl?: string;
   frameName?: string;
   inFrame?: boolean;
+  elementId?: string;
 };
 
 type ClickBinding = (payload: CapturedClick) => void;
@@ -59,7 +76,20 @@ const CAPTURE_SCRIPT = `
 
   const selectorsFor = (element) => {
     const selectors = [];
-    const role = element.getAttribute("role");
+    const inferImplicitRole = () => {
+      const tag = element.tagName.toLowerCase();
+      const type = (element.getAttribute("type") || "").toLowerCase();
+      if (tag === "a") return "link";
+      if (tag === "button") return "button";
+      if (tag === "select") return "combobox";
+      if (tag === "option") return "option";
+      if (tag === "input" && type === "radio") return "radio";
+      if (tag === "input" && type === "checkbox") return "checkbox";
+      if (tag === "input" || tag === "textarea") return "textbox";
+      return "";
+    };
+
+    const role = (element.getAttribute("role") || inferImplicitRole() || "").toLowerCase();
     const name = normalize(
       element.getAttribute("aria-label") ||
       element.innerText ||
@@ -84,11 +114,37 @@ const CAPTURE_SCRIPT = `
   };
 
   const inferKind = (element) => {
+    const text = normalize(
+      element.getAttribute("aria-label") ||
+      element.innerText ||
+      element.textContent ||
+      element.getAttribute("title")
+    ).toLowerCase();
     const role = (element.getAttribute("role") || "").toLowerCase();
     const tag = element.tagName.toLowerCase();
+    const type = (element.getAttribute("type") || "").toLowerCase();
+
+    const alertRoot = element.closest("[id*='securityalert' i], [class*='securityalert' i], [data-testid*='securityalert' i], [role='alertdialog']");
+    const alertProbe = normalize(
+      alertRoot?.getAttribute("id") ||
+      alertRoot?.getAttribute("class") ||
+      alertRoot?.textContent ||
+      ""
+    ).toLowerCase();
+    if (alertRoot && (alertProbe.includes("securityalert") || alertProbe.includes("security") || alertProbe.includes("certificate"))) {
+      return "system_alert";
+    }
+
+    if (role === "radio" || (tag === "input" && type === "radio")) return "radio_select";
+    if (role === "combobox" || tag === "select") return "combobox";
+    if (role === "option") return "dropdown_trigger";
     if (role === "tab") return "tab";
     if (role === "menuitem") return "menu";
     if (role === "link" || tag === "a") return "link";
+    if (text && /^(cancel|close|done|ok)$/i.test(text)) return "modal_close";
+    if (text && /(details|advanced|settings|summary|edit)/i.test(text) && (role === "button" || tag === "button" || role === "link" || tag === "a")) {
+      return "modal_open";
+    }
     if (role === "button" || tag === "button") return "button";
     if (tag === "tr" || role === "row") return "row";
     return "unknown";
@@ -117,7 +173,8 @@ const CAPTURE_SCRIPT = `
       urlBefore: window.location.href,
       frameUrl: window.location.href,
       frameName: window.name || undefined,
-      inFrame: window.self !== window.top
+      inFrame: window.self !== window.top,
+      elementId: interactive.getAttribute("id") || undefined
     });
   }, true);
 })();
@@ -136,6 +193,10 @@ export class ClickCaptureQueue {
 
   push(click: CapturedClick): void {
     this.queue.push(click);
+  }
+
+  unshift(click: CapturedClick): void {
+    this.queue.unshift(click);
   }
 }
 
@@ -171,14 +232,21 @@ export type ClickLogEntry = {
   index: number;
   timestamp: string;
   target: string;
-  kind?: CapturedClick["kind"];
+  kind?: CapturedClickKind;
   selectors: CapturedClick["selectors"];
   urlBefore: string;
   urlAfter: string;
   frameUrl?: string;
   frameName?: string;
   inFrame?: boolean;
+  elementId?: string;
+  transitionType?: "navigate" | "open_modal" | "close_modal" | "tab_switch" | "dismiss_alert" | "expand_section";
+  nodeIdBefore?: string;
+  nodeIdAfter?: string;
   newFieldIds: string[];
+  newlyVisibleFieldIds?: string[];
+  newlyDiscoveredFieldIds?: string[];
+  noLongerVisibleFieldIds?: string[];
   screenshotPath?: string;
 };
 

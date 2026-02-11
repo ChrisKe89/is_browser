@@ -19,6 +19,9 @@ type ClickLogLike = {
     frameUrl?: string;
     timestamp?: string;
     kind?: NavStep["kind"];
+    transitionType?: EdgeEntry["edgeType"];
+    nodeIdBefore?: string;
+    nodeIdAfter?: string;
     newFieldIds: string[];
   }>;
 };
@@ -131,7 +134,7 @@ function isOptionBlobLabel(label: string): boolean {
 export function shouldContributeToBreadcrumb(step: NavStep): boolean {
   if (step.action !== "click") return false;
   if (!step.kind || step.kind === "unknown") return false;
-  if (!["tab", "menu", "link", "button"].includes(step.kind)) return false;
+  if (!["tab", "menu", "link", "modal_open"].includes(step.kind)) return false;
 
   const label = navStepLabel(step);
   if (!label) return false;
@@ -188,6 +191,8 @@ function inferTriggerKind(
   if (selector.role === "link") return "link";
   if (selector.role === "button") return "button";
   if (selector.role === "menuitem") return "menu";
+  if (selector.role === "radio") return "radio_select";
+  if (selector.role === "combobox") return "combobox";
   return "unknown";
 }
 
@@ -195,9 +200,16 @@ function classifyEdgeType(
   fromNode: NodeEntry | undefined,
   toNode: NodeEntry | undefined,
   trigger: NavStep,
+  transitionType: EdgeEntry["edgeType"] | undefined,
   urlBefore?: string,
   urlAfter?: string
 ): EdgeEntry["edgeType"] {
+  if (transitionType === "dismiss_alert") return "dismiss_alert";
+  if (transitionType === "open_modal") return "open_modal";
+  if (transitionType === "close_modal") return "close_modal";
+  if (transitionType === "tab_switch") return "tab_switch";
+  if (transitionType === "navigate") return "navigate";
+  if (transitionType === "expand_section") return "expand_section";
   const fromUrl = normalizeUrl(urlBefore ?? fromNode?.url);
   const toUrl = normalizeUrl(urlAfter ?? toNode?.url);
   if (fromUrl && toUrl && fromUrl !== toUrl) return "navigate";
@@ -228,6 +240,30 @@ function dedupeActions(fields: FieldEntry[]): ActionEntry[] {
   return Array.from(bySelector.values());
 }
 
+function mergePageActions(
+  pageActions: NonNullable<PageEntry["actions"]> | undefined,
+  dedupedFieldActions: ActionEntry[]
+): ActionEntry[] {
+  if (!pageActions || pageActions.length === 0) {
+    return dedupedFieldActions;
+  }
+  const bySelector = new Map<string, ActionEntry>();
+  for (const action of dedupedFieldActions) {
+    bySelector.set(selectorSignature(action.selector), action);
+  }
+  for (const action of pageActions) {
+    const label = normalizeSpace(action.label ?? action.selector.name ?? action.selector.value) || "Action";
+    const key = selectorSignature(action.selector);
+    if (bySelector.has(key)) continue;
+    bySelector.set(key, {
+      label,
+      kind: actionKindFromLabel(label),
+      selector: action.selector
+    });
+  }
+  return Array.from(bySelector.values());
+}
+
 function addEdge(
   edges: EdgeEntry[],
   seen: Set<string>,
@@ -247,6 +283,17 @@ function pageIdForUrl(pages: PageEntry[], url: string | undefined): string | und
     .reverse()
     .find((page) => normalizeUrl(page.url) === normalized);
   return match?.id;
+}
+
+function resolveNodeId(
+  pageToNode: Map<string, string>,
+  nodeById: Map<string, NodeEntry>,
+  ref: string | undefined
+): string | undefined {
+  if (!ref) return undefined;
+  if (pageToNode.has(ref)) return pageToNode.get(ref);
+  if (nodeById.has(ref)) return ref;
+  return undefined;
 }
 
 export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions): UiMap {
@@ -338,6 +385,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
     }
     usedNodeIds.add(nodeId);
 
+    const mergedActions = mergePageActions(page.actions, dedupeActions(pageFields));
     const node: NodeEntry = {
       nodeId,
       kind,
@@ -347,7 +395,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
       breadcrumbs,
       navPath: page.navPath,
       groups,
-      actions: dedupeActions(pageFields),
+      actions: mergedActions,
       fingerprint
     };
 
@@ -371,10 +419,15 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
   if (options.clickLog && options.clickLog.clicks.length > 0) {
     let currentPageId = map.pages[0]?.id;
     for (const click of options.clickLog.clicks) {
-      const inferredFrom = currentPageId ?? pageIdForUrl(map.pages, click.urlBefore);
+      if (click.kind === "system_alert") {
+        continue;
+      }
+
+      const inferredFrom = click.nodeIdBefore ?? currentPageId ?? pageIdForUrl(map.pages, click.urlBefore);
       let inferredTo = click.newFieldIds
         .map((fieldId) => pageIdByFieldId.get(fieldId))
         .find((pageId): pageId is string => Boolean(pageId));
+      inferredTo = click.nodeIdAfter ?? inferredTo;
       if (!inferredTo) {
         inferredTo = pageIdForUrl(map.pages, click.urlAfter) ?? inferredFrom;
       }
@@ -404,8 +457,8 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         timestamp: click.timestamp
       };
 
-      const fromNodeId = pageToNode.get(inferredFrom);
-      const toNodeId = pageToNode.get(inferredTo);
+      const fromNodeId = resolveNodeId(pageToNode, nodeById, inferredFrom);
+      const toNodeId = resolveNodeId(pageToNode, nodeById, inferredTo);
       if (!fromNodeId || !toNodeId) {
         currentPageId = inferredTo;
         continue;
@@ -419,6 +472,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
           nodeById.get(fromNodeId),
           nodeById.get(toNodeId),
           trigger,
+          click.transitionType,
           click.urlBefore,
           click.urlAfter
         )
@@ -448,6 +502,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
           nodeById.get(fromNodeId),
           nodeById.get(toNodeId),
           trigger,
+          undefined,
           previous.url,
           page.url
         )

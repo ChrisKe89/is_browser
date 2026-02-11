@@ -1,112 +1,74 @@
 # TODO
-## Project: is_browser
-## Branch: feature/mapper-ui-graph-yaml-export
+## Project: is_mapper
+## Branch: fix/crawl-quality-graph-correctness
 ## Updated: 2026-02-11
 
-### [x] TSK-001 — Establish canonical UI graph map output
+### [x] TSK-001 — Isolate system alert interactions from graph semantics (US-001, FR-1, FR-2)
 - scope:
-  - Define and emit a single canonical map format with node, edge, group, field, action, and run metadata records that can be reused by all downstream views.
+  - Classify system-level alerts as diagnostic-only interaction records so they never affect canonical navigation or dependency semantics.
 - accepts:
-  - Captured output includes graph-level metadata and explicit node/edge collections.
-  - Node records include identity, container kind, title/context, and grouped content sections.
+  - Interactions identified as system alerts are present in click logs with alert classification.
+  - System alert interactions do not update breadcrumbs, navPath steps, node transitions, or dependency edges.
+  - System alert interactions do not contribute to field reveal/discovery diffs.
 - notes:
-  - Done 2026-02-12: canonical `nodes[]`/`edges[]` emission added and preserved alongside legacy `pages[]`/`fields[]`.
+  - Completed 2026-02-11
 
-### [x] TSK-002 — Capture node-level context for visible container only
+### [x] TSK-002 — Enforce scope-locked discovery and same-scope diffing (US-003, FR-5)
 - scope:
-  - Capture page/modal/drawer/iframe context using the active visible container, including title, breadcrumb context, URL/frame context, nav path, and node actions.
+  - Constrain field discovery and before/after diffing to the active UI scope root for deterministic modal vs page behavior.
 - accepts:
-  - When a modal is visible, fields behind it are not included in that node capture.
-  - Breadcrumb and action metadata are present on nodes when discoverable.
+  - When a modal is visible, field discovery and diffing run only inside the modal scope.
+  - When no modal is visible, field discovery and diffing run only inside main-content scope.
+  - Field diffs compare like-for-like scope context and exclude out-of-scope fields.
 - notes:
-  - Done 2026-02-12: modal-scope capture preserved; node context includes url/title/navPath, inferred breadcrumbs, and actions.
+  - Completed 2026-02-11
 
-### [x] TSK-003 — Preserve ordered layout groups on each node
+### [x] TSK-003 — Apply transition-aware reveal policy with restore-safe close/cancel behavior (US-002, FR-3, FR-4)
 - scope:
-  - Discover and persist section/group structure in display order and assign each discovered field to the correct group.
+  - Restrict positive reveal semantics to context-expanding transitions and treat cancel/close as state restoration.
 - accepts:
-  - Grouped output retains section titles and stable ordering for each node.
-  - Fields in generated layout view appear under their intended section/group.
+  - Positive reveal outputs are emitted only for approved expanding transitions.
+  - Cancel/close actions never emit positive newly visible/discovered field sets.
+  - Close/restoration transitions may reduce visible scope without being represented as reveals.
 - notes:
-  - Done 2026-02-12: group discovery emits `groupKey/groupTitle/groupOrder`; node groups preserve deterministic order.
+  - Completed 2026-02-11
 
-### [x] TSK-004 — Capture field values, types, and option sets
+### [x] TSK-004 — Normalize radio interactions into one logical action (US-004, FR-6)
 - scope:
-  - Capture current value, value type, options, constraints, and visibility/readability metadata for each field where discoverable.
+  - Collapse duplicate label-then-input radio interaction sequences into a single intent-level record.
 - accepts:
-  - Field entries include value metadata and option metadata for enum-like controls.
-  - Number/text/boolean/enum controls are represented with consistent value typing.
+  - A label-plus-input radio selection sequence is represented as one `radio_select` action.
+  - The normalized action stores the selected option label and deterministic radio target reference.
+  - Navigation artifacts show one radio action per user choice instead of duplicate steps.
 - notes:
-  - Done 2026-02-12: field metadata includes `valueType`, `defaultValue`, `currentValue`, visibility/read-only metadata, constraints, and normalized options.
+  - Completed 2026-02-11
 
-### [x] TSK-005 — Model radio controls as grouped enum fields
+### [x] TSK-005 — Improve click-kind classification and suppress wrapper-click noise (US-004, FR-7)
 - scope:
-  - Represent radio controls as a single grouped field with options and selected value instead of per-radio field duplication.
+  - Expand semantic click classification and suppress non-semantic wrapper clicks that immediately precede real control interactions.
 - accepts:
-  - One logical field is emitted per radio group.
-  - Each radio group includes group identity, option list, and selected current value.
+  - Classifier covers radio option/input, dropdown trigger or combobox, tab, modal open, modal close, and system alert.
+  - Wrapper/blob clicks followed by semantic control clicks in the same interaction area are excluded from navPath and breadcrumb semantics.
+  - `unknown` classification is limited to unresolved edge cases.
 - notes:
-  - Done 2026-02-12: radio controls emitted as grouped enum-like entries with `groupKey` and options.
+  - Completed 2026-02-11
 
-### [x] TSK-006 — Preserve baseline defaults separately from current state
+### [x] TSK-006 — Add typed transitions and consistent modal action inventories (US-005, FR-8, FR-9)
 - scope:
-  - Maintain first-seen field value as baseline default and preserve it across subsequent scans/variant exploration while still updating current values.
+  - Represent interaction transitions with intent types and consistently expose modal action capabilities on active nodes.
 - accepts:
-  - Default value remains unchanged after later interactions in the same capture run.
-  - Current value reflects latest observed state independently of baseline.
+  - Transition typing includes open modal, close modal, navigate, tab switch, dismiss alert, and expand section.
+  - Active modal nodes consistently include normalized actions such as Save, Cancel, Close, Apply, and OK when present.
+  - Alert dismissal remains diagnosable as a typed interaction without polluting canonical dependency relationships.
 - notes:
-  - Done 2026-02-12: first-seen defaults are retained; current values are refreshed on re-discovery.
+  - Completed 2026-02-11
 
-### [x] TSK-007 — Build navigation graph edges from interaction outcomes
+### [x] TSK-007 — Add node identity context to click logs with additive schema compatibility (US-005, FR-10, FR-11)
 - scope:
-  - Record graph edges linking nodes for navigation, modal open/close, and tab switches, including trigger context and human-readable nav steps.
+  - Capture before/after node identity in click logs to support deterministic reconstruction under hash-routing and URL drift.
 - accepts:
-  - Captured nodes are connected by edge records with trigger details.
-  - Edge typing distinguishes navigation from modal and tab transitions.
+  - Each click-log entry includes `nodeIdBefore` and `nodeIdAfter`.
+  - Existing click-log and map fields remain valid with additive-only schema evolution.
+  - Node transitions are reconstructable from click logs even when URL-level change signals are ambiguous.
 - notes:
-  - Done 2026-02-12: edges now derive from click logs/nav paths with edge typing and trigger metadata.
-
-### [x] TSK-008 — Enforce safe variant exploration with restoration
-- scope:
-  - Support dependency-revealing variant exploration for eligible controls while preventing destructive actions and restoring original UI state after each exploration pass.
-- accepts:
-  - Exploration excludes destructive actions such as save/apply/reset/reboot/submit.
-  - Control state is restored to pre-exploration values after variant scanning.
-- notes:
-  - Done 2026-02-12: variant exploration remains limited to select/radio controls and restores prior state after scan.
-
-### [x] TSK-009 — Infer and persist field visibility dependencies
-- scope:
-  - Infer reveals/hides dependencies by diffing field visibility before and after controlled variant changes and attach dependency rules to controlling fields.
-- accepts:
-  - Dependency metadata is present when field visibility changes are observed.
-  - Dependency records identify controlling field condition and affected fields.
-- notes:
-  - Done 2026-02-12: before/after visibility diffs during variant scans now attach dependency metadata on controlling fields.
-
-### [x] TSK-010 — Generate navigation and layout YAML views from canonical map
-- scope:
-  - Produce two YAML outputs from canonical capture data: navigation tree view and on-screen layout view, with stable references back to canonical node/field identities.
-- accepts:
-  - Navigation YAML includes path, breadcrumb/container context, groups, fields, and actions.
-  - Layout YAML preserves group hierarchy/order and links entries back to canonical IDs.
-- notes:
-  - Done 2026-02-12: YAML view generation added (`ui-tree.navigation.yaml`, `ui-tree.layout.yaml`) via mapper outputs + export tool.
-
-### [x] TSK-011 — Capture per-node visual snapshots for traceability
-- scope:
-  - Capture and persist one visual snapshot per node with trace metadata for downstream documentation and auditability.
-- accepts:
-  - Node records reference snapshot metadata when capture is available.
-  - Snapshot artifacts are organized by run and resolvable from output metadata.
-- notes:
-  - Done 2026-02-12: per-node snapshot references are attached when captures are available.
-
-### [x] TSK-012 — Enforce PRD non-goal boundaries and compatibility expectations
-- scope:
-  - Ensure delivery remains within PRD scope by excluding end-user editing products, analytics dashboards, and forced downstream replacement while preserving compatibility expectations.
-- accepts:
-  - No end-user editor capability is introduced in this scope.
-  - Output changes preserve backward-compatibility posture unless an explicit migration path is defined.
-- notes:
-  - Done 2026-02-12: implementation stayed within mapper/contract/export scope and preserved backward-compatible `pages[]`/`fields[]`.
+  - Completed 2026-02-11
