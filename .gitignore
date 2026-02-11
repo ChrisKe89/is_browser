@@ -12,3 +12,4 @@ state/auth-state.json
 *.swp
 *.swo
 coverage/
+.archive
