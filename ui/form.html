@@ -104,6 +104,23 @@
         flex-wrap: wrap;
       }
 
+      .top-links {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+
+      .top-links a {
+        color: #0f4fb7;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+
       button {
         border: 0;
         border-radius: 8px;
@@ -253,6 +270,9 @@
           <button id="disableAllBtn" type="button">Disable All</button>
           <button id="saveProfileBtn" class="primary" type="button">Save Profile</button>
         </div>
+        <div class="top-links">
+          <a id="openOperatorLink" href="http://localhost:5050/" target="_blank" rel="noreferrer">Open Operator UX</a>
+        </div>
         <div id="status" class="muted">Loading schema...</div>
       </section>
 
@@ -270,6 +290,7 @@
       const displayNameEl = document.getElementById("displayName");
       const variationListEl = document.getElementById("variationList");
       const variationOptionsEl = document.getElementById("variationOptions");
+      const openOperatorLinkEl = document.getElementById("openOperatorLink");
 
       const controls = new Map();
 
@@ -602,6 +623,18 @@
         }
       }
 
+      async function loadFormConfig() {
+        try {
+          const response = await fetch("/api/form/config");
+          const data = await response.json();
+          if (response.ok && data.operatorUrl && openOperatorLinkEl) {
+            openOperatorLinkEl.href = data.operatorUrl;
+          }
+        } catch (error) {
+          console.warn("Failed to load form config:", error);
+        }
+      }
+
       async function loadProfile() {
         const accountNumber = accountEl.value.trim();
         const variation = variationEl.value.trim();
@@ -681,7 +714,13 @@
       document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
       accountEl.addEventListener("blur", loadVariationList);
 
-      loadSchema(false).then(loadVariationList);
+      async function init() {
+        await loadFormConfig();
+        await loadSchema(false);
+        await loadVariationList();
+      }
+
+      init();
     </script>
   </body>
 </html>

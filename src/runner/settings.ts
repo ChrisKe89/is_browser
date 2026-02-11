@@ -8,6 +8,10 @@ export type SettingsFile = {
     accountNumber?: string;
     variation?: string;
     scriptVariant?: string;
+    model?: string;
+    serial?: string;
+    productCode?: string;
+    rawSerialCombined?: string;
     createdAt?: string;
   };
   options?: {

@@ -49,6 +49,8 @@ test("migrations create required schema tables", async () => {
     assert.ok(names.includes("config_profile_value"));
     assert.ok(names.includes("apply_run"));
     assert.ok(names.includes("apply_run_item"));
+    assert.ok(names.includes("operator_config"));
+    assert.ok(names.includes("device_resolution"));
     assert.ok(profileValueColumns.includes("enabled"));
   } finally {
     await rm(tempDir, { recursive: true, force: true });

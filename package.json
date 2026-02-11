@@ -12,6 +12,8 @@
     "read:settings": "tsx src/runner/read.ts",
     "auth:capture": "tsx src/auth/capture.ts",
     "server": "tsx src/server/index.ts",
+    "server:operator": "tsx src/server/operator.ts",
+    "server:form": "tsx src/server/form.ts",
     "discover:devices": "tsx src/discovery/cli.ts",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:import-map": "tsx src/db/importMap.ts",

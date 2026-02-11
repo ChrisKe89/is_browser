@@ -23,8 +23,21 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Automated test coverage for CSV option enrichment into DB option tables.
 - Profile value `enabled` persistence so settings can be toggled on/off without deleting stored values.
 - Form controls to enable/disable individual settings and quick `Enable All` / `Disable All` actions.
+- Operator discovery config persistence (`operator_config`) for subnet ranges, manual IPs, and CSV mode across restarts.
+- Device resolution table (`device_resolution`) and seed import from `devices/customer-map.csv` for DB-backed model+serial account/variation lookup.
+- Discovery service coverage for subnet-range parsing (`CIDR`, shorthand subnet, explicit ranges), manual-IP validation, WebUI reachability, and intervention flagging.
+- Operator console UI for unified device discovery/manual add list, account-number search, variation filtering, manual intervention resolution, and apply launch.
+- New tests for discovery service, device-resolution lookup, operator-config persistence, and enabled-missing-value skip behavior.
+- Independent operator and form server products with dedicated entrypoints (`npm run server:operator`, `npm run server:form`) and default ports (`5050`, `5051`).
+- Server-separation regression tests that enforce product API boundary isolation.
+- Split deployment workflows for operator and form products:
+  - `.github/workflows/deploy-operator.yml`
+  - `.github/workflows/deploy-form.yml`
+- Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+- Documentation refresh: `README.md` now includes explicit Quick Start, Installation, Usage, Configuration, Examples, and Troubleshooting sections.
+- Contribution guide now documents CI workflow location and required local quality gates (`lint`, `test`, `build`).
 - Crawler/runner auth state usage is now opt-in via `USE_AUTH_STATE` (defaults to credential-based login from env vars).
 - Login flow now dismisses post-login informational `Close` dialogs to stabilize traversal.
 - Default JSON/config paths now use `config/`, `state/`, and `examples/` directories.
@@ -34,6 +47,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - `db:import-map` now optionally imports field CSV options (`MAP_FIELD_CSV_PATH` or `<map>.fields.csv`) in the same run.
 - `npm run apply:settings` now loads settings only from DB profiles (`APPLY_ACCOUNT_NUMBER` + `APPLY_VARIATION`) instead of JSON settings files.
 - `POST /api/start` now returns `410` to enforce DB-backed profile apply through `POST /api/start/profile`.
+- Apply profile build now skips enabled settings with missing values as non-blocking.
+- Apply logs now use discovered device identity metadata (`serial`, `model`, `productCode`) for per-device JSON naming and CSV rows.
+- Operator and form UIs now cross-link through product config endpoints (`/api/operator/config`, `/api/form/config`) instead of sharing one server surface.
 
 ## [0.2.0] - 2026-02-07
 ### Added

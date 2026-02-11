@@ -202,3 +202,28 @@ test("disabled profile setting can keep invalid value without blocking apply set
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+
+test("enabled setting with missing value is persisted and skipped during apply settings build", async () => {
+  const { tempDir, dbPath } = await makeTempDbPath();
+  try {
+    await importUiMapToDatabase(dbPath, sampleMap());
+    await saveProfile(dbPath, {
+      accountNumber: "10002",
+      variation: "base",
+      values: [
+        { settingId: "system.device-name", value: "Profile Device" },
+        { settingId: "system.mode", value: "", enabled: true },
+        { settingId: "system.energy-save", value: "On", enabled: true }
+      ]
+    });
+
+    const settings = await buildSettingsFromProfile(dbPath, {
+      accountNumber: "10002",
+      variation: "base"
+    });
+    assert.equal(settings.length, 2);
+    assert.ok(!settings.find((item) => item.id === "system.mode"));
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});

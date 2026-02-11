@@ -1,0 +1,78 @@
+name: Deploy Operator Product
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/config/**"
+      - "src/discovery/**"
+      - "src/db/**"
+      - "src/runner/**"
+      - "src/server/httpUtils.ts"
+      - "src/server/operator.ts"
+      - "src/server/operatorServer.ts"
+      - "ui/operator.html"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - ".github/workflows/deploy-operator.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-operator-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-operator:
+    runs-on: ubuntu-latest
+    environment: operator-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Package operator artifact
+        run: |
+          mkdir -p deploy/operator
+          cp -r dist deploy/operator/dist
+          cp -r config deploy/operator/config
+          cp ui/operator.html deploy/operator/operator.html
+          cp package.json package-lock.json deploy/operator/
+
+      - name: Upload operator artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: operator-product-${{ github.sha }}
+          path: deploy/operator
+          if-no-files-found: error
+
+      - name: Trigger operator deployment webhook
+        if: ${{ secrets.OPERATOR_DEPLOY_WEBHOOK_URL != '' }}
+        run: |
+          curl --fail --show-error --silent \
+            --request POST \
+            --header "Content-Type: application/json" \
+            --data "{\"sha\":\"${{ github.sha }}\",\"ref\":\"${{ github.ref }}\"}" \
+            "${{ secrets.OPERATOR_DEPLOY_WEBHOOK_URL }}"
+
+      - name: Operator deployment webhook not configured
+        if: ${{ secrets.OPERATOR_DEPLOY_WEBHOOK_URL == '' }}
+        run: echo "OPERATOR_DEPLOY_WEBHOOK_URL is not configured. Artifact uploaded only."

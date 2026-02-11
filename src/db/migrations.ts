@@ -147,6 +147,34 @@ CREATE INDEX IF NOT EXISTS idx_apply_run_item_run_id ON apply_run_item(run_id);
 ALTER TABLE config_profile_value
 ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1 CHECK (enabled IN (0, 1));
 `
+  },
+  {
+    name: "004_operator_discovery_and_resolution",
+    sql: `
+CREATE TABLE IF NOT EXISTS operator_config (
+  key TEXT PRIMARY KEY,
+  value_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS device_resolution (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  model_name TEXT NOT NULL,
+  serial TEXT NOT NULL,
+  customer_name TEXT NOT NULL,
+  account_number TEXT NOT NULL,
+  variation TEXT NOT NULL DEFAULT 'default',
+  model_match TEXT,
+  updated_at TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  UNIQUE (model_name, serial)
+);
+
+CREATE INDEX IF NOT EXISTS idx_device_resolution_identity
+ON device_resolution(model_name, serial);
+CREATE INDEX IF NOT EXISTS idx_device_resolution_account_variation
+ON device_resolution(account_number, variation);
+`
   }
 ];
 

@@ -202,8 +202,10 @@ export async function applySettings(
   const context: DeviceLogContext = {
     customerName: options.settings.meta?.customerName ?? "unknown",
     accountNumber: options.settings.meta?.accountNumber ?? "unknown",
-    serial: "unknown",
-    model: "unknown",
+    serial: options.settings.meta?.serial ?? "unknown",
+    model: options.settings.meta?.model ?? "unknown",
+    productCode: options.settings.meta?.productCode,
+    rawSerialCombined: options.settings.meta?.rawSerialCombined,
     deviceIp: options.deviceIp,
     scriptApplied: options.settings.meta?.scriptVariant ?? "default",
     scriptLocation: options.mapPath

@@ -1,0 +1,76 @@
+name: Deploy Form Product
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/config/**"
+      - "src/db/**"
+      - "src/server/httpUtils.ts"
+      - "src/server/form.ts"
+      - "src/server/formServer.ts"
+      - "ui/form.html"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - ".github/workflows/deploy-form.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-form-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-form:
+    runs-on: ubuntu-latest
+    environment: form-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Package form artifact
+        run: |
+          mkdir -p deploy/form
+          cp -r dist deploy/form/dist
+          cp -r config deploy/form/config
+          cp ui/form.html deploy/form/form.html
+          cp package.json package-lock.json deploy/form/
+
+      - name: Upload form artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: form-product-${{ github.sha }}
+          path: deploy/form
+          if-no-files-found: error
+
+      - name: Trigger form deployment webhook
+        if: ${{ secrets.FORM_DEPLOY_WEBHOOK_URL != '' }}
+        run: |
+          curl --fail --show-error --silent \
+            --request POST \
+            --header "Content-Type: application/json" \
+            --data "{\"sha\":\"${{ github.sha }}\",\"ref\":\"${{ github.ref }}\"}" \
+            "${{ secrets.FORM_DEPLOY_WEBHOOK_URL }}"
+
+      - name: Form deployment webhook not configured
+        if: ${{ secrets.FORM_DEPLOY_WEBHOOK_URL == '' }}
+        run: echo "FORM_DEPLOY_WEBHOOK_URL is not configured. Artifact uploaded only."

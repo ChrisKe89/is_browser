@@ -15,7 +15,14 @@ export const DISCOVERY_SUBNET = process.env.DISCOVERY_SUBNET ?? "192.168.0";
 export const DISCOVERY_RANGE_START = Number(process.env.DISCOVERY_RANGE_START ?? 1);
 export const DISCOVERY_RANGE_END = Number(process.env.DISCOVERY_RANGE_END ?? 254);
 export const DISCOVERY_TIMEOUT_MS = Number(process.env.DISCOVERY_TIMEOUT_MS ?? 250);
+export const SNMP_COMMUNITY = process.env.SNMP_COMMUNITY ?? "public";
+export const SNMP_VERSION = process.env.SNMP_VERSION ?? "2c";
+export const SNMP_TIMEOUT_MS = Number(process.env.SNMP_TIMEOUT_MS ?? 2000);
 export const OPERATOR_PORT = Number(process.env.OPERATOR_PORT ?? 5050);
+export const FORM_PORT = Number(process.env.FORM_PORT ?? 5051);
+export const OPERATOR_PUBLIC_URL =
+  process.env.OPERATOR_PUBLIC_URL ?? `http://localhost:${OPERATOR_PORT}`;
+export const FORM_PUBLIC_URL = process.env.FORM_PUBLIC_URL ?? `http://localhost:${FORM_PORT}`;
 export const DEVICE_LOG_MODE = (process.env.DEVICE_LOG_MODE ?? "all-time") as
   | "all-time"
   | "daily";

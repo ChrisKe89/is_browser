@@ -3,70 +3,821 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Printer Operator</title>
+    <title>Printer Operations Console</title>
     <style>
       :root {
-        --bg: #f7f9fc;
-        --panel: #ffffff;
-        --text: #1f2937;
-        --muted: #4b5563;
-        --line: #d1d5db;
-        --accent: #0f766e;
+        --bg-0: #f2f4f7;
+        --bg-1: #ffffff;
+        --ink: #161a24;
+        --muted: #5a6273;
+        --line: #d5d9e2;
+        --ok: #1d8f4d;
+        --warn: #c47a00;
+        --fail: #b42318;
+        --work: #1469c4;
+        --accent: #0d9488;
+        --chip: #eef6ff;
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       body {
         margin: 0;
-        font-family: "Segoe UI", Tahoma, sans-serif;
-        color: var(--text);
-        background: linear-gradient(180deg, #eff6ff 0%, var(--bg) 50%, #ffffff 100%);
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: "Trebuchet MS", "Lucida Grande", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 8% -2%, rgba(15, 148, 136, 0.22), transparent 28%),
+          radial-gradient(circle at 92% 8%, rgba(20, 105, 196, 0.2), transparent 26%),
+          linear-gradient(165deg, #f7f9ff 0%, var(--bg-0) 42%, #f4f8fb 100%);
       }
 
-      main {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 1.25rem;
+      .status-ribbon {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
       }
 
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      h1 {
-        margin: 0 0 0.75rem;
-      }
-
-      p {
-        margin: 0.4rem 0;
+      .status-title {
+        font-size: 0.88rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         color: var(--muted);
       }
 
-      a {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
+      .status-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 800;
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        background: var(--chip);
       }
 
-      a:hover {
+      .state-idle,
+      .state-completed {
+        color: var(--ok);
+      }
+
+      .state-working {
+        color: var(--work);
+      }
+
+      .state-failed {
+        color: var(--fail);
+      }
+
+      .state-user {
+        color: var(--warn);
+      }
+
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+      }
+
+      .panel {
+        background: var(--bg-1);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 0.95rem;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.28rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+      }
+
+      p {
+        margin: 0.35rem 0;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        align-items: end;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 180px;
+      }
+
+      label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      input,
+      textarea,
+      select,
+      button {
+        font: inherit;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid #9ca3af;
+        border-radius: 8px;
+        padding: 0.48rem 0.55rem;
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 76px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.48rem 0.82rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: #dee3ec;
+        color: #161a24;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      button.warn {
+        background: #edb641;
+      }
+
+      button[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .device-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .device-table th,
+      .device-table td {
+        border-bottom: 1px solid #eaedf2;
+        padding: 0.46rem;
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.86rem;
+      }
+
+      .device-table th {
+        font-size: 0.76rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .pill {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.74rem;
+        font-weight: 700;
+        background: #eaf1ff;
+        color: #1f3763;
+      }
+
+      .pill.ready {
+        background: #e7f7ec;
+        color: #136a36;
+      }
+
+      .pill.intervention {
+        background: #fff5db;
+        color: #8a5200;
+      }
+
+      .pill.down {
+        background: #fdecea;
+        color: #8f1f14;
+      }
+
+      .inline-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+
+      .mini-grid {
+        display: grid;
+        gap: 0.3rem;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+      }
+
+      .console {
+        max-height: 220px;
+        overflow: auto;
+        margin: 0;
+        padding: 0.6rem;
+        border: 1px solid #d5dbe8;
+        border-radius: 10px;
+        background: #f8fbff;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.78rem;
+        white-space: pre-wrap;
+      }
+
+      .top-links {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .top-links a {
+        color: #0f4fb7;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .top-links a:hover {
         text-decoration: underline;
+      }
+
+      #uiStatus.error {
+        color: var(--fail);
+      }
+
+      @media (max-width: 960px) {
+        .mini-grid {
+          grid-template-columns: 1fr;
+        }
+        .device-table {
+          font-size: 0.82rem;
+        }
       }
     </style>
   </head>
   <body>
+    <div class="status-ribbon">
+      <div>
+        <div class="status-title">Automation Status</div>
+        <div id="jobState" class="status-state state-idle">IDLE</div>
+      </div>
+      <div class="top-links">
+        <a id="openFormLink" href="http://localhost:5051/" target="_blank" rel="noreferrer">Open Profile Form</a>
+      </div>
+    </div>
+
     <main>
-      <section class="panel">
-        <h1>Printer Operator</h1>
-        <p>Use the profile form to create and save account/variation settings into the database.</p>
-        <p><a href="/form.html">Open Profile Form</a></p>
-      </section>
-      <section class="panel">
-        <p>API endpoints:</p>
-        <p><a href="/api/profiles/schema" target="_blank" rel="noreferrer">/api/profiles/schema</a></p>
-        <p><a href="/settings-schema.json" target="_blank" rel="noreferrer">/settings-schema.json</a></p>
-      </section>
+      <div class="grid">
+        <section class="panel">
+          <h1>Printer Discovery and Resolution</h1>
+          <p class="muted">
+            Configure subnet ranges, run discovery, add manual IPs, resolve account/variation, then start apply.
+          </p>
+          <div class="toolbar">
+            <div class="field" style="min-width: 360px; flex: 1">
+              <label for="subnetRanges">Subnet Ranges (comma or newline)</label>
+              <textarea id="subnetRanges" placeholder="192.168.0.0/24&#10;192.168.10.1-192.168.10.20"></textarea>
+            </div>
+            <div class="field">
+              <label for="csvMode">CSV Mode</label>
+              <select id="csvMode">
+                <option value="all-time">all-time</option>
+                <option value="daily">daily</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="manualIp">Manual IPv4</label>
+              <input id="manualIp" type="text" placeholder="192.168.0.44" />
+            </div>
+          </div>
+          <div class="toolbar" style="margin-top: 0.5rem">
+            <button id="saveConfigBtn">Save Network Inputs</button>
+            <button id="discoverBtn" class="primary">Run Discovery</button>
+            <button id="manualAddBtn">Add Manual IP</button>
+            <button id="retryBtn" class="warn">Retry Pending Run</button>
+          </div>
+          <p id="uiStatus" class="muted" style="margin-top: 0.6rem">Loading operator settings...</p>
+        </section>
+
+        <section class="panel">
+          <h2>Discovered Devices</h2>
+          <div style="overflow-x: auto">
+            <table class="device-table">
+              <thead>
+                <tr>
+                  <th>Device</th>
+                  <th>Reachability</th>
+                  <th>Identity</th>
+                  <th>Resolution</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="deviceRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Run Console</h2>
+          <pre id="consoleOutput" class="console">No output yet.</pre>
+        </section>
+      </div>
     </main>
+
+    <datalist id="accountSuggestions"></datalist>
+
+    <script>
+      const uiStatusEl = document.getElementById("uiStatus");
+      const deviceRowsEl = document.getElementById("deviceRows");
+      const consoleOutputEl = document.getElementById("consoleOutput");
+      const jobStateEl = document.getElementById("jobState");
+      const subnetRangesEl = document.getElementById("subnetRanges");
+      const csvModeEl = document.getElementById("csvMode");
+      const manualIpEl = document.getElementById("manualIp");
+      const accountSuggestionsEl = document.getElementById("accountSuggestions");
+      const openFormLinkEl = document.getElementById("openFormLink");
+
+      const accountCache = new Map();
+      const variationCache = new Map();
+      const perDeviceDraft = new Map();
+
+      function setUiStatus(message, isError = false) {
+        uiStatusEl.textContent = message;
+        uiStatusEl.classList.toggle("error", Boolean(isError));
+      }
+
+      function normalizeStateClass(state) {
+        const normalized = String(state || "").toUpperCase();
+        if (normalized === "WORKING") return "state-working";
+        if (normalized === "FAILED") return "state-failed";
+        if (normalized === "USER INTERVENTION REQUIRED") return "state-user";
+        if (normalized === "USER_INTERVENTION_REQUIRED") return "state-user";
+        if (normalized === "COMPLETED") return "state-completed";
+        return "state-idle";
+      }
+
+      function renderJobState(state) {
+        const normalized = String(state || "IDLE").replace(/_/g, " ");
+        jobStateEl.textContent = normalized;
+        jobStateEl.className = "status-state " + normalizeStateClass(normalized);
+      }
+
+      async function api(path, options) {
+        const response = await fetch(path, options);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || `Request failed: ${response.status}`);
+        }
+        return data;
+      }
+
+      function parseSubnetRangesInput() {
+        return subnetRangesEl.value
+          .split(/\n|,/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+      }
+
+      function serializeSubnetRanges(values) {
+        return values.join("\n");
+      }
+
+      function defaultDraftForDevice(device) {
+        const existing = perDeviceDraft.get(device.ip) || {};
+        return {
+          accountNumber: existing.accountNumber || device.accountNumber || "",
+          variation: existing.variation || device.variation || "",
+          customerName: existing.customerName || device.customerName || ""
+        };
+      }
+
+      async function loadConfig() {
+        const data = await api("/api/discovery/config");
+        const config = data.config || {};
+        subnetRangesEl.value = serializeSubnetRanges(config.subnetRanges || []);
+        csvModeEl.value = config.csvMode === "daily" ? "daily" : "all-time";
+      }
+
+      async function loadOperatorConfig() {
+        const data = await api("/api/operator/config");
+        if (data.formUrl && openFormLinkEl) {
+          openFormLinkEl.href = data.formUrl;
+        }
+      }
+
+      async function saveConfig() {
+        const subnetRanges = parseSubnetRangesInput();
+        const csvMode = csvModeEl.value === "daily" ? "daily" : "all-time";
+        const data = await api("/api/discovery/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subnetRanges, csvMode })
+        });
+        subnetRangesEl.value = serializeSubnetRanges(data.config.subnetRanges || subnetRanges);
+        setUiStatus("Saved network inputs.");
+      }
+
+      function buildStatusPill(device) {
+        if (device.status === "READY") {
+          return '<span class="pill ready">READY</span>';
+        }
+        if (device.status === "USER_INTERVENTION_REQUIRED") {
+          return '<span class="pill intervention">USER INTERVENTION REQUIRED</span>';
+        }
+        if (device.status === "WEBUI_UNREACHABLE" || device.status === "UNREACHABLE") {
+          return '<span class="pill down">' + device.status.replace(/_/g, " ") + "</span>";
+        }
+        return '<span class="pill">' + String(device.status || "UNKNOWN") + "</span>";
+      }
+
+      function buildAccountInput(device, draft) {
+        return `
+          <input data-action="account-input" data-ip="${device.ip}" value="${draft.accountNumber}" list="accountSuggestions" placeholder="Account number" />
+        `;
+      }
+
+      function buildVariationOptions(variations, selectedValue) {
+        if (!Array.isArray(variations) || variations.length === 0) {
+          return '<option value="">No variations</option>';
+        }
+        const items = ['<option value="">Select variation</option>'];
+        variations.forEach((item) => {
+          const selected = item.variation === selectedValue ? "selected" : "";
+          const requirements = Array.isArray(item.modelRequirements) && item.modelRequirements.length > 0
+            ? ` data-requirements="${item.modelRequirements.join(" | ")}"`
+            : "";
+          items.push(`<option value="${item.variation}" ${selected}${requirements}>${item.variation}</option>`);
+        });
+        return items.join("");
+      }
+
+      function buildResolutionCell(device) {
+        const draft = defaultDraftForDevice(device);
+        const variations = variationCache.get(draft.accountNumber) || [];
+        const variationHtml = buildVariationOptions(variations, draft.variation);
+        const variationNeeded = variations.length > 1;
+
+        if (device.resolved && device.accountNumber && device.variation && !device.requiresIntervention) {
+          return `
+            <div>
+              <div><strong>${device.accountNumber}</strong> / <strong>${device.variation}</strong></div>
+              <div class="muted">${device.customerName || "unknown customer"}</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="inline-actions">
+            <div class="mini-grid">
+              ${buildAccountInput(device, draft)}
+              <select data-action="variation-select" data-ip="${device.ip}">
+                ${variationHtml}
+              </select>
+              <input data-action="customer-input" data-ip="${device.ip}" value="${draft.customerName}" placeholder="Customer name" />
+            </div>
+            <div class="muted">${variationNeeded ? "Variation is required for this account." : "Select account and variation."}</div>
+            <button data-action="resolve-device" data-ip="${device.ip}">Resolve Device</button>
+          </div>
+        `;
+      }
+
+      function buildActionCell(device) {
+        const draft = defaultDraftForDevice(device);
+        const canRun = device.webUiReachable && draft.accountNumber && draft.variation;
+        return `
+          <div class="inline-actions">
+            <button data-action="start-apply" data-ip="${device.ip}" ${canRun ? "" : "disabled"}>Start Apply</button>
+            ${
+              device.source === "manual"
+                ? `<button data-action="remove-manual" data-ip="${device.ip}">Remove Manual</button>`
+                : ""
+            }
+          </div>
+        `;
+      }
+
+      function renderDevices(devices) {
+        if (!Array.isArray(devices) || devices.length === 0) {
+          deviceRowsEl.innerHTML = '<tr><td colspan="5" class="muted">No devices yet. Run discovery or add manual IP.</td></tr>';
+          return;
+        }
+
+        const rows = devices.map((device) => {
+          const draft = defaultDraftForDevice(device);
+          perDeviceDraft.set(device.ip, draft);
+          return `
+            <tr>
+              <td>
+                <div><strong>${device.ip}</strong></div>
+                <div class="muted">source: ${device.source}</div>
+              </td>
+              <td>
+                <div>${buildStatusPill(device)}</div>
+                <div class="muted">host: ${device.reachable ? "reachable" : "down"}</div>
+                <div class="muted">webui: ${device.webUiReachable ? "reachable" : "down"}</div>
+              </td>
+              <td>
+                <div>${device.model || "model unknown"}</div>
+                <div class="muted">serial: ${device.serial || "unknown"}</div>
+                <div class="muted">product: ${device.productCode || "-"}</div>
+              </td>
+              <td>${buildResolutionCell(device)}</td>
+              <td>${buildActionCell(device)}</td>
+            </tr>
+          `;
+        });
+        deviceRowsEl.innerHTML = rows.join("");
+      }
+
+      function updateVariationSelect(ip, accountNumber, selectedVariation) {
+        const select = deviceRowsEl.querySelector(`select[data-action="variation-select"][data-ip="${CSS.escape(ip)}"]`);
+        if (!select) return;
+        const variations = variationCache.get(accountNumber) || [];
+        select.innerHTML = buildVariationOptions(variations, selectedVariation);
+      }
+
+      async function loadDevices() {
+        const data = await api("/api/devices");
+        renderDevices(data.devices || []);
+      }
+
+      async function discoverDevices() {
+        setUiStatus("Running discovery...");
+        const subnetRanges = parseSubnetRangesInput();
+        const data = await api("/api/discover", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subnetRanges })
+        });
+        renderDevices(data.devices || []);
+        setUiStatus(`Discovery complete: ${(data.devices || []).length} reachable devices.`);
+      }
+
+      async function addManualIp() {
+        const ip = manualIpEl.value.trim();
+        if (!ip) {
+          setUiStatus("Enter a manual IPv4 address first.", true);
+          return;
+        }
+        const data = await api("/api/devices/manual", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ip })
+        });
+        manualIpEl.value = "";
+        renderDevices(data.devices || []);
+        setUiStatus(`Manual device added: ${data.device.ip}`);
+      }
+
+      async function removeManualIp(ip) {
+        const data = await api("/api/devices/manual/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ip })
+        });
+        renderDevices(data.devices || []);
+        setUiStatus(`Manual device removed: ${ip}`);
+      }
+
+      async function searchAccounts(query) {
+        const key = String(query || "").trim();
+        if (!key) {
+          accountSuggestionsEl.innerHTML = "";
+          return [];
+        }
+        if (accountCache.has(key)) {
+          return accountCache.get(key);
+        }
+        const data = await api(`/api/accounts?q=${encodeURIComponent(key)}`);
+        const accounts = Array.isArray(data.accounts) ? data.accounts : [];
+        accountCache.set(key, accounts);
+        return accounts;
+      }
+
+      function renderAccountSuggestions(accounts) {
+        accountSuggestionsEl.innerHTML = "";
+        (accounts || []).forEach((item) => {
+          const option = document.createElement("option");
+          option.value = item.accountNumber;
+          accountSuggestionsEl.appendChild(option);
+        });
+      }
+
+      async function loadVariations(accountNumber) {
+        const key = String(accountNumber || "").trim();
+        if (!key) return [];
+        if (variationCache.has(key)) {
+          return variationCache.get(key);
+        }
+        const data = await api(`/api/accounts/variations?accountNumber=${encodeURIComponent(key)}`);
+        const variations = Array.isArray(data.variations) ? data.variations : [];
+        variationCache.set(key, variations);
+        return variations;
+      }
+
+      async function resolveDevice(ip) {
+        const draft = perDeviceDraft.get(ip) || {};
+        if (!draft.accountNumber || !draft.variation) {
+          setUiStatus("Account and variation are required to resolve a device.", true);
+          return;
+        }
+        const data = await api("/api/devices/resolve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ip,
+            accountNumber: draft.accountNumber,
+            variation: draft.variation,
+            customerName: draft.customerName
+          })
+        });
+        await loadDevices();
+        setUiStatus(`Device resolved: ${ip} -> ${data.device.accountNumber}/${data.device.variation}`);
+      }
+
+      async function startApply(ip) {
+        const draft = perDeviceDraft.get(ip) || {};
+        if (!draft.accountNumber || !draft.variation) {
+          setUiStatus("Account and variation are required before starting apply.", true);
+          return;
+        }
+        await api("/api/start/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ip,
+            accountNumber: draft.accountNumber,
+            variation: draft.variation,
+            customerName: draft.customerName || undefined,
+            deviceLogMode: csvModeEl.value === "daily" ? "daily" : "all-time"
+          })
+        });
+        setUiStatus(`Apply started for ${ip}.`);
+      }
+
+      async function pollStatus() {
+        try {
+          const data = await api("/api/status");
+          renderJobState(data.state || "IDLE");
+          const lines = Array.isArray(data.console) ? data.console : [];
+          consoleOutputEl.textContent = lines.length > 0 ? lines.join("\n") : "No output yet.";
+        } catch {
+          renderJobState("FAILED");
+        }
+      }
+
+      async function handleDeviceTableAction(event) {
+        const target = event.target;
+        if (!target || !target.dataset) return;
+        const action = target.dataset.action;
+        const ip = target.dataset.ip;
+        if (!action || !ip) return;
+
+        try {
+          if (action === "account-input") {
+            const value = target.value.trim();
+            const draft = perDeviceDraft.get(ip) || {};
+            draft.accountNumber = value;
+            if (!value) {
+              draft.variation = "";
+            }
+            perDeviceDraft.set(ip, draft);
+            const accounts = await searchAccounts(value);
+            renderAccountSuggestions(accounts);
+            if (value) {
+              const variations = await loadVariations(value);
+              if (variations.length === 1 && !draft.variation) {
+                draft.variation = variations[0].variation;
+              }
+            }
+            updateVariationSelect(ip, value, draft.variation || "");
+            return;
+          }
+
+          if (action === "variation-select") {
+            const draft = perDeviceDraft.get(ip) || {};
+            draft.variation = target.value;
+            perDeviceDraft.set(ip, draft);
+            return;
+          }
+
+          if (action === "customer-input") {
+            const draft = perDeviceDraft.get(ip) || {};
+            draft.customerName = target.value;
+            perDeviceDraft.set(ip, draft);
+            return;
+          }
+
+          if (action === "resolve-device") {
+            await resolveDevice(ip);
+            return;
+          }
+
+          if (action === "start-apply") {
+            await startApply(ip);
+            return;
+          }
+
+          if (action === "remove-manual") {
+            await removeManualIp(ip);
+            return;
+          }
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+      }
+
+      async function retryPending() {
+        await api("/api/retry", { method: "POST" });
+        setUiStatus("Retry signal sent.");
+      }
+
+      document.getElementById("saveConfigBtn").addEventListener("click", async () => {
+        try {
+          await saveConfig();
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+      });
+
+      document.getElementById("discoverBtn").addEventListener("click", async () => {
+        try {
+          await saveConfig();
+          await discoverDevices();
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+      });
+
+      document.getElementById("manualAddBtn").addEventListener("click", async () => {
+        try {
+          await addManualIp();
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+      });
+
+      document.getElementById("retryBtn").addEventListener("click", async () => {
+        try {
+          await retryPending();
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+      });
+
+      deviceRowsEl.addEventListener("input", handleDeviceTableAction);
+      deviceRowsEl.addEventListener("change", handleDeviceTableAction);
+      deviceRowsEl.addEventListener("click", handleDeviceTableAction);
+
+      async function init() {
+        try {
+          await loadOperatorConfig();
+          await loadConfig();
+          await loadDevices();
+          setUiStatus("Operator settings loaded.");
+        } catch (error) {
+          setUiStatus(String(error), true);
+        }
+        await pollStatus();
+        setInterval(pollStatus, 1200);
+      }
+
+      init();
+    </script>
   </body>
 </html>

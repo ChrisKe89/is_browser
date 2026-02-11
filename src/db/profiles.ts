@@ -140,6 +140,10 @@ export async function validateProfileDraft(
         continue;
       }
 
+      if (String(value.value ?? "").trim().length === 0) {
+        continue;
+      }
+
       if (setting.control_type === "select" || setting.control_type === "radio" || setting.control_type === "switch") {
         const allowed = db
           .prepare(
@@ -485,16 +489,17 @@ export async function buildSettingsFromProfile(
   }
 
   const enabledValues = profile.values.filter((item) => item.enabled !== false);
+  const eligibleValues = enabledValues.filter((item) => String(item.value ?? "").trim().length > 0);
 
   const errors = await validateProfileDraft(dbPath, {
     accountNumber: profile.accountNumber,
     variation: profile.variation,
     displayName: profile.displayName ?? undefined,
-    values: enabledValues
+    values: eligibleValues
   });
   if (errors.length > 0) {
     throw new ProfileValidationFailure(errors);
   }
 
-  return enabledValues.map((item) => ({ id: item.settingId, value: item.value }));
+  return eligibleValues.map((item) => ({ id: item.settingId, value: item.value }));
 }
