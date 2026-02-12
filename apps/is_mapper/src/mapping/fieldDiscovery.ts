@@ -243,6 +243,7 @@ async function readCustomComboboxState(
   const snapshot = await handle
     .evaluate((el) => {
       const normalize = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
+      const isNoisy = (value: string) => value.length > 120 || (value.match(/[|/]/g) ?? []).length >= 4;
       const isVisible = (option: HTMLElement) => {
         const style = window.getComputedStyle(option);
         if (style.display === "none" || style.visibility === "hidden") return false;
@@ -272,6 +273,13 @@ async function readCustomComboboxState(
       const expanded = (el.getAttribute("aria-expanded") || "").toLowerCase() === "true";
       let selectedOption: { value: string; label?: string } | undefined;
       const options: Array<{ value: string; label?: string }> = [];
+      const selectedSelectors =
+        '[role="option"][aria-selected="true"], [role="option"][aria-current="true"], [role="option"][aria-checked="true"], [role="option"][data-selected="true"], option[selected], .selected, .current, .active';
+
+      const selectedFromContainer = (container: ParentNode): { value: string; label?: string } | undefined => {
+        const selectedNode = container.querySelector(selectedSelectors);
+        return resolveOption(selectedNode);
+      };
 
       if (expanded && lists.length > 0) {
         for (const list of lists) {
@@ -290,20 +298,50 @@ async function readCustomComboboxState(
               selectedOption = resolved;
             }
           }
+          if (!selectedOption) {
+            selectedOption = selectedFromContainer(list);
+          }
         }
+      }
+      if (!selectedOption) {
+        for (const list of lists) {
+          const selected = selectedFromContainer(list);
+          if (selected) {
+            selectedOption = selected;
+            break;
+          }
+        }
+      }
+      if (!selectedOption) {
+        selectedOption = selectedFromContainer(el);
       }
 
       const inputValue =
         "value" in el && typeof (el as HTMLInputElement).value === "string"
           ? normalize((el as HTMLInputElement).value)
           : "";
+      const attrValue = normalize(
+        el.getAttribute("aria-valuetext") ||
+          el.getAttribute("data-value") ||
+          el.getAttribute("value") ||
+          el.getAttribute("title")
+      );
+      const nestedControl = el.querySelector("input, select, textarea");
+      const nestedValue = nestedControl
+        ? normalize(
+            (nestedControl as HTMLInputElement).value ||
+              nestedControl.getAttribute("aria-valuetext") ||
+              nestedControl.getAttribute("value")
+          )
+        : "";
       const controlText = normalize((el as HTMLElement).innerText || el.textContent || "");
+      const compactText = !isNoisy(controlText) ? controlText : "";
 
       return {
         activeOption,
         selectedOption,
         expanded,
-        controlText: inputValue || controlText || "",
+        controlText: inputValue || attrValue || nestedValue || compactText || "",
         options
       };
     }, { timeout: LOCATOR_READ_TIMEOUT_MS })

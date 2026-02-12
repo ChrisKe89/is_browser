@@ -106,6 +106,40 @@ test("readControlState parses custom combobox active option", async () => {
   assert.equal(state.currentValue, "accounting");
 });
 
+test("readControlState parses custom combobox aria-valuetext fallback", async () => {
+  const state = await readControlState(
+    {
+      evaluate: async () => ({
+        activeOption: undefined,
+        selectedOption: undefined,
+        expanded: false,
+        controlText: "Permit",
+        options: []
+      })
+    },
+    { fieldType: "select", tagName: "div", roleAttr: "combobox" }
+  );
+  assert.equal(state.valueType, "enum");
+  assert.equal(state.currentValue, "Permit");
+});
+
+test("readControlState parses custom combobox selected option fallback", async () => {
+  const state = await readControlState(
+    {
+      evaluate: async () => ({
+        activeOption: undefined,
+        selectedOption: { value: "allow", label: "Allow" },
+        expanded: false,
+        controlText: "",
+        options: [{ value: "allow", label: "Allow" }]
+      })
+    },
+    { fieldType: "select", tagName: "div", roleAttr: "combobox" }
+  );
+  assert.equal(state.valueType, "enum");
+  assert.equal(state.currentValue, "allow");
+});
+
 test("shouldContributeToBreadcrumb keeps meaningful nav labels", () => {
   assert.equal(
     shouldContributeToBreadcrumb({
