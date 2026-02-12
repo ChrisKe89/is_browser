@@ -46,6 +46,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+- `apps/is_form` now serves a normalized settings schema at `GET /api/form/schema` and the form UI was redesigned to render section/group/subgroup layouts with validation, sticky save/discard controls, and Fujifilm-branded assets.
 - Finalized workspace layout under `apps/*` and `packages/*` with npm workspaces and per-workspace `package.json` files.
 - Renamed shared packages to `@is-browser/contract`, `@is-browser/env`, `@is-browser/browser`, and `@is-browser/sqlite-store`; updated imports across apps/tests.
 - Moved legacy root assets/config/tests into app/package ownership and `tools/samples` (`customer-map.csv`, sample settings, schema JSON).
