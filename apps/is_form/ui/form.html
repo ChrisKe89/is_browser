@@ -3,16 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Printer Profile Form</title>
+    <title>Fujifilm Printer Settings</title>
     <style>
       :root {
-        --bg: #f5f7fb;
-        --panel: #ffffff;
-        --line: #d1d5db;
-        --text: #111827;
-        --muted: #4b5563;
-        --accent: #0f766e;
-        --danger: #b91c1c;
+        --color-bg: #ffffff;
+        --color-text: #13202e;
+        --color-border: #e6ebf2;
+        --color-primary: #0f5a9c;
+        --color-primary-strong: #0a4a81;
+        --color-focus: rgba(15, 90, 156, 0.15);
+        --color-error: #b42318;
+        --color-error-bg: #fef3f2;
+        --color-muted: #5f6b78;
+        --header-height: 76px;
       }
 
       * {
@@ -21,703 +24,1145 @@
 
       body {
         margin: 0;
-        font-family: "Segoe UI", Tahoma, sans-serif;
-        color: var(--text);
-        background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 45%, #ffffff 100%);
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        color: var(--color-text);
+        background: var(--color-bg);
+        padding-top: calc(var(--header-height) + 1px);
+        padding-bottom: 92px;
       }
 
-      main {
-        max-width: 1280px;
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--color-focus);
+        outline-offset: 1px;
+      }
+
+      .app-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        background: #fff;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      .app-header-inner {
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 1rem;
-      }
-
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 0.9rem;
-      }
-
-      h1,
-      h2,
-      h3 {
-        margin: 0;
-      }
-
-      h1 {
-        font-size: 1.3rem;
-      }
-
-      h2 {
-        font-size: 1.05rem;
-        margin-bottom: 0.6rem;
-      }
-
-      h3 {
-        font-size: 0.95rem;
-        margin: 0.6rem 0;
-      }
-
-      .muted {
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .top-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(160px, 1fr));
-        gap: 0.75rem;
-      }
-
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.32rem;
-      }
-
-      .field label {
-        font-weight: 600;
-        font-size: 0.86rem;
-      }
-
-      .field input,
-      .field select,
-      .field textarea {
-        width: 100%;
-        padding: 0.48rem 0.58rem;
-        border: 1px solid #9ca3af;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        background: #fff;
-      }
-
-      .field textarea {
-        min-height: 66px;
-      }
-
-      .actions {
-        margin-top: 0.75rem;
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-      }
-
-      .top-links {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        margin-top: 0.6rem;
-      }
-
-      .top-links a {
-        color: #0f4fb7;
-        font-weight: 700;
-        text-decoration: none;
-      }
-
-      .top-links a:hover {
-        text-decoration: underline;
-      }
-
-      button {
-        border: 0;
-        border-radius: 8px;
-        padding: 0.5rem 0.9rem;
-        cursor: pointer;
-        background: #e5e7eb;
-        color: #111827;
-        font-weight: 600;
-      }
-
-      button.primary {
-        background: var(--accent);
-        color: #fff;
-      }
-
-      details {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        margin-top: 0.75rem;
-        overflow: hidden;
-      }
-
-      summary {
-        cursor: pointer;
-        padding: 0.6rem 0.75rem;
-        font-weight: 700;
-        background: #f8fafc;
-      }
-
-      .page-content {
-        padding: 0.75rem;
-      }
-
-      .group {
-        border: 1px dashed #d1d5db;
-        border-radius: 10px;
-        padding: 0.75rem;
-        margin-bottom: 0.8rem;
-      }
-
-      .settings-grid {
-        display: grid;
-        gap: 0.65rem;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      }
-
-      .setting-card {
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 0.55rem;
-        background: #fff;
-      }
-
-      .setting-card.disabled {
-        opacity: 0.68;
-        background: #f9fafb;
-      }
-
-      .setting-header {
+        min-height: var(--header-height);
+        padding: 0.75rem 1rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.5rem;
+        gap: 1rem;
       }
 
-      .setting-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-size: 0.78rem;
-        color: var(--muted);
+      .app-header img {
+        height: 32px;
+        width: auto;
+        display: block;
       }
 
-      .setting-id {
-        margin-top: 0.28rem;
-        color: var(--muted);
-        font-size: 0.72rem;
-        word-break: break-all;
+      .app-header-title {
+        font-size: 0.92rem;
+        color: var(--color-muted);
+        text-align: right;
       }
 
-      .radio-group {
+      .header-accent {
+        height: 2px;
+        background: var(--color-primary);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.1rem 1rem 0;
+      }
+
+      .card {
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        background: #fff;
+        padding: 1rem;
+      }
+
+      .profile-card {
+        margin-bottom: 1rem;
+      }
+
+      .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 0.85rem;
+      }
+
+      .field-wrap {
         display: flex;
-        gap: 0.65rem;
+        flex-direction: column;
+        gap: 0.36rem;
+      }
+
+      .field-wrap label {
+        font-size: 0.86rem;
+        font-weight: 700;
+      }
+
+      .required-mark {
+        color: var(--color-error);
+      }
+
+      input[type="text"],
+      select,
+      textarea {
+        border: 1px solid #b8c3d1;
+        border-radius: 8px;
+        padding: 0.54rem 0.62rem;
+        color: var(--color-text);
+        width: 100%;
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 88px;
+        resize: vertical;
+      }
+
+      .field-wrap.has-error input,
+      .field-wrap.has-error select,
+      .field-wrap.has-error textarea {
+        border-color: var(--color-error);
+        background: var(--color-error-bg);
+      }
+
+      .field-error {
+        min-height: 1rem;
+        font-size: 0.8rem;
+        color: var(--color-error);
+      }
+
+      .profile-actions {
+        margin-top: 0.95rem;
+        display: flex;
+        gap: 0.55rem;
         flex-wrap: wrap;
       }
 
-      .radio-option {
+      button {
+        border: 1px solid #c1cbda;
+        background: #f5f8fc;
+        color: var(--color-text);
+        border-radius: 8px;
+        padding: 0.48rem 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #ecf2f8;
+      }
+
+      button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--color-primary-strong);
+      }
+
+      .status {
+        margin-top: 0.9rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        background: #f5f8fc;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      .status.error {
+        border-color: #f4c7c3;
+        background: var(--color-error-bg);
+        color: var(--color-error);
+      }
+
+      .status.success {
+        border-color: #c7e3c7;
+        background: #eff9ef;
+      }
+
+      .section-stack {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .section-card {
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        background: #fff;
+        padding: 0.95rem;
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 700;
+      }
+
+      .section-divider {
+        height: 1px;
+        background: var(--color-border);
+        margin: 0.75rem 0;
+      }
+
+      .group-card {
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        margin-left: 0.7rem;
+        padding: 0.8rem;
+        background: #fff;
+      }
+
+      .group-title {
+        margin: 0 0 0.75rem;
+        font-size: 0.98rem;
+        font-weight: 700;
+      }
+
+      .subgroup-card {
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        margin: 0 0 0.7rem;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .subgroup-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        border: 0;
+        border-bottom: 1px solid var(--color-border);
+        border-radius: 0;
+        padding: 0.68rem 0.75rem;
+        background: #f8fbff;
+        text-align: left;
+      }
+      .subgroup-title-wrap {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.52rem;
       }
 
-      #status {
-        margin-top: 0.7rem;
-        padding: 0.6rem;
-        border-radius: 8px;
-        background: #eef2ff;
+      .chevron {
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 7px solid var(--color-muted);
+        transition: transform 0.18s ease;
       }
 
-      .status-error {
-        color: var(--danger);
+      .subgroup-header[aria-expanded="false"] .chevron {
+        transform: rotate(-90deg);
       }
 
-      @media (max-width: 900px) {
-        .top-grid {
+      .subgroup-summary {
+        color: var(--color-muted);
+        font-size: 0.82rem;
+      }
+
+      .subgroup-body {
+        padding: 0.82rem;
+      }
+
+      .subgroup-body[hidden] {
+        display: none;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: 0.8rem;
+      }
+
+      .checkbox-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 40px;
+      }
+
+      .checkbox-inline input {
+        margin: 0;
+      }
+
+      .empty-note {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+      }
+
+      .sticky-save {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 45;
+        background: #fff;
+        border-top: 1px solid var(--color-border);
+        padding: 0.72rem 1rem;
+        display: none;
+      }
+
+      .sticky-save.show {
+        display: block;
+      }
+
+      .sticky-save-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+      }
+
+      .sticky-text {
+        font-weight: 700;
+        color: var(--color-text);
+      }
+
+      .sticky-actions {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 980px) {
+        .profile-grid {
           grid-template-columns: 1fr 1fr;
         }
       }
 
-      @media (max-width: 640px) {
-        .top-grid {
+      @media (max-width: 760px) {
+        .app-header-inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .app-header-title {
+          text-align: left;
+        }
+
+        .profile-grid,
+        .field-grid {
           grid-template-columns: 1fr;
+        }
+
+        .group-card {
+          margin-left: 0;
+        }
+
+        .sticky-save-inner {
+          align-items: flex-start;
+          flex-direction: column;
         }
       }
     </style>
   </head>
   <body>
+    <header class="app-header">
+      <div class="app-header-inner">
+        <img src="/assets/logo.svg" alt="Fujifilm logo" />
+        <div class="app-header-title">FUJIFILM Business Innovation | Australia</div>
+      </div>
+      <div class="header-accent" aria-hidden="true"></div>
+    </header>
+
     <main>
-      <section class="panel">
-        <h1>Profile Form (DB-backed)</h1>
-        <p class="muted">
-          This form is generated from the UI map in the database (writeable/changeable fields only).
-        </p>
-        <div class="top-grid">
-          <div class="field">
-            <label for="accountNumber">Account</label>
-            <input id="accountNumber" name="accountNumber" type="text" autocomplete="off" />
+      <section class="card profile-card">
+        <div class="profile-grid">
+          <div class="field-wrap" data-meta-field="accountNumber">
+            <label for="accountNumber">Account <span class="required-mark">*</span></label>
+            <input id="accountNumber" type="text" autocomplete="off" />
+            <div id="error-accountNumber" class="field-error"></div>
           </div>
-          <div class="field">
-            <label for="variation">Variation</label>
-            <input id="variation" name="variation" type="text" autocomplete="off" />
+
+          <div class="field-wrap" data-meta-field="variation">
+            <label for="variation">Variation <span class="required-mark">*</span></label>
+            <input id="variation" type="text" autocomplete="off" />
+            <div id="error-variation" class="field-error"></div>
           </div>
-          <div class="field">
+
+          <div class="field-wrap" data-meta-field="displayName">
             <label for="displayName">Profile Name</label>
-            <input id="displayName" name="displayName" type="text" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="variationList">Existing Variations</label>
-            <input id="variationList" name="variationList" list="variationOptions" type="text" readonly />
-            <datalist id="variationOptions"></datalist>
+            <input id="displayName" type="text" autocomplete="off" />
+            <div id="error-displayName" class="field-error"></div>
           </div>
         </div>
-        <div class="actions">
-          <button id="refreshSchemaBtn" type="button">Reload Schema</button>
-          <button id="loadProfileBtn" type="button">Load Profile</button>
-          <button id="enableAllBtn" type="button">Enable All</button>
-          <button id="disableAllBtn" type="button">Disable All</button>
-          <button id="saveProfileBtn" class="primary" type="button">Save Profile</button>
+
+        <div class="profile-actions">
+          <button id="loadBtn" type="button">Load</button>
+          <button id="clearBtn" type="button">New/Clear</button>
+          <button id="saveBtn" type="button" class="btn-primary" disabled>Save</button>
         </div>
-        <div class="top-links">
-          <a id="openOperatorLink" href="http://localhost:5050/" target="_blank" rel="noreferrer">Open Operator UX</a>
-        </div>
-        <div id="status" class="muted">Loading schema...</div>
+
+        <div id="status" class="status" aria-live="polite">Loading schema...</div>
       </section>
 
-      <section id="schemaContainer" class="panel">
-        <h2>Settings</h2>
-        <div id="formPages"></div>
-      </section>
+      <section id="sectionsContainer" class="section-stack" aria-live="polite"></section>
     </main>
 
+    <div id="stickySave" class="sticky-save" aria-live="polite">
+      <div class="sticky-save-inner">
+        <div class="sticky-text">Unsaved changes</div>
+        <div class="sticky-actions">
+          <button id="stickyDiscardBtn" type="button">Discard</button>
+          <button id="stickySaveBtn" type="button" class="btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      const statusEl = document.getElementById("status");
-      const formPagesEl = document.getElementById("formPages");
-      const accountEl = document.getElementById("accountNumber");
-      const variationEl = document.getElementById("variation");
-      const displayNameEl = document.getElementById("displayName");
-      const variationListEl = document.getElementById("variationList");
-      const variationOptionsEl = document.getElementById("variationOptions");
-      const openOperatorLinkEl = document.getElementById("openOperatorLink");
+      const SESSION_COLLAPSE_KEY = "is_form_subgroup_collapsed";
 
-      const controls = new Map();
+      const elements = {
+        account: document.getElementById("accountNumber"),
+        variation: document.getElementById("variation"),
+        displayName: document.getElementById("displayName"),
+        loadBtn: document.getElementById("loadBtn"),
+        clearBtn: document.getElementById("clearBtn"),
+        saveBtn: document.getElementById("saveBtn"),
+        status: document.getElementById("status"),
+        sectionsContainer: document.getElementById("sectionsContainer"),
+        stickySave: document.getElementById("stickySave"),
+        stickyDiscardBtn: document.getElementById("stickyDiscardBtn"),
+        stickySaveBtn: document.getElementById("stickySaveBtn")
+      };
 
-      function setStatus(message, isError = false) {
-        statusEl.textContent = message;
-        statusEl.classList.toggle("status-error", Boolean(isError));
+      let schema = null;
+      let formState = {};
+      let validationErrors = {};
+      let dirty = false;
+      let snapshot = null;
+
+      const fieldIndex = new Map();
+      const fieldOrder = [];
+      const dependencyIndex = new Map();
+      const subgroupCollapsed = new Map();
+
+      function setStatus(message, type = "info") {
+        elements.status.textContent = message;
+        elements.status.classList.remove("error", "success");
+        if (type === "error") elements.status.classList.add("error");
+        if (type === "success") elements.status.classList.add("success");
       }
 
-      function sanitizeId(value) {
-        return value.replace(/[^a-zA-Z0-9_-]/g, "_");
-      }
-
-      function clearControls() {
-        controls.clear();
-      }
-
-      function createControlInput(setting) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "field";
-        const controlId = "setting_" + sanitizeId(setting.id);
-        const controlState = { touched: false, fromProfile: false };
-        const markTouched = () => {
-          controlState.touched = true;
-        };
-        let getValue = () => "";
-        let setValue = () => {};
-        const valueElements = [];
-        const setValueDisabled = (disabled) => {
-          valueElements.forEach((element) => {
-            element.disabled = disabled;
+      function loadCollapseStateFromSession() {
+        subgroupCollapsed.clear();
+        try {
+          const raw = sessionStorage.getItem(SESSION_COLLAPSE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return;
+          Object.entries(parsed).forEach(([key, value]) => {
+            subgroupCollapsed.set(key, Boolean(value));
           });
-        };
+        } catch {
+          // ignore invalid cache
+        }
+      }
 
-        if (setting.controlType === "switch") {
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.id = controlId;
-          checkbox.addEventListener("change", markTouched);
-          wrapper.appendChild(checkbox);
-          valueElements.push(checkbox);
-          getValue = () => (checkbox.checked ? "On" : "Off");
-          setValue = (value) => {
-            controlState.fromProfile = true;
-            checkbox.checked = String(value).toLowerCase() === "on";
-          };
-        } else if (setting.controlType === "radio" && Array.isArray(setting.options) && setting.options.length) {
-          const group = document.createElement("div");
-          group.className = "radio-group";
-          const name = controlId + "_radio";
-          setting.options.forEach((optionValue, index) => {
-            const optionId = `${controlId}_${index}`;
-            const item = document.createElement("label");
-            item.className = "radio-option";
-            const input = document.createElement("input");
-            input.type = "radio";
-            input.name = name;
-            input.id = optionId;
-            input.value = optionValue;
-            input.addEventListener("change", markTouched);
-            const text = document.createElement("span");
-            text.textContent = optionValue;
-            item.appendChild(input);
-            item.appendChild(text);
-            group.appendChild(item);
-            valueElements.push(input);
+      function persistCollapseStateToSession() {
+        const obj = {};
+        subgroupCollapsed.forEach((value, key) => {
+          obj[key] = Boolean(value);
+        });
+        sessionStorage.setItem(SESSION_COLLAPSE_KEY, JSON.stringify(obj));
+      }
+
+      function getAllSubgroups() {
+        const sections = Array.isArray(schema?.sections) ? schema.sections : [];
+        const all = [];
+        sections.forEach((section) => {
+          const groups = Array.isArray(section.groups) ? section.groups : [];
+          groups.forEach((group) => {
+            const subgroups = Array.isArray(group.subgroups) ? group.subgroups : [];
+            subgroups.forEach((subgroup) => {
+              all.push({ section, group, subgroup });
+            });
           });
-          wrapper.appendChild(group);
-          getValue = () => {
-            const selected = group.querySelector(`input[name="${name}"]:checked`);
-            return selected ? selected.value : "";
-          };
-          setValue = (value) => {
-            controlState.fromProfile = true;
-            const expected = String(value);
-            const target = group.querySelector(`input[name="${name}"][value="${CSS.escape(expected)}"]`);
-            if (target) {
-              target.checked = true;
+        });
+        return all;
+      }
+      function getDefaultForField(field) {
+        if (Object.prototype.hasOwnProperty.call(field, "default")) {
+          return field.default;
+        }
+        if (field.control === "checkbox") return false;
+        return "";
+      }
+
+      function normalizeValueForField(field, value) {
+        if (field.control === "checkbox") {
+          return value === true;
+        }
+        return String(value ?? "");
+      }
+
+      function buildIndexes() {
+        fieldIndex.clear();
+        fieldOrder.length = 0;
+        dependencyIndex.clear();
+
+        getAllSubgroups().forEach(({ section, group, subgroup }) => {
+          const fields = Array.isArray(subgroup.fields) ? subgroup.fields : [];
+          if (!subgroupCollapsed.has(subgroup.id)) {
+            subgroupCollapsed.set(subgroup.id, subgroup.defaultCollapsed === true);
+          }
+
+          fields.forEach((field) => {
+            fieldOrder.push(field.id);
+            fieldIndex.set(field.id, {
+              sectionId: section.id,
+              groupId: group.id,
+              subgroupId: subgroup.id,
+              field
+            });
+
+            if (field.visibleIf?.fieldId) {
+              const depId = field.visibleIf.fieldId;
+              if (!dependencyIndex.has(depId)) dependencyIndex.set(depId, []);
+              dependencyIndex.get(depId).push(field.id);
             }
-          };
-        } else if (setting.controlType === "select" && Array.isArray(setting.options) && setting.options.length) {
-          const select = document.createElement("select");
-          select.id = controlId;
-          const empty = document.createElement("option");
-          empty.value = "";
-          empty.textContent = "-- select --";
-          select.appendChild(empty);
-          select.addEventListener("change", markTouched);
-          setting.options.forEach((optionValue) => {
-            const opt = document.createElement("option");
-            opt.value = optionValue;
-            opt.textContent = optionValue;
-            select.appendChild(opt);
           });
-          wrapper.appendChild(select);
-          valueElements.push(select);
-          getValue = () => select.value;
-          setValue = (value) => {
-            controlState.fromProfile = true;
-            select.value = String(value);
-          };
-        } else if (setting.controlType === "textarea") {
-          const textarea = document.createElement("textarea");
-          textarea.id = controlId;
-          textarea.addEventListener("input", markTouched);
-          if (setting.pattern) {
-            textarea.setAttribute("pattern", setting.pattern);
+        });
+      }
+
+      function initializeStateFromSchema() {
+        const next = {};
+        fieldOrder.forEach((fieldId) => {
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          next[fieldId] = getDefaultForField(meta.field);
+        });
+        formState = next;
+      }
+
+      function isFieldConditionVisible(field) {
+        if (!field.visibleIf) return true;
+        return formState[field.visibleIf.fieldId] === field.visibleIf.equals;
+      }
+
+      function isFieldActive(fieldId) {
+        const meta = fieldIndex.get(fieldId);
+        if (!meta) return false;
+        const isCollapsed = subgroupCollapsed.get(meta.subgroupId) === true;
+        if (isCollapsed) return false;
+        return isFieldConditionVisible(meta.field);
+      }
+
+      function clearMetaErrors() {
+        ["accountNumber", "variation", "displayName"].forEach((id) => {
+          const wrap = document.querySelector(`.field-wrap[data-meta-field="${id}"]`);
+          const error = document.getElementById(`error-${id}`);
+          if (wrap) wrap.classList.remove("has-error");
+          if (error) error.textContent = "";
+        });
+      }
+
+      function renderInlineErrors() {
+        clearMetaErrors();
+        document.querySelectorAll("[id^='error-field-']").forEach((node) => {
+          node.textContent = "";
+        });
+        document.querySelectorAll(".field-wrap").forEach((node) => {
+          if (node.dataset.fieldId) node.classList.remove("has-error");
+        });
+
+        Object.entries(validationErrors).forEach(([key, message]) => {
+          if (key === "accountNumber" || key === "variation" || key === "displayName") {
+            const wrap = document.querySelector(`.field-wrap[data-meta-field="${key}"]`);
+            const error = document.getElementById(`error-${key}`);
+            if (wrap) wrap.classList.add("has-error");
+            if (error) error.textContent = message;
+            return;
           }
-          wrapper.appendChild(textarea);
-          valueElements.push(textarea);
-          getValue = () => textarea.value;
-          setValue = (value) => {
-            controlState.fromProfile = true;
-            textarea.value = String(value ?? "");
-          };
+
+          const wrap = document.querySelector(`.field-wrap[data-field-id="${CSS.escape(key)}"]`);
+          const error = document.getElementById(`error-field-${key}`);
+          if (wrap) wrap.classList.add("has-error");
+          if (error) error.textContent = message;
+        });
+      }
+
+      function readSnapshot() {
+        const values = {};
+        fieldOrder.forEach((fieldId) => {
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          values[fieldId] = normalizeValueForField(meta.field, formState[fieldId]);
+        });
+        return {
+          accountNumber: elements.account.value.trim(),
+          variation: elements.variation.value.trim(),
+          displayName: elements.displayName.value.trim(),
+          values
+        };
+      }
+
+      function snapshotsEqual(a, b) {
+        if (!a || !b) return false;
+        if (a.accountNumber !== b.accountNumber) return false;
+        if (a.variation !== b.variation) return false;
+        if (a.displayName !== b.displayName) return false;
+
+        for (const fieldId of fieldOrder) {
+          if (a.values[fieldId] !== b.values[fieldId]) return false;
+        }
+        return true;
+      }
+
+      function updateDirtyState() {
+        dirty = !snapshotsEqual(readSnapshot(), snapshot);
+        elements.saveBtn.disabled = !dirty;
+        handleStickyBar();
+      }
+
+      function setFieldValue(fieldId, nextValue, rerenderForVisibility = true) {
+        formState[fieldId] = nextValue;
+        if (validationErrors[fieldId]) {
+          delete validationErrors[fieldId];
+        }
+        if (rerenderForVisibility && dependencyIndex.has(fieldId)) {
+          renderSections();
         } else {
+          renderInlineErrors();
+        }
+        updateDirtyState();
+      }
+
+      function renderField(field) {
+        if (!isFieldConditionVisible(field)) return null;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "field-wrap";
+        wrapper.dataset.fieldId = field.id;
+
+        if (field.control === "checkbox") {
+          const inputId = `input-${field.id}`;
+          const row = document.createElement("div");
+          row.className = "checkbox-inline";
+
           const input = document.createElement("input");
-          input.id = controlId;
-          input.type = setting.controlType === "number" ? "number" : "text";
-          input.addEventListener("input", markTouched);
-          if (setting.controlType === "number") {
-            if (typeof setting.min === "number") input.min = String(setting.min);
-            if (typeof setting.max === "number") input.max = String(setting.max);
-          } else if (setting.pattern) {
-            input.pattern = setting.pattern;
+          input.type = "checkbox";
+          input.id = inputId;
+          input.checked = Boolean(formState[field.id]);
+          input.addEventListener("change", () => {
+            setFieldValue(field.id, input.checked, true);
+          });
+
+          const label = document.createElement("label");
+          label.htmlFor = inputId;
+          label.textContent = field.label;
+
+          row.appendChild(input);
+          row.appendChild(label);
+
+          if (field.required) {
+            const mark = document.createElement("span");
+            mark.className = "required-mark";
+            mark.textContent = "*";
+            row.appendChild(mark);
           }
-          wrapper.appendChild(input);
-          valueElements.push(input);
-          getValue = () => input.value;
-          setValue = (value) => {
-            controlState.fromProfile = true;
-            input.value = String(value ?? "");
-          };
+
+          wrapper.appendChild(row);
+        } else {
+          const label = document.createElement("label");
+          label.htmlFor = `input-${field.id}`;
+          label.innerHTML = field.required
+            ? `${escapeHtml(field.label)} <span class="required-mark">*</span>`
+            : escapeHtml(field.label);
+          wrapper.appendChild(label);
+
+          if (field.control === "textarea") {
+            const textarea = document.createElement("textarea");
+            textarea.id = `input-${field.id}`;
+            textarea.value = String(formState[field.id] ?? "");
+            textarea.addEventListener("input", () => {
+              setFieldValue(field.id, textarea.value, false);
+            });
+            wrapper.appendChild(textarea);
+          } else if (field.control === "select") {
+            const select = document.createElement("select");
+            select.id = `input-${field.id}`;
+
+            const emptyOption = document.createElement("option");
+            emptyOption.value = "";
+            emptyOption.textContent = "-- Select --";
+            select.appendChild(emptyOption);
+
+            const options = Array.isArray(field.options) ? field.options : [];
+            options.forEach((optionValue) => {
+              const option = document.createElement("option");
+              option.value = String(optionValue);
+              option.textContent = String(optionValue);
+              select.appendChild(option);
+            });
+
+            select.value = String(formState[field.id] ?? "");
+            select.addEventListener("change", () => {
+              setFieldValue(field.id, select.value, true);
+            });
+            wrapper.appendChild(select);
+          } else {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = `input-${field.id}`;
+            input.value = String(formState[field.id] ?? "");
+            input.addEventListener("input", () => {
+              setFieldValue(field.id, input.value, false);
+            });
+            wrapper.appendChild(input);
+          }
         }
 
-        controls.set(setting.id, {
-          type: setting.controlType,
-          getValue,
-          setValue,
-          isTouched: () => controlState.touched,
-          hasProfileValue: () => controlState.fromProfile,
-          setValueDisabled
-        });
+        const error = document.createElement("div");
+        error.className = "field-error";
+        error.id = `error-field-${field.id}`;
+        wrapper.appendChild(error);
+
+        if (validationErrors[field.id]) {
+          wrapper.classList.add("has-error");
+          error.textContent = validationErrors[field.id];
+        }
 
         return wrapper;
       }
+      function renderSubgroups(group, parent) {
+        const subgroups = Array.isArray(group.subgroups) ? group.subgroups : [];
 
-      function renderSchemaPages(pages) {
-        formPagesEl.innerHTML = "";
-        clearControls();
+        subgroups.forEach((subgroup) => {
+          const card = document.createElement("div");
+          card.className = "subgroup-card";
 
-        if (!Array.isArray(pages) || pages.length === 0) {
-          const empty = document.createElement("p");
-          empty.className = "muted";
-          empty.textContent = "No writeable settings found in the database schema.";
-          formPagesEl.appendChild(empty);
-          return;
-        }
+          const header = document.createElement("button");
+          header.type = "button";
+          header.className = "subgroup-header";
 
-        pages.forEach((page, pageIndex) => {
-          const details = document.createElement("details");
-          details.open = pageIndex < 3;
+          const isCollapsed = subgroupCollapsed.get(subgroup.id) === true;
+          const bodyId = `subgroup-body-${subgroup.id}`;
 
-          const summary = document.createElement("summary");
-          summary.textContent = `${page.title || page.id} (${page.groups?.length || 0} groups)`;
-          details.appendChild(summary);
+          header.setAttribute("aria-expanded", String(!isCollapsed));
+          header.setAttribute("aria-controls", bodyId);
 
-          const content = document.createElement("div");
-          content.className = "page-content";
+          const titleWrap = document.createElement("span");
+          titleWrap.className = "subgroup-title-wrap";
 
-          const pageMeta = document.createElement("p");
-          pageMeta.className = "muted";
-          pageMeta.textContent = page.url || "";
-          content.appendChild(pageMeta);
+          const chevron = document.createElement("span");
+          chevron.className = "chevron";
+          chevron.setAttribute("aria-hidden", "true");
 
-          const groups = Array.isArray(page.groups) ? page.groups : [];
-          groups.forEach((group) => {
-            const groupWrap = document.createElement("div");
-            groupWrap.className = "group";
+          const title = document.createElement("span");
+          title.textContent = subgroup.title || subgroup.id;
 
-            const heading = document.createElement("h3");
-            heading.textContent = `Type: ${group.controlType}`;
-            groupWrap.appendChild(heading);
+          titleWrap.appendChild(chevron);
+          titleWrap.appendChild(title);
 
-            const grid = document.createElement("div");
-            grid.className = "settings-grid";
+          const fields = Array.isArray(subgroup.fields) ? subgroup.fields : [];
+          const summary = document.createElement("span");
+          summary.className = "subgroup-summary";
+          summary.textContent = `${fields.length} setting${fields.length === 1 ? "" : "s"}`;
 
-            const settings = Array.isArray(group.settings) ? group.settings : [];
-            settings.forEach((setting) => {
-              const card = document.createElement("div");
-              card.className = "setting-card";
+          header.appendChild(titleWrap);
+          header.appendChild(summary);
 
-              const header = document.createElement("div");
-              header.className = "setting-header";
+          const body = document.createElement("div");
+          body.className = "subgroup-body";
+          body.id = bodyId;
+          body.hidden = isCollapsed;
 
-              const label = document.createElement("label");
-              label.textContent = setting.label || setting.id;
-              header.appendChild(label);
-
-              const enabledWrap = document.createElement("label");
-              enabledWrap.className = "setting-toggle";
-              const enabledInput = document.createElement("input");
-              enabledInput.type = "checkbox";
-              enabledInput.checked = true;
-              const enabledText = document.createElement("span");
-              enabledText.textContent = "Enabled";
-              enabledWrap.appendChild(enabledInput);
-              enabledWrap.appendChild(enabledText);
-              header.appendChild(enabledWrap);
-
-              card.appendChild(header);
-
-              card.appendChild(createControlInput(setting));
-
-              const idTag = document.createElement("div");
-              idTag.className = "setting-id";
-              idTag.textContent = setting.id;
-              card.appendChild(idTag);
-
-              const control = controls.get(setting.id);
-              if (control) {
-                const setEnabledState = (enabled) => {
-                  enabledInput.checked = enabled;
-                  card.classList.toggle("disabled", !enabled);
-                  control.setValueDisabled(!enabled);
-                };
-                enabledInput.addEventListener("change", () => {
-                  setEnabledState(enabledInput.checked);
-                });
-                controls.set(setting.id, {
-                  ...control,
-                  isEnabled: () => enabledInput.checked,
-                  setEnabled: (enabled) => {
-                    setEnabledState(Boolean(enabled));
-                  }
-                });
-                setEnabledState(true);
-              }
-
-              grid.appendChild(card);
-            });
-
-            groupWrap.appendChild(grid);
-            content.appendChild(groupWrap);
+          header.addEventListener("click", () => {
+            const nextCollapsed = !(subgroupCollapsed.get(subgroup.id) === true);
+            subgroupCollapsed.set(subgroup.id, nextCollapsed);
+            persistCollapseStateToSession();
+            renderSections();
+            updateDirtyState();
           });
 
-          details.appendChild(content);
-          formPagesEl.appendChild(details);
+          card.appendChild(header);
+          card.appendChild(body);
+
+          if (!isCollapsed) {
+            const grid = document.createElement("div");
+            grid.className = "field-grid";
+
+            fields.forEach((field) => {
+              const fieldEl = renderField(field);
+              if (fieldEl) {
+                grid.appendChild(fieldEl);
+              }
+            });
+
+            if (!grid.childElementCount) {
+              const empty = document.createElement("p");
+              empty.className = "empty-note";
+              empty.textContent = "No visible settings in this subgroup.";
+              body.appendChild(empty);
+            } else {
+              body.appendChild(grid);
+            }
+          }
+
+          parent.appendChild(card);
         });
       }
 
-      function collectValues() {
-        const values = [];
-        for (const [settingId, control] of controls.entries()) {
-          const raw = control.getValue();
-          const enabled = control.isEnabled ? control.isEnabled() : true;
+      function renderGroups(section, parent) {
+        const groups = Array.isArray(section.groups) ? section.groups : [];
 
-          if (!enabled) {
-            values.push({ settingId, value: String(raw ?? ""), enabled: false });
-            continue;
-          }
+        groups.forEach((group) => {
+          const card = document.createElement("div");
+          card.className = "group-card";
 
-          if (
-            control.type === "switch" &&
-            !control.isTouched() &&
-            !control.hasProfileValue()
-          ) {
-            continue;
-          }
-          if (control.type !== "switch" && (raw === null || raw === undefined || String(raw).trim() === "")) {
-            continue;
-          }
-          values.push({ settingId, value: String(raw), enabled: true });
+          const title = document.createElement("h3");
+          title.className = "group-title";
+          title.textContent = group.title || group.id;
+          card.appendChild(title);
+
+          renderSubgroups(group, card);
+          parent.appendChild(card);
+        });
+      }
+
+      function renderSections() {
+        elements.sectionsContainer.innerHTML = "";
+
+        const sections = Array.isArray(schema?.sections) ? schema.sections : [];
+        if (!sections.length) {
+          const empty = document.createElement("div");
+          empty.className = "card empty-note";
+          empty.textContent = "Schema contains no sections.";
+          elements.sectionsContainer.appendChild(empty);
+          return;
         }
+
+        sections.forEach((section) => {
+          const sectionCard = document.createElement("section");
+          sectionCard.className = "section-card";
+
+          const title = document.createElement("h2");
+          title.className = "section-title";
+          title.textContent = section.title || section.id;
+          sectionCard.appendChild(title);
+
+          const divider = document.createElement("div");
+          divider.className = "section-divider";
+          divider.setAttribute("aria-hidden", "true");
+          sectionCard.appendChild(divider);
+
+          renderGroups(section, sectionCard);
+          elements.sectionsContainer.appendChild(sectionCard);
+        });
+
+        renderInlineErrors();
+      }
+
+      function validateForm() {
+        const nextErrors = {};
+
+        if (!elements.account.value.trim()) {
+          nextErrors.accountNumber = "Account is required.";
+        }
+        if (!elements.variation.value.trim()) {
+          nextErrors.variation = "Variation is required.";
+        }
+
+        fieldOrder.forEach((fieldId) => {
+          if (!isFieldActive(fieldId)) return;
+
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          const field = meta.field;
+          const value = formState[fieldId];
+
+          if (field.required) {
+            if (field.control === "checkbox") {
+              if (value !== true) {
+                nextErrors[fieldId] = `${field.label} must be checked.`;
+              }
+            } else if (String(value ?? "").trim() === "") {
+              nextErrors[fieldId] = `${field.label} is required.`;
+            }
+          }
+
+          if (field.control === "select") {
+            const normalized = String(value ?? "");
+            const options = Array.isArray(field.options) ? field.options.map(String) : [];
+            if (normalized && !options.includes(normalized)) {
+              nextErrors[fieldId] = `${field.label} has an invalid option.`;
+            }
+          }
+        });
+
+        validationErrors = nextErrors;
+        renderInlineErrors();
+        handleStickyBar();
+
+        return Object.keys(nextErrors).length === 0;
+      }
+
+      function buildSaveValues() {
+        const values = [];
+        fieldOrder.forEach((fieldId) => {
+          if (!isFieldActive(fieldId)) return;
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          const field = meta.field;
+          const rawValue = formState[fieldId];
+          values.push({
+            settingId: field.id,
+            value: field.control === "checkbox" ? (rawValue ? "true" : "false") : String(rawValue ?? ""),
+            enabled: true
+          });
+        });
         return values;
       }
 
-      function applyProfileValues(profile) {
-        const valuesById = new Map((profile.values || []).map((item) => [item.settingId, item]));
-        controls.forEach((control, settingId) => {
-          const value = valuesById.get(settingId);
-          if (!value) return;
-          control.setValue(value.value);
-          if (control.setEnabled) {
-            control.setEnabled(value.enabled !== false);
-          }
-        });
-      }
-
-      async function loadVariationList() {
-        const account = accountEl.value.trim();
-        variationOptionsEl.innerHTML = "";
-        variationListEl.value = "";
-        if (!account) return;
-
-        try {
-          const response = await fetch(`/api/profiles/list?accountNumber=${encodeURIComponent(account)}`);
-          const data = await response.json();
-          const variations = Array.isArray(data.profiles) ? data.profiles : [];
-          const names = variations.map((item) => item.variation).filter(Boolean);
-          names.forEach((variation) => {
-            const option = document.createElement("option");
-            option.value = variation;
-            variationOptionsEl.appendChild(option);
-          });
-          variationListEl.value = names.join(", ");
-        } catch {
-          variationListEl.value = "";
-        }
-      }
-
-      function setAllEnabled(enabled) {
-        controls.forEach((control) => {
-          if (control.setEnabled) {
-            control.setEnabled(Boolean(enabled));
-          }
-        });
-        setStatus(enabled ? "All settings enabled in form." : "All settings disabled in form.");
-      }
-
-      async function loadSchema(forceRefresh = false) {
-        try {
-          setStatus("Loading schema...");
-          const response = await fetch(`/api/profiles/schema${forceRefresh ? "?refresh=1" : ""}`);
-          const data = await response.json();
-          renderSchemaPages(data.pages || []);
-          const imported = data.bootstrap?.imported ? `imported map (${data.bootstrap.mapPath || "unknown"})` : "using existing DB schema";
-          setStatus(`Schema loaded: ${controls.size} controls, ${imported}.`);
-        } catch (error) {
-          setStatus(`Failed to load schema: ${String(error)}`, true);
-        }
-      }
-
-      async function loadFormConfig() {
-        try {
-          const response = await fetch("/api/form/config");
-          const data = await response.json();
-          if (response.ok && data.operatorUrl && openOperatorLinkEl) {
-            openOperatorLinkEl.href = data.operatorUrl;
-          }
-        } catch (error) {
-          console.warn("Failed to load form config:", error);
-        }
-      }
-
-      async function loadProfile() {
-        const accountNumber = accountEl.value.trim();
-        const variation = variationEl.value.trim();
-        if (!accountNumber || !variation) {
-          setStatus("Account and Variation are required to load a profile.", true);
+      async function handleSave() {
+        if (!dirty) {
+          setStatus("No changes to save.");
           return;
         }
-        try {
-          const response = await fetch("/api/profiles/get", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ accountNumber, variation })
-          });
-          if (response.status === 404) {
-            setStatus("Profile not found. Enter values and Save Profile to create one.");
-            return;
-          }
-          if (!response.ok) {
-            const data = await response.json();
-            setStatus(data.error || "Failed to load profile.", true);
-            return;
-          }
-          const data = await response.json();
-          if (data.profile?.displayName) {
-            displayNameEl.value = data.profile.displayName;
-          }
-          applyProfileValues(data.profile || { values: [] });
-          setStatus(`Profile loaded: ${accountNumber} / ${variation}`);
-        } catch (error) {
-          setStatus(`Failed to load profile: ${String(error)}`, true);
-        }
-      }
 
-      async function saveProfile() {
-        const accountNumber = accountEl.value.trim();
-        const variation = variationEl.value.trim();
-        const displayName = displayNameEl.value.trim();
-        if (!accountNumber || !variation) {
-          setStatus("Account and Variation are required.", true);
+        if (!validateForm()) {
+          setStatus("Please fix validation errors before saving.", "error");
           return;
         }
 
         const payload = {
-          accountNumber,
-          variation,
-          displayName: displayName || undefined,
-          values: collectValues()
+          accountNumber: elements.account.value.trim(),
+          variation: elements.variation.value.trim(),
+          displayName: elements.displayName.value.trim(),
+          values: buildSaveValues()
         };
 
         try {
+          setStatus("Saving profile...");
           const response = await fetch("/api/profiles/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
           });
           const data = await response.json();
+
           if (!response.ok) {
-            const validationText = Array.isArray(data.fieldErrors)
-              ? data.fieldErrors.map((item) => `${item.field}: ${item.message}`).join(" | ")
-              : "";
-            setStatus(data.error + (validationText ? ` (${validationText})` : ""), true);
+            setStatus(data.error || "Failed to save profile.", "error");
             return;
           }
-          await loadVariationList();
-          setStatus(
-            `Saved ${payload.values.length} values to profile ${data.profile.accountNumber}/${data.profile.variation}.`
-          );
+
+          snapshot = readSnapshot();
+          updateDirtyState();
+          setStatus(`Saved profile ${data.profile.accountNumber}/${data.profile.variation}.`, "success");
         } catch (error) {
-          setStatus(`Failed to save profile: ${String(error)}`, true);
+          setStatus(`Failed to save profile: ${String(error)}`, "error");
+        }
+      }
+      function parseProfileValue(field, rawValue) {
+        if (field.control === "checkbox") {
+          const normalized = String(rawValue ?? "").toLowerCase();
+          return normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "on";
+        }
+        return String(rawValue ?? "");
+      }
+
+      function applyProfileToState(profile) {
+        initializeStateFromSchema();
+
+        const sourceSettingMap = new Map();
+        fieldOrder.forEach((fieldId) => {
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          if (meta.field.sourceSettingId) {
+            sourceSettingMap.set(meta.field.sourceSettingId, fieldId);
+          }
+        });
+
+        const values = Array.isArray(profile?.values) ? profile.values : [];
+        values.forEach((item) => {
+          const incoming = String(item.settingId ?? "");
+          const fieldId = fieldIndex.has(incoming) ? incoming : sourceSettingMap.get(incoming);
+          if (!fieldId) return;
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          formState[fieldId] = parseProfileValue(meta.field, item.value);
+        });
+
+        elements.displayName.value = profile?.displayName ? String(profile.displayName) : "";
+      }
+
+      async function handleLoad() {
+        validationErrors = {};
+        renderInlineErrors();
+
+        const accountNumber = elements.account.value.trim();
+        const variation = elements.variation.value.trim();
+        if (!accountNumber || !variation) {
+          if (!accountNumber) validationErrors.accountNumber = "Account is required.";
+          if (!variation) validationErrors.variation = "Variation is required.";
+          renderInlineErrors();
+          setStatus("Account and Variation are required to load.", "error");
+          return;
+        }
+
+        try {
+          setStatus("Loading profile...");
+          const response = await fetch("/api/profiles/get", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accountNumber, variation })
+          });
+
+          if (response.status === 404) {
+            setStatus("Profile not found. Fill values and save to create it.");
+            initializeStateFromSchema();
+            renderSections();
+            snapshot = readSnapshot();
+            updateDirtyState();
+            return;
+          }
+
+          const data = await response.json();
+          if (!response.ok) {
+            setStatus(data.error || "Failed to load profile.", "error");
+            return;
+          }
+
+          applyProfileToState(data.profile || {});
+          renderSections();
+          validationErrors = {};
+          renderInlineErrors();
+          snapshot = readSnapshot();
+          updateDirtyState();
+          setStatus(`Loaded profile ${accountNumber}/${variation}.`, "success");
+        } catch (error) {
+          setStatus(`Failed to load profile: ${String(error)}`, "error");
         }
       }
 
-      document.getElementById("refreshSchemaBtn").addEventListener("click", () => loadSchema(true));
-      document.getElementById("loadProfileBtn").addEventListener("click", loadProfile);
-      document.getElementById("enableAllBtn").addEventListener("click", () => setAllEnabled(true));
-      document.getElementById("disableAllBtn").addEventListener("click", () => setAllEnabled(false));
-      document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
-      accountEl.addEventListener("blur", loadVariationList);
+      function handleNewClear() {
+        elements.account.value = "";
+        elements.variation.value = "";
+        elements.displayName.value = "";
+        validationErrors = {};
+        initializeStateFromSchema();
+        renderSections();
+        snapshot = readSnapshot();
+        updateDirtyState();
+        setStatus("Form reset.");
+      }
+
+      function handleDiscard() {
+        if (!snapshot) return;
+
+        elements.account.value = snapshot.accountNumber;
+        elements.variation.value = snapshot.variation;
+        elements.displayName.value = snapshot.displayName;
+
+        fieldOrder.forEach((fieldId) => {
+          const meta = fieldIndex.get(fieldId);
+          if (!meta) return;
+          formState[fieldId] = normalizeValueForField(meta.field, snapshot.values[fieldId]);
+        });
+
+        validationErrors = {};
+        renderSections();
+        updateDirtyState();
+        setStatus("Changes discarded.");
+      }
+
+      function handleStickyBar() {
+        const hasVisibleErrors = Object.keys(validationErrors).some((key) => {
+          if (key === "accountNumber" || key === "variation" || key === "displayName") return true;
+          return isFieldActive(key);
+        });
+
+        elements.stickySave.classList.toggle("show", dirty);
+        elements.stickySaveBtn.disabled = !dirty || hasVisibleErrors;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      async function loadSchema() {
+        const response = await fetch("/api/form/schema");
+        if (!response.ok) {
+          throw new Error(`Schema request failed (${response.status})`);
+        }
+        const payload = await response.json();
+        schema = payload;
+        buildIndexes();
+        initializeStateFromSchema();
+      }
+
+      function bindMetaListeners() {
+        [elements.account, elements.variation, elements.displayName].forEach((input) => {
+          input.addEventListener("input", () => {
+            if (input === elements.account && validationErrors.accountNumber) {
+              delete validationErrors.accountNumber;
+            }
+            if (input === elements.variation && validationErrors.variation) {
+              delete validationErrors.variation;
+            }
+            if (input === elements.displayName && validationErrors.displayName) {
+              delete validationErrors.displayName;
+            }
+            renderInlineErrors();
+            updateDirtyState();
+          });
+        });
+      }
 
       async function init() {
-        await loadFormConfig();
-        await loadSchema(false);
-        await loadVariationList();
+        try {
+          loadCollapseStateFromSession();
+          await loadSchema();
+          renderSections();
+          bindMetaListeners();
+
+          elements.loadBtn.addEventListener("click", handleLoad);
+          elements.clearBtn.addEventListener("click", handleNewClear);
+          elements.saveBtn.addEventListener("click", handleSave);
+          elements.stickySaveBtn.addEventListener("click", handleSave);
+          elements.stickyDiscardBtn.addEventListener("click", handleDiscard);
+
+          snapshot = readSnapshot();
+          updateDirtyState();
+          setStatus("Schema loaded.", "success");
+        } catch (error) {
+          setStatus(`Failed to initialize form: ${String(error)}`, "error");
+        }
       }
 
       init();
