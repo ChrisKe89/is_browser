@@ -74,9 +74,10 @@ test("readControlState parses checkbox via isChecked", async () => {
 test("readControlState parses native select with selected-label fallback", async () => {
   const state = await readControlState(
     {
-      inputValue: async () => "",
-      locator: () => ({
-        evaluateAll: async () => [
+      evaluate: async () => ({
+        value: "",
+        selectedLabel: "None",
+        options: [
           { value: "none", label: "None", selected: true },
           { value: "allow", label: "Allow", selected: false }
         ]
@@ -86,6 +87,8 @@ test("readControlState parses native select with selected-label fallback", async
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "none");
+  assert.equal(state.currentLabel, "None");
+  assert.equal(state.valueQuality, "native-select");
   assert.equal(state.options?.length, 2);
 });
 
@@ -104,6 +107,8 @@ test("readControlState parses custom combobox active option", async () => {
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "accounting");
+  assert.equal(state.currentLabel, "Accounting");
+  assert.equal(state.valueQuality, "trigger-text");
 });
 
 test("readControlState parses custom combobox aria-valuetext fallback", async () => {
@@ -121,6 +126,8 @@ test("readControlState parses custom combobox aria-valuetext fallback", async ()
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "Permit");
+  assert.equal(state.currentLabel, "Permit");
+  assert.equal(state.valueQuality, "trigger-text");
 });
 
 test("readControlState parses custom combobox selected option fallback", async () => {
@@ -138,6 +145,66 @@ test("readControlState parses custom combobox selected option fallback", async (
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "allow");
+  assert.equal(state.currentLabel, "Allow");
+  assert.equal(state.valueQuality, "trigger-text");
+});
+
+test("readControlState prefers native select from dropdown root even when trigger is target", async () => {
+  const state = await readControlState(
+    {
+      evaluate: async () => ({
+        activeOption: undefined,
+        selectedOption: undefined,
+        expanded: false,
+        controlText: "On",
+        options: []
+      })
+    },
+    { fieldType: "select", tagName: "a", roleAttr: "combobox" },
+    {
+      page: {
+        locator: () => ({
+          first: () => ({
+            innerText: async () => "",
+            evaluateAll: async () => []
+          })
+        }),
+        keyboard: { press: async () => undefined }
+      },
+      dropdownRoot: {
+        locator: (selector) => {
+          if (selector.startsWith("select")) {
+            return {
+              first: () => ({
+                count: async () => 1,
+                evaluate: async () => ({
+                  value: "false",
+                  selectedLabel: "Off",
+                  options: [
+                    { value: "false", label: "Off", selected: true },
+                    { value: "true", label: "On", selected: false }
+                  ]
+                })
+              })
+            };
+          }
+          return {
+            first: () => ({
+              count: async () => 0,
+              innerText: async () => ""
+            })
+          };
+        }
+      }
+    }
+  );
+  assert.equal(state.currentValue, "false");
+  assert.equal(state.currentLabel, "Off");
+  assert.equal(state.valueQuality, "native-select");
+  assert.deepEqual(state.options, [
+    { value: "false", label: "Off" },
+    { value: "true", label: "On" }
+  ]);
 });
 
 test("shouldContributeToBreadcrumb keeps meaningful nav labels", () => {

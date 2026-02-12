@@ -10,6 +10,7 @@ const MODAL_ACTION_RE = /save|apply|ok|submit|cancel|close/i;
 type OptionEntry = NonNullable<FieldEntry["options"]>[number];
 
 export type FieldCandidate = {
+  fieldId?: string;
   label?: string;
   labelQuality?: FieldEntry["labelQuality"];
   type: FieldEntry["type"];
@@ -26,12 +27,18 @@ export type FieldCandidate = {
   readonly?: boolean;
   visibility?: FieldEntry["visibility"];
   currentValue?: FieldEntry["currentValue"];
+  currentLabel?: string;
+  valueQuality?: FieldEntry["valueQuality"];
+  opensModal?: boolean;
+  interaction?: FieldEntry["interaction"];
   valueType?: FieldEntry["valueType"];
 };
 
 export type ControlStateRead = {
   valueType: NonNullable<FieldEntry["valueType"]>;
   currentValue: FieldEntry["currentValue"];
+  currentLabel?: string | null;
+  valueQuality?: FieldEntry["valueQuality"];
   displayValue?: string | null;
   options?: OptionEntry[];
 };
@@ -41,6 +48,16 @@ export type ReadControlStateMeta = {
   tagName?: string;
   roleAttr?: string;
   inputType?: string;
+};
+
+type DropdownContext = {
+  root: ReturnType<Page["locator"]>;
+  select?: ReturnType<Page["locator"]>;
+  trigger?: ReturnType<Page["locator"]>;
+  fieldId?: string;
+  label?: string;
+  labelQuality?: FieldEntry["labelQuality"];
+  selectors?: Selector[];
 };
 
 type RadioMember = {
@@ -184,55 +201,60 @@ function normalizeGroupTitle(groupKey: string, groupTitle?: string): string | un
   return normalized.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-async function readNativeSelectState(
-  handle: ReturnType<Page["locator"]>
-): Promise<ControlStateRead> {
-  const currentRaw = await safeInputValue(handle);
-  const nativeOptions = await handle
-    .locator("option")
-    .evaluateAll((options) => {
+async function readNativeSelectState(select: ReturnType<Page["locator"]>): Promise<ControlStateRead> {
+  const snapshot = await select
+    .evaluate((el) => {
       const normalize = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
-      const out: Array<{ value: string; label?: string; selected: boolean }> = [];
-      for (const option of options) {
+      const node = el as HTMLSelectElement;
+      const options = Array.from(node.options).map((option) => {
         const label = normalize(option.textContent);
-        const optionValue = normalize(option.getAttribute("value"));
-        const value = optionValue || label;
-        if (!value) continue;
-        out.push({
+        const value = normalize(option.value) || label;
+        return {
           value,
           label: label || undefined,
-          selected: (option as HTMLOptionElement).selected
-        });
-      }
-      return out;
-    })
-    .catch(() => []);
+          selected: option.selected
+        };
+      });
+      const selected = node.selectedOptions?.[0];
+      return {
+        value: normalize(node.value),
+        selectedLabel: normalize(selected?.textContent),
+        options
+      };
+    }, { timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => undefined);
 
   const options = normalizeOptions(
-    nativeOptions.map((option) => ({
-      value: option.value,
-      label: option.label
-    }))
+    (snapshot?.options ?? [])
+      .filter((option) => Boolean(option.value))
+      .map((option) => ({
+        value: option.value,
+        label: option.label
+      }))
   );
+  const selected = snapshot?.options?.find((option) => option.selected);
 
-  const selected = nativeOptions.find((option) => option.selected);
-  let currentValue = normalizeCurrentString(currentRaw);
-  let displayValue = normalizeCurrentString(selected?.label ?? null);
-
+  let currentValue = normalizeCurrentString(snapshot?.value);
+  let currentLabel = normalizeCurrentString(snapshot?.selectedLabel);
   if (!currentValue && selected?.value) {
     currentValue = normalizeCurrentString(selected.value);
   }
-  if (!currentValue && displayValue) {
-    currentValue = displayValue;
+  if (!currentLabel && selected?.label) {
+    currentLabel = normalizeCurrentString(selected.label);
   }
-  if (!displayValue && currentValue) {
-    displayValue = options.find((option) => option.value === currentValue)?.label ?? null;
+  if (!currentLabel && currentValue) {
+    currentLabel = options.find((option) => option.value === currentValue)?.label ?? null;
+  }
+  if (!currentValue && currentLabel) {
+    currentValue = currentLabel;
   }
 
   return {
     valueType: "enum",
     currentValue,
-    displayValue,
+    currentLabel,
+    valueQuality: "native-select",
+    displayValue: currentLabel,
     options: options.length ? options : undefined
   };
 }
@@ -372,14 +394,98 @@ async function readCustomComboboxState(
   return {
     valueType: "enum",
     currentValue,
+    currentLabel: displayValue,
+    valueQuality: currentValue ? "trigger-text" : "missing",
     displayValue,
     options: options.length ? options : undefined
   };
 }
 
+async function readOpenedDropdownState(
+  page: Page,
+  root: ReturnType<Page["locator"]>,
+  trigger?: ReturnType<Page["locator"]>
+): Promise<ControlStateRead | undefined> {
+  const resolvedTrigger = trigger ?? root.locator('a[role="combobox"]').first();
+  if ((await resolvedTrigger.count().catch(() => 0)) === 0) return undefined;
+
+  await resolvedTrigger.click({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined);
+  const menu = page.locator(".xux-dropdownMenu-container.xux-open");
+  const selectedText = normalizeCurrentString(
+    await menu
+      .locator('li[role="option"][aria-selected="true"] .xux-sel-desc-list')
+      .first()
+      .innerText({ timeout: LOCATOR_READ_TIMEOUT_MS })
+      .catch(() => "")
+  );
+  const options = normalizeOptions(
+    await menu
+      .locator('li[role="option"] .xux-sel-desc-list')
+      .evaluateAll((items) =>
+        items
+          .map((item) => (item.textContent ?? "").replace(/\s+/g, " ").trim())
+          .filter(Boolean)
+          .map((label) => ({ value: label, label }))
+      )
+      .catch(() => [])
+  );
+  await page.keyboard.press("Escape").catch(() => undefined);
+
+  if (!selectedText && options.length === 0) return undefined;
+  return {
+    valueType: "enum",
+    currentValue: selectedText,
+    currentLabel: selectedText,
+    valueQuality: "opened-options",
+    displayValue: selectedText,
+    options: options.length ? options : undefined
+  };
+}
+
+async function readDropdownStateFromRoot(
+  page: Page,
+  root: ReturnType<Page["locator"]>,
+  trigger?: ReturnType<Page["locator"]>
+): Promise<ControlStateRead> {
+  const select = root.locator("select.xux-dropdown-select, select.xux-formControl, select").first();
+  if ((await select.count().catch(() => 0)) > 0) {
+    return readNativeSelectState(select);
+  }
+
+  const desc = root.locator('a[role="combobox"] .xux-sel-desc').first();
+  const descText = normalizeCurrentString(await desc.innerText({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => ""));
+  if (descText) {
+    return {
+      valueType: "enum",
+      currentValue: descText,
+      currentLabel: descText,
+      valueQuality: "trigger-text",
+      displayValue: descText
+    };
+  }
+
+  const opened = await readOpenedDropdownState(page, root, trigger);
+  if (opened) {
+    return opened;
+  }
+
+  return {
+    valueType: "enum",
+    currentValue: null,
+    currentLabel: null,
+    valueQuality: "missing",
+    displayValue: null
+  };
+}
+
 export async function readControlState(
   handle: ReturnType<Page["locator"]>,
-  meta: ReadControlStateMeta
+  meta: ReadControlStateMeta,
+  context?: {
+    page?: Page;
+    dropdownRoot?: ReturnType<Page["locator"]>;
+    dropdownTrigger?: ReturnType<Page["locator"]>;
+  }
 ): Promise<ControlStateRead> {
   try {
     if (meta.fieldType === "checkbox" || meta.roleAttr === "switch") {
@@ -388,6 +494,9 @@ export async function readControlState(
     }
 
     if (meta.fieldType === "select") {
+      if (context?.page && context?.dropdownRoot) {
+        return readDropdownStateFromRoot(context.page, context.dropdownRoot, context.dropdownTrigger);
+      }
       if ((meta.tagName ?? "").toLowerCase() === "select") {
         return readNativeSelectState(handle);
       }
@@ -558,6 +667,100 @@ async function readRangeHint(element: ReturnType<Page["locator"]>): Promise<stri
   return match[0];
 }
 
+function escapeCssValue(value: string): string {
+  return value.replace(/"/g, '\\"');
+}
+
+function escapePlaywrightText(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+async function resolveDropdownContext(
+  page: Page,
+  element: ReturnType<Page["locator"]>,
+  scopeRoot: ReturnType<Page["locator"]>
+): Promise<DropdownContext> {
+  const preferredRoot = element
+    .locator(
+      "xpath=ancestor-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' xux-dropdownBox ') or contains(concat(' ', normalize-space(@class), ' '), ' xux-labelableBox ')][1]"
+    )
+    .first();
+  const fallbackRoot = element.locator("xpath=ancestor-or-self::*[.//select and .//a[@role='combobox']][1]").first();
+  const root =
+    (await preferredRoot.count().catch(() => 0)) > 0
+      ? preferredRoot
+      : (await fallbackRoot.count().catch(() => 0)) > 0
+      ? fallbackRoot
+      : element;
+  const select = root.locator("select.xux-dropdown-select, select.xux-formControl, select").first();
+  const trigger = root.locator('a[role="combobox"]').first();
+  const selectCount = await select.count().catch(() => 0);
+  const triggerCount = await trigger.count().catch(() => 0);
+
+  const selectId = normalizeLabel(await safeGetAttribute(select, "id"));
+  const labelId = normalizeLabel(await safeGetAttribute(root.locator("label.xux-labelableBox-label").first(), "id"));
+  const labelFor = selectId ? page.locator(`label[for="${escapeCssValue(selectId)}"]`).first() : undefined;
+  const rootLabelNode = root.locator("label.xux-labelableBox-label").first();
+  const rootLabel = normalizeLabel(await safeInnerText(rootLabelNode));
+  const forLabel = labelFor ? normalizeLabel(await safeInnerText(labelFor)) : undefined;
+  const derived = await deriveFieldLabel(page, selectCount > 0 ? select : element, scopeRoot);
+  const label = rootLabel ?? forLabel ?? derived.label;
+  const labelQuality = rootLabel || forLabel ? "explicit" : derived.labelQuality;
+  const selectors: Selector[] = [];
+
+  if (selectId) {
+    selectors.push({ kind: "css", value: `#${escapeCssValue(selectId)}` });
+  }
+  if (triggerCount > 0 && labelId) {
+    selectors.push({ kind: "css", value: `a[role="combobox"][aria-labelledby="${escapeCssValue(labelId)}"]` });
+  }
+  if (label) {
+    selectors.push({ kind: "label", value: label });
+    selectors.push({ kind: "role", role: "combobox", name: label });
+  }
+
+  return {
+    root,
+    select: selectCount > 0 ? select : undefined,
+    trigger: triggerCount > 0 ? trigger : undefined,
+    fieldId: selectId,
+    label,
+    labelQuality,
+    selectors
+  };
+}
+
+async function logDropdownMissingValue(
+  root: ReturnType<Page["locator"]>,
+  detail: {
+    fieldId?: string;
+    label?: string;
+    selectors?: Selector[];
+    reason: string;
+  }
+): Promise<void> {
+  const rootSnippet =
+    (await root
+      .evaluate((el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200), {
+        timeout: LOCATOR_READ_TIMEOUT_MS
+      })
+      .catch(() => "")) || "";
+  const selectorAttempted =
+    detail.selectors?.find((selector) => selector.kind === "css")?.value ??
+    detail.selectors?.find((selector) => selector.kind === "role")?.name ??
+    detail.selectors?.find((selector) => selector.kind === "label")?.value;
+  console.warn(
+    JSON.stringify({
+      event: "dropdown-current-value-missing",
+      fieldId: detail.fieldId,
+      label: detail.label,
+      selectorAttempted,
+      rootSnippet,
+      reason: detail.reason
+    })
+  );
+}
+
 function parseRangeHint(rangeHint: string | undefined): { min?: number; max?: number } {
   if (!rangeHint) return {};
   const match = rangeHint.match(RANGE_HINT_RE);
@@ -716,14 +919,127 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
   return candidates;
 }
 
+async function logStaticTextValueMissing(
+  root: ReturnType<Page["locator"]>,
+  detail: {
+    label?: string;
+    selectors: Selector[];
+  }
+): Promise<void> {
+  const rootSnippet =
+    (await root
+      .evaluate((el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200), {
+        timeout: LOCATOR_READ_TIMEOUT_MS
+      })
+      .catch(() => "")) || "";
+  const selectorUsed =
+    detail.selectors.find((selector) => selector.kind === "css")?.value ??
+    detail.selectors.find((selector) => selector.kind === "role")?.name ??
+    detail.selectors.find((selector) => selector.kind === "label")?.value;
+  console.warn(
+    JSON.stringify({
+      event: "static-text-current-value-missing",
+      label: detail.label,
+      selectorUsed,
+      rootSnippet
+    })
+  );
+}
+
+async function discoverStaticTextButtonCandidates(
+  page: Page,
+  root: ReturnType<Page["locator"]>,
+  groupOrderByKey: Map<string, number>,
+  groupOrderCounterRef: { value: number }
+): Promise<FieldCandidate[]> {
+  const staticRoots = root.locator(".xux-staticTextBox[role='button']");
+  const count = await staticRoots.count();
+  const candidates: FieldCandidate[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const staticRoot = staticRoots.nth(i);
+    try {
+      if (!(await staticRoot.isVisible().catch(() => false))) continue;
+
+      const labelNode = staticRoot.locator("label.xux-labelableBox-label").first();
+      const valueNode = staticRoot.locator(".xux-labelableBox-content span.xux-staticText").first();
+      if ((await labelNode.count().catch(() => 0)) === 0 || (await valueNode.count().catch(() => 0)) === 0) {
+        continue;
+      }
+
+      const label = normalizeLabel(await safeInnerText(labelNode)) ?? "(Unknown Setting)";
+      const fieldId = normalizeLabel(await safeGetAttribute(staticRoot, "id"));
+      const currentValue = normalizeCurrentString(await safeInnerText(valueNode));
+
+      const selectors: Selector[] = [];
+      if (fieldId) {
+        selectors.push({ kind: "css", value: `#${escapeCssValue(fieldId)}` });
+      } else {
+        selectors.push({
+          kind: "css",
+          value: `.xux-staticTextBox[role="button"]:has(label.xux-labelableBox-label:has-text("${escapePlaywrightText(label)}"))`
+        });
+      }
+      selectors.push({ kind: "role", role: "button", name: label });
+      selectors.push({ kind: "label", value: label });
+
+      if (currentValue === null) {
+        await logStaticTextValueMissing(staticRoot, { label, selectors });
+      }
+
+      const groupContext = await readGroupContext(staticRoot);
+      const groupKey = groupContext.groupKey;
+      const groupOrder =
+        groupOrderByKey.get(groupKey) ??
+        (() => {
+          const next = groupOrderCounterRef.value;
+          groupOrderCounterRef.value += 1;
+          groupOrderByKey.set(groupKey, next);
+          return next;
+        })();
+
+      const selectorKey = fieldFingerprint("text", selectors, label);
+      candidates.push({
+        fieldId,
+        label,
+        labelQuality: normalizeLabelQuality(label),
+        type: "text",
+        selectors,
+        selectorKey,
+        groupKey,
+        groupTitle: groupContext.groupTitle,
+        groupOrder,
+        controlType: "staticTextButton",
+        readonly: true,
+        visibility: { visible: true, enabled: true },
+        valueType: "string",
+        currentValue,
+        currentLabel: currentValue,
+        valueQuality: "static-text",
+        opensModal: true,
+        interaction: "opensModal"
+      });
+    } catch {
+      continue;
+    }
+  }
+  return candidates;
+}
+
 export async function discoverFieldCandidates(
   page: Page,
   scope?: ReturnType<Page["locator"]>
 ): Promise<{ candidates: FieldCandidate[]; actions: FieldEntry["actions"] }> {
   const candidates: FieldCandidate[] = [];
   const groupOrderByKey = new Map<string, number>();
-  let groupOrderCounter = 1;
+  const groupOrderCounterRef = { value: 1 };
   const root = scope ?? page.locator("body");
+  const staticTextCandidates = await discoverStaticTextButtonCandidates(
+    page,
+    root,
+    groupOrderByKey,
+    groupOrderCounterRef
+  );
+  candidates.push(...staticTextCandidates);
   const controls = root.locator(
     "input:not([type='radio']), textarea, select, [role='textbox'], [role='combobox'], [role='checkbox'], [role='spinbutton'], [role='radio']"
   );
@@ -759,8 +1075,15 @@ export async function discoverFieldCandidates(
       else if (roleAttr === "spinbutton") fieldType = "number";
       else if (roleAttr === "button") fieldType = "button";
 
-      const { label, labelQuality } = await deriveFieldLabel(page, element, root);
-      const { selectors } = await buildSelectorCandidates(page, element);
+      const dropdownContext = fieldType === "select" ? await resolveDropdownContext(page, element, root) : undefined;
+      const baseLabelInfo = dropdownContext
+        ? { label: dropdownContext.label, labelQuality: dropdownContext.labelQuality }
+        : await deriveFieldLabel(page, element, root);
+      const label = baseLabelInfo.label;
+      const labelQuality = baseLabelInfo.labelQuality;
+      const selectors = dropdownContext?.selectors?.length
+        ? [...dropdownContext.selectors]
+        : (await buildSelectorCandidates(page, element)).selectors;
       if (label && !selectors.some((selector) => selector.kind === "label" && normalizeLabel(selector.value) === label)) {
         selectors.unshift({ kind: "label", value: label });
       }
@@ -802,18 +1125,36 @@ export async function discoverFieldCandidates(
         constraints.max = rangeFromHint.max;
       }
 
-      const state = await readControlState(element, {
-        fieldType,
-        tagName: tag,
-        roleAttr,
-        inputType: typeAttr
-      });
+      const state = await readControlState(
+        element,
+        {
+          fieldType,
+          tagName: tag,
+          roleAttr,
+          inputType: typeAttr
+        },
+        dropdownContext
+          ? {
+              page,
+              dropdownRoot: dropdownContext.root,
+              dropdownTrigger: dropdownContext.trigger
+            }
+          : undefined
+      );
       let options: OptionEntry[] | undefined = state.options;
       if (fieldType === "select" && state.displayValue && state.currentValue === null) {
         state.currentValue = state.displayValue;
       }
       if (fieldType === "select") {
         options = options?.length ? options : undefined;
+        if (state.currentValue === null) {
+          await logDropdownMissingValue(dropdownContext?.root ?? element, {
+            fieldId: dropdownContext?.fieldId,
+            label,
+            selectors,
+            reason: state.valueQuality ?? "missing"
+          });
+        }
       }
 
       const enumValues = toEnumValues(options);
@@ -826,8 +1167,8 @@ export async function discoverFieldCandidates(
       const groupOrder =
         groupOrderByKey.get(groupKey) ??
         (() => {
-          const next = groupOrderCounter;
-          groupOrderCounter += 1;
+          const next = groupOrderCounterRef.value;
+          groupOrderCounterRef.value += 1;
           groupOrderByKey.set(groupKey, next);
           return next;
         })();
@@ -836,6 +1177,7 @@ export async function discoverFieldCandidates(
       const selectorKey = fieldFingerprint(fieldType, selectors, label);
 
       candidates.push({
+        fieldId: dropdownContext?.fieldId,
         label,
         labelQuality,
         type: fieldType,
@@ -850,6 +1192,8 @@ export async function discoverFieldCandidates(
         constraints: Object.keys(constraints).length ? constraints : undefined,
         options,
         currentValue: state.currentValue ?? null,
+        currentLabel: state.currentLabel ?? state.displayValue ?? undefined,
+        valueQuality: state.valueQuality,
         valueType: state.valueType,
         hints,
         rangeHint

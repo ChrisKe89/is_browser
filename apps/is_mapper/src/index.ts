@@ -44,6 +44,7 @@ const MODAL_TRIGGER_LABELS = [
 const MENU_SKIP_RE = /logout|log out|delete|reset|save|apply|submit/i;
 const FLOW_STEP_SKIP_RE = /log in|login|logout|log out|save|apply|restart|delete|reset/i;
 const MODAL_CLOSE_RE = /cancel|close|done|ok/i;
+const MAX_MODAL_DEPTH = 2;
 
 type QueueItem = {
   url: string;
@@ -119,8 +120,17 @@ function mergeFieldMetadata(
   if (incoming.currentValue !== undefined) {
     existing.currentValue = incoming.currentValue;
   }
+  if (incoming.currentLabel && !existing.currentLabel) {
+    existing.currentLabel = incoming.currentLabel;
+  }
+  if (incoming.valueQuality) {
+    existing.valueQuality = incoming.valueQuality;
+  }
   if (incoming.labelQuality && (existing.labelQuality === undefined || existing.labelQuality === "missing")) {
     existing.labelQuality = incoming.labelQuality;
+  }
+  if (incoming.fieldId && !existing.fieldId) {
+    existing.fieldId = incoming.fieldId;
   }
   if (incoming.rangeHint && !existing.rangeHint) {
     existing.rangeHint = incoming.rangeHint;
@@ -149,6 +159,18 @@ function mergeFieldMetadata(
   }
   if (incoming.actions && !existing.actions) {
     existing.actions = incoming.actions;
+  }
+  if (incoming.opensModal !== undefined) {
+    existing.opensModal = incoming.opensModal;
+  }
+  if (incoming.modalRef) {
+    existing.modalRef = incoming.modalRef;
+  }
+  if (incoming.modalTitle) {
+    existing.modalTitle = incoming.modalTitle;
+  }
+  if (incoming.interaction) {
+    existing.interaction = incoming.interaction;
   }
 }
 
@@ -266,6 +288,7 @@ async function mapPage(
       if (existing) {
         mergeFieldMetadata(existing, {
           label: candidate.label,
+          fieldId: candidate.fieldId,
           labelQuality: candidate.labelQuality,
           type: candidate.type,
           selectors: candidate.selectors,
@@ -280,10 +303,14 @@ async function mapPage(
           valueType: candidate.valueType,
           defaultValue,
           currentValue: candidate.currentValue,
+          currentLabel: candidate.currentLabel,
+          valueQuality: candidate.valueQuality,
           controlType: candidate.controlType,
           readonly: candidate.readonly,
           visibility: candidate.visibility,
-          source: existing.source ?? { discoveredFrom, runId }
+          source: existing.source ?? { discoveredFrom, runId },
+          opensModal: candidate.opensModal,
+          interaction: candidate.interaction
         });
       }
       continue;
@@ -293,6 +320,7 @@ async function mapPage(
     const entry: FieldEntry = {
       id: fieldId,
       label: candidate.label,
+      fieldId: candidate.fieldId,
       labelQuality: candidate.labelQuality,
       type: candidate.type,
       selectors: candidate.selectors,
@@ -308,10 +336,14 @@ async function mapPage(
       valueType: candidate.valueType,
       defaultValue,
       currentValue: candidate.currentValue,
+      currentLabel: candidate.currentLabel,
+      valueQuality: candidate.valueQuality,
       controlType: candidate.controlType,
       readonly: candidate.readonly,
       visibility: candidate.visibility,
-      source: { discoveredFrom, runId }
+      source: { discoveredFrom, runId },
+      opensModal: candidate.opensModal,
+      interaction: candidate.interaction
     };
     fieldsBySelectorKey.set(key, entry);
     fieldEntries.push(entry);
@@ -578,6 +610,33 @@ async function mapTabs(
       ]
     });
     await recordSnapshot(page, tabPageId);
+
+    const tabModalResults = await mapModalTriggers(
+      page,
+      tabPageId,
+      usedPageIds,
+      usedFieldIds,
+      knownFieldKeys,
+      defaultsBySelectorKey,
+      fieldsBySelectorKey,
+      timeoutMs,
+      [
+        ...navPath,
+        {
+          action: "click",
+          selector: { kind: "role", role: "tab", name: label },
+          label,
+          kind: "tab",
+          urlAfter: page.url()
+        }
+      ],
+      undefined,
+      runId,
+      recordSnapshot,
+      tabFields
+    );
+    tabModalResults.pages.forEach((modalPage) => pages.push(modalPage));
+    tabModalResults.fields.forEach((modalField) => fields.push(modalField));
   }
 
   return { pages, fields };
@@ -701,7 +760,8 @@ async function runCrawlFlows(
         navPath,
         inferModalTriggerLabels(flow),
         runId,
-        recordSnapshot
+        recordSnapshot,
+        pageFields
       );
       modalResults.pages.forEach((modalPage) => pages.push(modalPage));
       modalResults.fields.forEach((modalField) => fields.push(modalField));
@@ -846,7 +906,8 @@ async function runMenuTraversal(
       navPath,
       undefined,
       runId,
-      recordSnapshot
+      recordSnapshot,
+      pageFields
     );
     modalResults.pages.forEach((modalPage) => pages.push(modalPage));
     modalResults.fields.forEach((modalField) => fields.push(modalField));
@@ -855,7 +916,7 @@ async function runMenuTraversal(
   return { pages, fields };
 }
 
-async function mapModalTriggers(
+async function mapModalTriggersInternal(
   page: import("playwright").Page,
   basePageId: string,
   usedPageIds: Set<string>,
@@ -867,13 +928,286 @@ async function mapModalTriggers(
   navPath: QueueItem["navPath"],
   triggerLabels: string[] | undefined,
   runId: string,
-  recordSnapshot: SnapshotRecorder
+  recordSnapshot: SnapshotRecorder,
+  parentFields: FieldEntry[] = [],
+  scopeRoot?: import("playwright").Locator,
+  modalDepth = 0,
+  modalStack: string[] = []
 ): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
 
-  const buttons = page.getByRole("button", { name: MODAL_TRIGGER_RE });
-  const links = page.getByRole("link", { name: MODAL_TRIGGER_RE });
+  if (modalDepth >= MAX_MODAL_DEPTH) {
+    return { pages, fields };
+  }
+
+  const activeRoot = scopeRoot ?? page.locator("body");
+
+  const waitForModalOpen = async (): Promise<
+    { root: import("playwright").Locator; method: string } | undefined
+  > => {
+    const deadline = Date.now() + Math.min(timeoutMs, 5000);
+    while (Date.now() < deadline) {
+      const detailRoot = page.locator("#detailSettingsModalRoot").first();
+      if ((await detailRoot.count().catch(() => 0)) > 0) {
+        const visible = await detailRoot.isVisible().catch(() => false);
+        const attached = (await detailRoot.getAttribute("id").catch(() => null)) !== null;
+        if (visible || attached) {
+          await detailRoot
+            .locator(".xux-modalWindow-title-text")
+            .first()
+            .waitFor({ state: "visible", timeout: 800 })
+            .catch(() => null);
+          return { root: detailRoot, method: "#detailSettingsModalRoot" };
+        }
+      }
+
+      const dialogContent = page.locator(".ui-dialog-content.ui-widget-content").first();
+      if ((await dialogContent.count().catch(() => 0)) > 0) {
+        const ariaHidden = (await dialogContent.getAttribute("aria-hidden").catch(() => "")) ?? "";
+        const visible = await dialogContent.isVisible().catch(() => false);
+        if (ariaHidden !== "true" && visible) {
+          return { root: dialogContent, method: ".ui-dialog-content.ui-widget-content" };
+        }
+      }
+
+      const dialog = page.locator(".ui-dialog:visible").first();
+      if ((await dialog.count().catch(() => 0)) > 0) {
+        const content = dialog
+          .locator("#detailSettingsModalRoot, .ui-dialog-content, .xux-modalWindow-content")
+          .first();
+        if ((await content.count().catch(() => 0)) > 0) {
+          return { root: content, method: ".ui-dialog:visible" };
+        }
+        return { root: dialog, method: ".ui-dialog:visible" };
+      }
+
+      await page.waitForTimeout(100);
+    }
+    return undefined;
+  };
+
+  const closeModal = async (
+    modalRoot: import("playwright").Locator
+  ): Promise<{ closed: boolean; method: string; closeControls: string[] }> => {
+    const closeControls: string[] = [];
+    let method = "escape";
+    const cancelButton = modalRoot.locator("button#detailSettingsModalCancel").first();
+    if ((await cancelButton.count().catch(() => 0)) > 0) {
+      closeControls.push("#detailSettingsModalCancel");
+      method = "cancel-button";
+      await cancelButton.click().catch(() => null);
+    } else {
+      const closeX = page.locator(".ui-dialog-titlebar-close").first();
+      if ((await closeX.count().catch(() => 0)) > 0) {
+        closeControls.push(".ui-dialog-titlebar-close");
+        method = "titlebar-close";
+        await closeX.click().catch(() => null);
+      } else {
+        method = "escape";
+        await page.keyboard.press("Escape").catch(() => null);
+      }
+    }
+
+    const deadline = Date.now() + Math.min(timeoutMs, 4000);
+    while (Date.now() < deadline) {
+      const detailRoot = page.locator("#detailSettingsModalRoot").first();
+      const detailVisible =
+        (await detailRoot.count().catch(() => 0)) > 0 &&
+        (await detailRoot.isVisible().catch(() => false));
+      const anyDialogVisible = (await page.locator(".ui-dialog:visible").count().catch(() => 0)) > 0;
+      const modalVisible = await modalRoot.isVisible().catch(() => false);
+      if (!detailVisible && !anyDialogVisible && !modalVisible) {
+        return { closed: true, method, closeControls };
+      }
+      await page.waitForTimeout(100);
+    }
+
+    return { closed: false, method, closeControls };
+  };
+
+  const modalSnippet = async (modalRoot: import("playwright").Locator): Promise<string> =>
+    (await modalRoot
+      .evaluate((el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 500))
+      .catch(() => "")) || "";
+
+  const staticTriggerLocator = (
+    field: FieldEntry
+  ): import("playwright").Locator | undefined => {
+    const cssIdSelector = field.selectors.find(
+      (selector) => selector.kind === "css" && (selector.value ?? "").startsWith("#")
+    )?.value;
+    if (cssIdSelector) {
+      return activeRoot.locator(cssIdSelector).first();
+    }
+
+    const label = (field.label ?? "").trim();
+    if (!label) return undefined;
+    return activeRoot
+      .locator(".xux-staticTextBox[role='button']")
+      .filter({
+        has: activeRoot.locator("label.xux-labelableBox-label", { hasText: label })
+      })
+      .first();
+  };
+
+  const staticFields = parentFields.filter((field) => field.controlType === "staticTextButton");
+  for (const parentField of staticFields) {
+    parentField.opensModal = true;
+    parentField.interaction = "opensModal";
+    const trigger = staticTriggerLocator(parentField);
+    if (!trigger) continue;
+    if ((await trigger.count().catch(() => 0)) === 0) continue;
+
+    const parentLabel = (parentField.label ?? parentField.id).trim();
+    const parentSelector =
+      parentField.selectors.find((selector) => selector.kind === "css")?.value ??
+      parentField.selectors.find((selector) => selector.kind === "role")?.name ??
+      parentField.selectors.find((selector) => selector.kind === "label")?.value ??
+      "(unknown)";
+
+    await trigger.scrollIntoViewIfNeeded().catch(() => null);
+    await trigger.click({ trial: true }).catch(() => null);
+    await trigger.click().catch(() => null);
+
+    const opened = await waitForModalOpen();
+    if (!opened) {
+      console.warn(
+        JSON.stringify({
+          event: "static-text-modal-open-failed",
+          parentLabel,
+          parentSelector,
+          modalOpenDetectionMethodTried: "#detailSettingsModalRoot|.ui-dialog:visible|.ui-dialog-content.ui-widget-content"
+        })
+      );
+      continue;
+    }
+
+    const modalRoot = opened.root;
+    const modalTitle = normalizeLabel(
+      await modalRoot.locator(".xux-modalWindow-title-text, h1, h2, h3").first().innerText().catch(() => "")
+    ) ?? "modal";
+    const modalStackKey = `${modalTitle.toLowerCase()}|${modalDepth}`;
+    if (modalStack.includes(modalStackKey)) {
+      await closeModal(modalRoot).catch(() => null);
+      continue;
+    }
+
+    const modalPageId = uniqueId(
+      `modal::${parentField.fieldId ?? parentField.id}::${slugify(modalTitle || "modal")}`,
+      usedPageIds
+    );
+    parentField.modalRef = modalPageId;
+    parentField.modalTitle = modalTitle;
+
+    try {
+      const { fields: modalFields, actions } = await mapPage(
+        page,
+        modalPageId,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        CRAWL_EXPAND_CHOICES,
+        "scan",
+        runId,
+        modalRoot
+      );
+      modalFields.forEach((field) => {
+        if (actions && actions.length) {
+          field.actions = actions;
+        }
+        fields.push(field);
+      });
+
+      if (CRAWL_EXPAND_CHOICES) {
+        const extra = await expandWithChoiceVariants(
+          page,
+          modalPageId,
+          usedFieldIds,
+          knownFieldKeys,
+          defaultsBySelectorKey,
+          fieldsBySelectorKey,
+          timeoutMs,
+          runId,
+          modalRoot
+        );
+        extra.forEach((field) => fields.push(field));
+      }
+
+      const modalNavPath: QueueItem["navPath"] = [
+        ...navPath,
+        {
+          action: "click",
+          selector: { kind: "label", value: parentLabel },
+          label: parentLabel,
+          kind: "modal_open",
+          urlAfter: page.url()
+        }
+      ];
+
+      const breadcrumbs = await readBreadcrumbTrail(page, modalRoot);
+      pages.push({
+        id: modalPageId,
+        title: modalTitle || undefined,
+        url: page.url(),
+        breadcrumbs,
+        actions,
+        navPath: modalNavPath
+      });
+      await recordSnapshot(page, modalPageId);
+
+      const nested = await mapModalTriggers(
+        page,
+        modalPageId,
+        usedPageIds,
+        usedFieldIds,
+        knownFieldKeys,
+        defaultsBySelectorKey,
+        fieldsBySelectorKey,
+        timeoutMs,
+        modalNavPath,
+        undefined,
+        runId,
+        recordSnapshot,
+        modalFields,
+        modalRoot,
+        modalDepth + 1,
+        [...modalStack, modalStackKey]
+      );
+      nested.pages.forEach((nestedPage) => pages.push(nestedPage));
+      nested.fields.forEach((nestedField) => fields.push(nestedField));
+    } catch (error) {
+      console.warn(
+        JSON.stringify({
+          event: "static-text-modal-map-failed",
+          parentLabel,
+          parentSelector,
+          modalOpenDetectionMethod: opened.method,
+          error: error instanceof Error ? error.message : String(error),
+          modalSnippet: await modalSnippet(modalRoot)
+        })
+      );
+    } finally {
+      const close = await closeModal(modalRoot);
+      if (!close.closed) {
+        console.warn(
+          JSON.stringify({
+            event: "static-text-modal-close-failed",
+            parentLabel,
+            parentSelector,
+            modalOpenDetectionMethod: opened.method,
+            closeMethod: close.method,
+            closeControls: close.closeControls,
+            modalSnippet: await modalSnippet(modalRoot)
+          })
+        );
+      }
+    }
+  }
+
+  const buttons = activeRoot.getByRole("button", { name: MODAL_TRIGGER_RE });
+  const links = activeRoot.getByRole("link", { name: MODAL_TRIGGER_RE });
   const triggerCount = (await buttons.count()) + (await links.count());
   const labels = new Set<string>();
 
@@ -890,26 +1224,30 @@ async function mapModalTriggers(
     triggerLabels.forEach((label) => labels.add(label));
   }
 
+  for (const parentField of staticFields) {
+    if (parentField.label) {
+      labels.delete(parentField.label);
+    }
+  }
+
   if (triggerCount === 0 && !triggerLabels?.length) return { pages, fields };
   if (labels.size === 0) return { pages, fields };
 
   for (const label of labels) {
-    let trigger = page.getByRole("button", { name: label }).first();
+    let trigger = activeRoot.getByRole("button", { name: label }).first();
     if (!(await trigger.count())) {
-      trigger = page.getByRole("link", { name: label }).first();
+      trigger = activeRoot.getByRole("link", { name: label }).first();
       if (!(await trigger.count())) {
         continue;
       }
     }
     await trigger.click().catch(() => null);
-    const modalRoot = page
-      .locator("#deviceDetailsModalRoot, .ui-dialog-content, .xux-modalWindow-content")
-      .first();
-    await modalRoot.waitFor({ state: "visible", timeout: 4000 }).catch(() => null);
-    if (!(await modalRoot.isVisible().catch(() => false))) {
+    const opened = await waitForModalOpen();
+    if (!opened) {
       continue;
     }
 
+    const modalRoot = opened.root;
     const modalTitle =
       (await modalRoot.locator("h1,h2,h3,.xux-modalWindow-title-text").first().innerText().catch(() => "")) ||
       label;
@@ -962,23 +1300,56 @@ async function mapModalTriggers(
           action: "click",
           selector: { kind: "role", role: "button", name: label },
           label,
-          kind: "button",
+          kind: "modal_open",
           urlAfter: page.url()
         }
       ]
     });
     await recordSnapshot(page, modalPageId);
 
-    const closeButton = modalRoot.getByRole("button", { name: MODAL_CLOSE_RE }).first();
-    if (await closeButton.count()) {
-      await closeButton.click().catch(() => null);
-    } else {
-      await page.keyboard.press("Escape").catch(() => null);
-    }
-    await page.waitForTimeout(200);
+    await closeModal(modalRoot).catch(() => null);
+    await page.waitForTimeout(150);
   }
 
   return { pages, fields };
+}
+
+async function mapModalTriggers(
+  page: import("playwright").Page,
+  basePageId: string,
+  usedPageIds: Set<string>,
+  usedFieldIds: Set<string>,
+  knownFieldKeys: Set<string>,
+  defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>,
+  fieldsBySelectorKey: Map<string, FieldEntry>,
+  timeoutMs: number,
+  navPath: QueueItem["navPath"],
+  triggerLabels: string[] | undefined,
+  runId: string,
+  recordSnapshot: SnapshotRecorder,
+  parentFields: FieldEntry[] = [],
+  scopeRoot?: import("playwright").Locator,
+  modalDepth = 0,
+  modalStack: string[] = []
+): Promise<{ pages: PageEntry[]; fields: FieldEntry[] }> {
+  return mapModalTriggersInternal(
+    page,
+    basePageId,
+    usedPageIds,
+    usedFieldIds,
+    knownFieldKeys,
+    defaultsBySelectorKey,
+    fieldsBySelectorKey,
+    timeoutMs,
+    navPath,
+    triggerLabels,
+    runId,
+    recordSnapshot,
+    parentFields,
+    scopeRoot,
+    modalDepth,
+    modalStack
+  );
 }
 
 function inferModalTriggerLabels(flow: CrawlFlow): string[] {
@@ -1137,7 +1508,8 @@ async function runCrawler(opts: MapperCliOptions): Promise<void> {
         item.navPath,
         undefined,
         runId,
-        recordSnapshot
+        recordSnapshot,
+        pageFields
       );
       modalResults.pages.forEach((modalPage) => pages.push(modalPage));
       modalResults.fields.forEach((modalField) => fields.push(modalField));

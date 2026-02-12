@@ -95,6 +95,7 @@ function valueTypeFromField(field: FieldEntry): NonNullable<FieldEntry["valueTyp
   if (controlType === "checkbox" || controlType === "switch") return "boolean";
   if (controlType === "number") return "number";
   if (controlType === "dropdown" || controlType === "radio_group") return "enum";
+  if (controlType === "staticTextButton") return "string";
   if (controlType === "textbox") return "string";
   return "unknown";
 }

@@ -5,6 +5,7 @@
   "scripts": {
     "is_mapper:map": "tsx src/index.ts",
     "is_mapper:manual": "tsx src/index.ts --manual",
+    "verify:dropdowns": "tsx src/verifyDropdownValues.ts",
     "dev": "tsx src/index.ts",
     "auth:capture": "tsx src/auth/capture.ts",
     "test": "tsx --test test/*.test.js"

@@ -11,6 +11,7 @@ help:
 	@echo "  make dev-all            Run is_form + is_application together"
 	@echo "  make is-mapper-map      Run is_mapper UI map"
 	@echo "  make is-mapper-manual   Run is_mapper manual click map"
+	@echo "  make is-mapper-verify   Report dropdown currentValue nulls"
 	@echo "  make is-mapper-yaml     Export navigation/layout YAML from map"
 	@echo "  make is-mapper-dev      Run is_mapper dev mode"
 	@echo "  make form-dev           Start is_form server"
@@ -57,6 +58,14 @@ ifeq ($(OS),Windows_NT)
 	cmd /C "set IS_MAPPER_LOCATION=$(LOCATION) && set IS_MAPPER_SCREENSHOT=$(SCREENSHOT) && npm -w apps/is_mapper run is_mapper:manual"
 else
 	IS_MAPPER_LOCATION=$(LOCATION) IS_MAPPER_SCREENSHOT=$(SCREENSHOT) npm -w apps/is_mapper run is_mapper:manual
+endif
+
+.PHONY: is-mapper-verify
+is-mapper-verify:
+ifeq ($(OS),Windows_NT)
+	cmd /C "npm -w apps/is_mapper run verify:dropdowns -- $(MAP_PATH) $(BEFORE_MAP_PATH)"
+else
+	npm -w apps/is_mapper run verify:dropdowns -- "$(MAP_PATH)" "$(BEFORE_MAP_PATH)"
 endif
 
 .PHONY: form-dev

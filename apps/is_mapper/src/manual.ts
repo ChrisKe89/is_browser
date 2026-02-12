@@ -258,8 +258,17 @@ function mergeFieldIntoExisting(existing: FieldEntry, incoming: FieldEntry): voi
   if (incoming.currentValue !== undefined) {
     existing.currentValue = incoming.currentValue;
   }
+  if (incoming.currentLabel && !existing.currentLabel) {
+    existing.currentLabel = incoming.currentLabel;
+  }
+  if (incoming.valueQuality) {
+    existing.valueQuality = incoming.valueQuality;
+  }
   if (incoming.labelQuality && (existing.labelQuality === undefined || existing.labelQuality === "missing")) {
     existing.labelQuality = incoming.labelQuality;
+  }
+  if (incoming.fieldId && !existing.fieldId) {
+    existing.fieldId = incoming.fieldId;
   }
   if (incoming.rangeHint && !existing.rangeHint) {
     existing.rangeHint = incoming.rangeHint;
@@ -285,6 +294,18 @@ function mergeFieldIntoExisting(existing: FieldEntry, incoming: FieldEntry): voi
   }
   if (incoming.readonly !== undefined && existing.readonly === undefined) {
     existing.readonly = incoming.readonly;
+  }
+  if (incoming.opensModal !== undefined && existing.opensModal === undefined) {
+    existing.opensModal = incoming.opensModal;
+  }
+  if (incoming.modalRef && !existing.modalRef) {
+    existing.modalRef = incoming.modalRef;
+  }
+  if (incoming.modalTitle && !existing.modalTitle) {
+    existing.modalTitle = incoming.modalTitle;
+  }
+  if (incoming.interaction && !existing.interaction) {
+    existing.interaction = incoming.interaction;
   }
 }
 
@@ -442,6 +463,7 @@ async function collectNewFields(
         registry.usedFieldIds
       ),
       label: candidate.label,
+      fieldId: candidate.fieldId,
       labelQuality: candidate.labelQuality,
       type: candidate.type,
       selectors: candidate.selectors,
@@ -457,11 +479,15 @@ async function collectNewFields(
       valueType: candidate.valueType,
       defaultValue,
       currentValue: candidate.currentValue,
+      currentLabel: candidate.currentLabel,
+      valueQuality: candidate.valueQuality,
       controlType: candidate.controlType,
       readonly: candidate.readonly,
       visibility: candidate.visibility,
       source: { discoveredFrom, runId },
-      actions
+      actions,
+      opensModal: candidate.opensModal,
+      interaction: candidate.interaction
     };
 
     if (registry.fingerprints.has(fingerprint)) {

@@ -74,11 +74,27 @@ export const FieldSchema = z.object({
   groupTitle: z.string().optional(),
   groupOrder: z.number().int().optional(),
   controlType: z
-    .enum(["switch", "checkbox", "textbox", "number", "dropdown", "radio_group", "button", "unknown"])
+    .enum([
+      "switch",
+      "checkbox",
+      "textbox",
+      "number",
+      "dropdown",
+      "radio_group",
+      "button",
+      "staticTextButton",
+      "unknown"
+    ])
     .optional(),
   valueType: z.enum(["string", "number", "boolean", "enum", "unknown"]).optional(),
   defaultValue: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional(),
   currentValue: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional(),
+  currentLabel: z.string().optional(),
+  valueQuality: z.enum(["native-select", "trigger-text", "opened-options", "static-text", "missing"]).optional(),
+  opensModal: z.boolean().optional(),
+  modalRef: z.string().optional(),
+  modalTitle: z.string().optional(),
+  interaction: z.enum(["opensModal"]).optional(),
   options: z
     .array(
       z.object({
