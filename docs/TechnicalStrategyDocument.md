@@ -84,6 +84,17 @@ Every structural element must have a stable identity:
 * Group title
 * Node fingerprint
 
+Canonical replay artifacts are generated as:
+
+* `dist/ui_schema.json`
+* `dist/ui_form.yaml`
+* `dist/verify_report.json`
+
+Identity rules for this contract:
+
+* `containerKey = sha1(join(" > ", breadcrumb) + "|" + type + "|" + title + "|" + urlNormalized + "|" + frameUrl)`
+* `settingKey = sha1(containerKey + "|" + groupTitle + "|" + label + "|" + type + "|" + domIdOrNameIfAny)`
+
 Repeated mapping runs on unchanged firmware must produce identical IDs.
 
 If IDs change, the mapping layer is considered unstable.

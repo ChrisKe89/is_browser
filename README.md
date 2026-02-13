@@ -82,3 +82,27 @@ Default URLs:
 For detailed product usage, see each app’s README.
 
 ---
+
+## Mapper Contract Artifacts
+
+Run a crawl and generate the deterministic contract outputs:
+
+```bash
+make is-mapper-map
+make is-mapper-contract MAP_PATH=state/printer-ui-map.json DIST_DIR=dist
+```
+
+Key outputs:
+
+* `dist/ui_schema.json`
+* `dist/ui_form.yaml`
+* `dist/verify_report.json`
+
+Validation and replay scripts:
+
+```bash
+python scripts/stability_check.py --run-crawl
+python scripts/apply_settings.py --schema dist/ui_schema.json --values values.json --report dist/apply_report.json
+```
+
+---

@@ -29,6 +29,7 @@ import { runManualMapper } from "./manual.js";
 import { fieldFingerprint } from "./mapping/fingerprint.js";
 import { attachCanonicalGraph } from "./graph.js";
 import { buildYamlViews, validateMapForYaml } from "./yamlViews.js";
+import { writeCaptureArtifacts } from "./writeCaptureArtifacts.js";
 
 const OUTPUT_PATH = process.env.MAP_PATH ?? "state/printer-ui-map.json";
 const TAB_SKIP_RE = /logout|log out|delete|reset|save|apply|submit|cancel|ok/i;
@@ -74,6 +75,11 @@ type CrawlFlow = {
 type CrawlFlowsConfig = {
   flows: CrawlFlow[];
 };
+
+function normalizeLabel(value: string | null | undefined): string | undefined {
+  const normalized = (value ?? "").replace(/\s+/g, " ").trim();
+  return normalized || undefined;
+}
 
 function mergeOptions(
   existing: FieldEntry["options"] = [],
@@ -125,6 +131,9 @@ function mergeFieldMetadata(
   }
   if (incoming.valueQuality) {
     existing.valueQuality = incoming.valueQuality;
+  }
+  if (incoming.valueQualityReason) {
+    existing.valueQualityReason = incoming.valueQualityReason;
   }
   if (incoming.labelQuality && (existing.labelQuality === undefined || existing.labelQuality === "missing")) {
     existing.labelQuality = incoming.labelQuality;
@@ -305,6 +314,7 @@ async function mapPage(
           currentValue: candidate.currentValue,
           currentLabel: candidate.currentLabel,
           valueQuality: candidate.valueQuality,
+          valueQualityReason: candidate.valueQualityReason,
           controlType: candidate.controlType,
           readonly: candidate.readonly,
           visibility: candidate.visibility,
@@ -338,6 +348,7 @@ async function mapPage(
       currentValue: candidate.currentValue,
       currentLabel: candidate.currentLabel,
       valueQuality: candidate.valueQuality,
+      valueQualityReason: candidate.valueQualityReason,
       controlType: candidate.controlType,
       readonly: candidate.readonly,
       visibility: candidate.visibility,
@@ -1600,10 +1611,14 @@ async function runCrawler(opts: MapperCliOptions): Promise<void> {
   const layoutYamlPath = path.join(outputDir, "ui-tree.layout.yaml");
   await writeFile(navigationYamlPath, navigationYaml, "utf8");
   await writeFile(layoutYamlPath, layoutYaml, "utf8");
+  const contractArtifacts = await writeCaptureArtifacts(map, "dist");
   await browser.close();
   console.log(`Wrote ${OUTPUT_PATH} (${pages.length} pages, ${fields.length} fields)`);
   console.log(`Wrote ${navigationYamlPath}`);
   console.log(`Wrote ${layoutYamlPath}`);
+  console.log(`Wrote ${contractArtifacts.paths.schema}`);
+  console.log(`Wrote ${contractArtifacts.paths.form}`);
+  console.log(`Wrote ${contractArtifacts.paths.verify}`);
 }
 
 try {

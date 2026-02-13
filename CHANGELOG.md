@@ -6,6 +6,19 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 ### Added
+- Deterministic `FieldRecord` contract in mapper artifacts (`fieldRecords[]`) with stable `field_id` derivation from breadcrumb/container/group/control identity plus frame/modal context.
+- Stability-check enforcement for mapper schema drift beyond key existence: deterministic field-id mapping, empty dropdown-option detection, and radio option-order drift checks.
+- Manual click-log modal metadata (`modalId`, `modalOpenTrigger`, `modalCloseTrigger`) and click-log reconciliation that verifies every `newlyDiscoveredFieldId` resolves to a captured `FieldRecord`.
+- Deterministic mapper capture contract artifacts: `dist/ui_schema.json`, `dist/ui_form.yaml`, and `dist/verify_report.json` with stable `containerKey`/`settingKey` hashing and selector-proof metadata.
+- Contract artifact generator CLI: `npm -w apps/is_mapper run is_mapper:contract -- <mapPath> <distDir>`, including fallback ingestion of legacy `ui-map.json`/`ui-schema.json` shaped inputs.
+- Python automation scripts:
+  - `scripts/stability_check.py` for key/label/type drift detection across two schema runs (or two fresh crawls).
+  - `scripts/apply_settings.py` for type-specific Playwright replay from `settingKey -> desiredValue` with per-setting verification and save-on-change behavior.
+- New Make targets for contract generation, stability checking, and replay:
+  - `make is-mapper-contract`
+  - `make is-mapper-stability-check`
+  - `make is-mapper-apply-settings`
+- `apps/is_mapper/README.md` documenting mapper contract outputs and replay/stability usage.
 - Manual click-mapping mode for `is_mapper` with `--manual`, `--location`, and `--screenshot` flags, per-run artifacts (`printer-ui-map.clicks.json`, `click-log.json`, optional screenshots), and new mapper docs under `docs/is_mapper/`.
 - Mapper field capture metadata for defaults/current values and dedupe: `selectorKey`, `groupKey`, `valueType`, `defaultValue`, `currentValue`, and normalized `options[]`.
 - Mapper capture-quality improvements: robust `currentValue` extraction per control type, non-empty label derivation with `labelQuality`, modal action discovery for save/cancel/close scope, and textbox constraint/hint capture (`min`, `max`, `step`, `maxLength`, `pattern`, `inputMode`, `rangeHint`).
@@ -46,6 +59,10 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+- Graph node IDs in mapper canonical graph are now deterministic path-based IDs instead of opaque `node-<hash>` values.
+- Dropdown capture now marks non-enumerable controls with `value_quality=\"unknown\"` and an explicit reason for downstream auditing.
+- `apps/is_mapper/src/index.ts` now emits contract artifacts to `dist/` as part of crawl runs.
+- Technical strategy documentation now records canonical capture artifact paths and deterministic `containerKey`/`settingKey` identity formulas.
 - `apps/is_form` now serves a normalized settings schema at `GET /api/form/schema` and the form UI was redesigned to render section/group/subgroup layouts with validation, sticky save/discard controls, and Fujifilm-branded assets.
 - Finalized workspace layout under `apps/*` and `packages/*` with npm workspaces and per-workspace `package.json` files.
 - Renamed shared packages to `@is-browser/contract`, `@is-browser/env`, `@is-browser/browser`, and `@is-browser/sqlite-store`; updated imports across apps/tests.

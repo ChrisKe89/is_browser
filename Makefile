@@ -12,6 +12,9 @@ help:
 	@echo "  make is-mapper-map      Run is_mapper UI map"
 	@echo "  make is-mapper-manual   Run is_mapper manual click map"
 	@echo "  make is-mapper-verify   Report dropdown currentValue nulls"
+	@echo "  make is-mapper-contract Build dist/ui_schema.json + ui_form.yaml + verify_report.json"
+	@echo "  make is-mapper-stability-check Compare ui_schema keys across runs/files"
+	@echo "  make is-mapper-apply-settings Replay values from values.json via Playwright"
 	@echo "  make is-mapper-yaml     Export navigation/layout YAML from map"
 	@echo "  make is-mapper-dev      Run is_mapper dev mode"
 	@echo "  make form-dev           Start is_form server"
@@ -52,6 +55,14 @@ is-mapper-dev:
 is-mapper-yaml:
 	npm run is_mapper:yaml
 
+.PHONY: is-mapper-contract
+is-mapper-contract:
+ifeq ($(OS),Windows_NT)
+	cmd /C "npm -w apps/is_mapper run is_mapper:contract -- $(MAP_PATH) $(DIST_DIR)"
+else
+	npm -w apps/is_mapper run is_mapper:contract -- "$(MAP_PATH)" "$(DIST_DIR)"
+endif
+
 .PHONY: is-mapper-manual
 is-mapper-manual:
 ifeq ($(OS),Windows_NT)
@@ -67,6 +78,14 @@ ifeq ($(OS),Windows_NT)
 else
 	npm -w apps/is_mapper run verify:dropdowns -- "$(MAP_PATH)" "$(BEFORE_MAP_PATH)"
 endif
+
+.PHONY: is-mapper-stability-check
+is-mapper-stability-check:
+	python scripts/stability_check.py $(STABILITY_ARGS)
+
+.PHONY: is-mapper-apply-settings
+is-mapper-apply-settings:
+	python scripts/apply_settings.py $(APPLY_ARGS)
 
 .PHONY: form-dev
 form-dev:

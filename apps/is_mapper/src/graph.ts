@@ -9,6 +9,7 @@ import {
   type Selector,
   type UiMap
 } from "@is-browser/contract";
+import { slugify } from "./utils.js";
 
 type ClickLogLike = {
   clicks: Array<{
@@ -36,6 +37,13 @@ type CanonicalGraphOptions = {
 
 function hashValue(input: string): string {
   return createHash("sha1").update(input).digest("hex");
+}
+
+function stableNodeId(kind: NodeEntry["kind"], title: string, breadcrumbs: string[] | undefined, url: string): string {
+  const crumbPart = slugify((breadcrumbs ?? []).join("-") || title);
+  const titlePart = slugify(title);
+  const pathPart = slugify(normalizeUrl(url).split("/").filter(Boolean).join("-") || "root");
+  return `node.${kind}.${crumbPart}.${titlePart}.${pathPart}`;
 }
 
 function normalizeSpace(value: string | undefined): string {
@@ -378,10 +386,10 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
       ].join("|")
     );
 
-    let nodeId = `node-${fingerprint.slice(0, 12)}`;
+    let nodeId = stableNodeId(kind, normalizeSpace(page.title) || page.id, breadcrumbs, page.url);
     let suffix = 2;
     while (usedNodeIds.has(nodeId)) {
-      nodeId = `node-${fingerprint.slice(0, 12)}-${suffix}`;
+      nodeId = `${stableNodeId(kind, normalizeSpace(page.title) || page.id, breadcrumbs, page.url)}.${suffix}`;
       suffix += 1;
     }
     usedNodeIds.add(nodeId);

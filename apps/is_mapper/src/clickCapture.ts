@@ -228,6 +228,17 @@ export async function installClickCapture(page: Page, onClick: ClickBinding): Pr
   });
 }
 
+export type FieldStateSnapshotEntry = {
+  fieldId: string;
+  controlType: string;
+  current_value: string | number | boolean | null;
+  current_label: string | null;
+  default_value: string | number | boolean | null;
+  value_source: string;
+  capture_ok: boolean;
+  capture_error?: string;
+};
+
 export type ClickLogEntry = {
   index: number;
   timestamp: string;
@@ -243,11 +254,15 @@ export type ClickLogEntry = {
   transitionType?: "navigate" | "open_modal" | "close_modal" | "tab_switch" | "dismiss_alert" | "expand_section";
   nodeIdBefore?: string;
   nodeIdAfter?: string;
+  modalId?: string;
+  modalOpenTrigger?: { kind: "role" | "label" | "css"; role?: string; name?: string; value?: string };
+  modalCloseTrigger?: { kind: "role" | "label" | "css"; role?: string; name?: string; value?: string };
   newFieldIds: string[];
   newlyVisibleFieldIds?: string[];
   newlyDiscoveredFieldIds?: string[];
   noLongerVisibleFieldIds?: string[];
   screenshotPath?: string;
+  fieldStateSnapshot?: FieldStateSnapshotEntry[];
 };
 
 export type ClickLogFile = {

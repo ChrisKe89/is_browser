@@ -29,6 +29,7 @@ export type FieldCandidate = {
   currentValue?: FieldEntry["currentValue"];
   currentLabel?: string;
   valueQuality?: FieldEntry["valueQuality"];
+  valueQualityReason?: string;
   opensModal?: boolean;
   interaction?: FieldEntry["interaction"];
   valueType?: FieldEntry["valueType"];
@@ -39,6 +40,7 @@ export type ControlStateRead = {
   currentValue: FieldEntry["currentValue"];
   currentLabel?: string | null;
   valueQuality?: FieldEntry["valueQuality"];
+  valueQualityReason?: string;
   displayValue?: string | null;
   options?: OptionEntry[];
 };
@@ -396,6 +398,7 @@ async function readCustomComboboxState(
     currentValue,
     currentLabel: displayValue,
     valueQuality: currentValue ? "trigger-text" : "missing",
+    valueQualityReason: currentValue ? undefined : "combobox did not expose active/selected/value text",
     displayValue,
     options: options.length ? options : undefined
   };
@@ -473,7 +476,8 @@ async function readDropdownStateFromRoot(
     valueType: "enum",
     currentValue: null,
     currentLabel: null,
-    valueQuality: "missing",
+    valueQuality: "unknown",
+    valueQualityReason: "dropdown options could not be enumerated and trigger text was empty",
     displayValue: null
   };
 }
@@ -1013,7 +1017,7 @@ async function discoverStaticTextButtonCandidates(
         visibility: { visible: true, enabled: true },
         valueType: "string",
         currentValue,
-        currentLabel: currentValue,
+        currentLabel: currentValue ?? undefined,
         valueQuality: "static-text",
         opensModal: true,
         interaction: "opensModal"
@@ -1194,6 +1198,7 @@ export async function discoverFieldCandidates(
         currentValue: state.currentValue ?? null,
         currentLabel: state.currentLabel ?? state.displayValue ?? undefined,
         valueQuality: state.valueQuality,
+        valueQualityReason: state.valueQualityReason,
         valueType: state.valueType,
         hints,
         rangeHint

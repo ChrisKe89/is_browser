@@ -2,6 +2,7 @@ import { writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
 import { setTimeout as sleep } from "node:timers/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { openBrowser, newPage } from "@is-browser/browser";
 import { writeMap } from "@is-browser/contract";
 import { type FieldEntry, type NavStep, type PageEntry, type Selector, type UiMap } from "@is-browser/contract";
@@ -13,11 +14,13 @@ import {
   type CapturedClick,
   type CapturedClickKind,
   type ClickLogEntry,
-  type ClickLogFile
+  type ClickLogFile,
+  type FieldStateSnapshotEntry
 } from "./clickCapture.js";
 import { isLoginPage, login } from "./login.js";
 import { discoverFieldCandidates, mergeEnums } from "./mapping/fieldDiscovery.js";
 import { fieldFingerprint } from "./mapping/fingerprint.js";
+import { buildVisibleFieldDescriptors, captureFieldStateSnapshot } from "./mapping/fieldStateSnapshot.js";
 import { attachCanonicalGraph } from "./graph.js";
 import { ensureManualRunPaths, resolveManualRunPaths } from "./runPaths.js";
 import { slugify, uniqueId } from "./utils.js";
@@ -38,16 +41,53 @@ type ManualFieldRegistry = {
   fingerprints: Set<string>;
   fieldsByFingerprint: Map<string, FieldEntry>;
   defaultsBySelectorKey: Map<string, FieldEntry["defaultValue"]>;
+  fieldIdToFingerprint: Map<string, string>;
 };
 
 type ScopeContext = {
   kind: "page" | "modal";
   key: string;
+  modalId?: string;
+  modalTitle?: string;
   root?: import("playwright").Locator;
 };
 
+function applySnapshotToRegistry(
+  snapshot: FieldStateSnapshotEntry[],
+  registry: ManualFieldRegistry
+): void {
+  for (const snap of snapshot) {
+    if (!snap.capture_ok) continue;
+    const fp = registry.fieldIdToFingerprint.get(snap.fieldId);
+    const field = fp ? registry.fieldsByFingerprint.get(fp) : undefined;
+    if (!field) continue;
+    // current_value: last-write-wins — the snapshot is a more recent, accurate re-read
+    if (snap.current_value !== null && snap.current_value !== undefined) {
+      field.currentValue = snap.current_value;
+    }
+    if (snap.current_label !== null) {
+      field.currentLabel = snap.current_label;
+    }
+    // default_value: only fill nulls — default is set once during initial discovery
+    if (snap.default_value !== null && field.defaultValue === null) {
+      field.defaultValue = snap.default_value;
+    }
+  }
+}
+
 function normalizeSpace(value: string | undefined): string {
   return (value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function stableHash(value: string): string {
+  return createHash("sha1").update(value).digest("hex").slice(0, 10);
+}
+
+function stableModalId(frameUrl: string, modalTitle: string, modalDomId: string, modalClass: string): string {
+  const framePart = slugify(frameUrl || "frame");
+  const titlePart = slugify(modalTitle || "modal");
+  const idPart = slugify(modalDomId || modalClass || "dialog");
+  return `modal.${framePart}.${titlePart}.${idPart}.${stableHash([frameUrl, modalTitle, modalDomId, modalClass].join("|"))}`;
 }
 
 function toMillis(value: string | undefined): number {
@@ -264,6 +304,9 @@ function mergeFieldIntoExisting(existing: FieldEntry, incoming: FieldEntry): voi
   if (incoming.valueQuality) {
     existing.valueQuality = incoming.valueQuality;
   }
+  if (incoming.valueQualityReason) {
+    existing.valueQualityReason = incoming.valueQualityReason;
+  }
   if (incoming.labelQuality && (existing.labelQuality === undefined || existing.labelQuality === "missing")) {
     existing.labelQuality = incoming.labelQuality;
   }
@@ -375,8 +418,10 @@ async function resolveScopeContext(page: import("playwright").Page): Promise<Sco
     .split(/\s+/)
     .slice(0, 3)
     .join(".");
-  const key = `modal:${modalId || modalClass || modalTitle || "active"}`;
-  return { kind: "modal", key, root: modalRoot };
+  const frameUrl = normalizeSpace(page.url());
+  const modalIdentity = stableModalId(frameUrl, modalTitle, modalId, modalClass);
+  const key = `modal:${modalIdentity}`;
+  return { kind: "modal", key, modalId: modalIdentity, modalTitle, root: modalRoot };
 }
 
 async function derivePageContext(
@@ -481,6 +526,7 @@ async function collectNewFields(
       currentValue: candidate.currentValue,
       currentLabel: candidate.currentLabel,
       valueQuality: candidate.valueQuality,
+      valueQualityReason: candidate.valueQualityReason,
       controlType: candidate.controlType,
       readonly: candidate.readonly,
       visibility: candidate.visibility,
@@ -495,6 +541,7 @@ async function collectNewFields(
       if (existing) {
         mergeFieldIntoExisting(existing, current);
         visibleFieldIds.push(existing.id);
+        registry.fieldIdToFingerprint.set(existing.id, fingerprint);
       }
       continue;
     }
@@ -504,6 +551,7 @@ async function collectNewFields(
     newFields.push(current);
     newFieldIds.push(current.id);
     visibleFieldIds.push(current.id);
+    registry.fieldIdToFingerprint.set(current.id, fingerprint);
   }
 
   return {
@@ -616,7 +664,8 @@ export async function runManualMapper(options: MapperCliOptions): Promise<void> 
     pageContextIds: new Map<string, string>(),
     fingerprints: new Set<string>(),
     fieldsByFingerprint: new Map<string, FieldEntry>(),
-    defaultsBySelectorKey: new Map<string, FieldEntry["defaultValue"]>()
+    defaultsBySelectorKey: new Map<string, FieldEntry["defaultValue"]>(),
+    fieldIdToFingerprint: new Map<string, string>()
   };
 
   const navPath: Array<{
@@ -645,6 +694,15 @@ export async function runManualMapper(options: MapperCliOptions): Promise<void> 
     pagesById.set(initialPage.id, initialPage);
   }
   visibleBaselineByScope.set(initial.scopeKey, new Set(initial.visibleFieldIds));
+
+  const initialSnapshotDescriptors = buildVisibleFieldDescriptors(
+    initial.visibleFieldIds,
+    registry.fieldsByFingerprint,
+    registry.fieldIdToFingerprint
+  );
+  const initialSnapshot = await captureFieldStateSnapshot(page, initialSnapshotDescriptors, initialScope.root);
+  applySnapshotToRegistry(initialSnapshot, registry);
+
   let lastScope = initialScope;
   let lastPageId = initialPage.id;
   let lastVisibleFieldIds = new Set(initial.visibleFieldIds);
@@ -782,6 +840,34 @@ export async function runManualMapper(options: MapperCliOptions): Promise<void> 
       visibleBaselineByScope.set(scopeKey, new Set(visibleAfter));
     }
 
+    const primaryTrigger = normalizedClick.selectors[0];
+    const modalOpenTrigger =
+      transitionType === "open_modal" && primaryTrigger
+        ? {
+            kind: primaryTrigger.kind,
+            role: primaryTrigger.role,
+            name: primaryTrigger.name,
+            value: primaryTrigger.value
+          }
+        : undefined;
+    const modalCloseTrigger =
+      transitionType === "close_modal" && primaryTrigger
+        ? {
+            kind: primaryTrigger.kind,
+            role: primaryTrigger.role,
+            name: primaryTrigger.name,
+            value: primaryTrigger.value
+          }
+        : undefined;
+
+    const snapshotDescriptors = buildVisibleFieldDescriptors(
+      visibleFieldIds,
+      registry.fieldsByFingerprint,
+      registry.fieldIdToFingerprint
+    );
+    const fieldStateSnapshot = await captureFieldStateSnapshot(page, snapshotDescriptors, afterScope.root);
+    applySnapshotToRegistry(fieldStateSnapshot, registry);
+
     clickLogEntries.push({
       index: clickLogEntries.length + 1,
       timestamp: normalizedClick.timestamp,
@@ -797,11 +883,15 @@ export async function runManualMapper(options: MapperCliOptions): Promise<void> 
       transitionType,
       nodeIdBefore: lastPageId,
       nodeIdAfter: pageEntry.id,
+      modalId: afterScope.modalId ?? lastScope.modalId,
+      modalOpenTrigger,
+      modalCloseTrigger,
       newFieldIds,
       newlyVisibleFieldIds,
       newlyDiscoveredFieldIds: clickKind === "system_alert" ? [] : newlyDiscoveredFieldIds,
       noLongerVisibleFieldIds,
-      screenshotPath
+      screenshotPath,
+      fieldStateSnapshot
     });
 
     lastScope = afterScope;
