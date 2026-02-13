@@ -1,4 +1,4 @@
-import { type Page } from "playwright";
+import { type Page, type Locator } from "playwright";
 import { PRINTER_USER, PRINTER_PASS } from "@is-browser/env";
 
 const USER_LABEL_RE = /user id|user|login|name|email/i;
@@ -7,19 +7,48 @@ const LOGIN_TRIGGER_RE = /log in|login|sign in/i;
 const LOGOUT_RE = /log out|logout/i;
 const CLOSE_RE = /close/i;
 const LOGIN_CONTAINER_SELECTOR = "#loginRoot, #loginModal, form";
+const PASSWORD_LIKE_INPUT_SELECTOR =
+  'input[type="password"], input[name*="pass" i], input[id*="pass" i], input[aria-label*="pass" i], input[placeholder*="pass" i]';
+let hasAuthenticatedSession = false;
+
+async function isFillableField(locator: Locator): Promise<boolean> {
+  return locator
+    .evaluate((el) => {
+      const tag = el.tagName.toLowerCase();
+      return (
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        (el as HTMLElement).isContentEditable === true
+      );
+    })
+    .catch(() => false);
+}
+
+async function fillFieldIfPossible(
+  locator: Locator,
+  value: string,
+): Promise<boolean> {
+  if (!(await locator.count())) {
+    return false;
+  }
+  if (!(await isFillableField(locator))) {
+    return false;
+  }
+  await locator.fill(value);
+  return true;
+}
 
 async function hasVisibleCredentialInputs(page: Page): Promise<boolean> {
-  const visiblePassword = await page
-    .locator('input[type="password"]:visible')
-    .count()
-    .catch(() => 0);
-  if (visiblePassword > 0) return true;
-
-  const visibleUserLike = await page
+  return await page
     .locator('input:visible, textarea:visible')
-    .evaluateAll((els, pattern) => {
-      const re = new RegExp(pattern, "i");
-      return els.some((el) => {
+    .evaluateAll((els, patterns) => {
+      const userRe = new RegExp(patterns.userPattern, "i");
+      const passRe = new RegExp(patterns.passPattern, "i");
+      let hasUserLike = false;
+      let hasPassLike = false;
+      for (const el of els) {
+        const input = el as HTMLInputElement;
         const attrs = [
           el.getAttribute("aria-label"),
           el.getAttribute("name"),
@@ -28,16 +57,22 @@ async function hasVisibleCredentialInputs(page: Page): Promise<boolean> {
         ]
           .filter(Boolean)
           .join(" ");
-        return re.test(attrs);
-      });
-    }, USER_LABEL_RE.source)
+        const type = (input.type || "").toLowerCase();
+        if (type === "password" || passRe.test(attrs)) {
+          hasPassLike = true;
+        }
+        if (userRe.test(attrs)) {
+          hasUserLike = true;
+        }
+      }
+      return hasPassLike && (hasUserLike || els.length <= 2);
+    }, { userPattern: USER_LABEL_RE.source, passPattern: PASS_LABEL_RE.source })
     .catch(() => false);
-  return Boolean(visibleUserLike);
 }
 
 async function hasLoginContainerWithInputs(page: Page): Promise<boolean> {
   const container = page.locator(LOGIN_CONTAINER_SELECTOR).filter({
-    has: page.locator('input[type="password"], input, textarea'),
+    has: page.locator(PASSWORD_LIKE_INPUT_SELECTOR),
   });
   return container.first().isVisible().catch(() => false);
 }
@@ -68,6 +103,9 @@ export async function isLoginPage(page: Page): Promise<boolean> {
 
   if (await hasLoginContainerWithInputs(page)) {
     return true;
+  }
+  if (hasAuthenticatedSession) {
+    return false;
   }
 
   const loginTrigger = page
@@ -105,39 +143,13 @@ export async function login(page: Page): Promise<void> {
   const chosenUserField = (await userField.count()) ? userField : userByRole;
   if (await chosenUserField.count()) {
     console.log("[login] filling user");
-    const fillable = await chosenUserField
-      .evaluate((el) => {
-        const tag = el.tagName.toLowerCase();
-        return (
-          tag === "input" ||
-          tag === "textarea" ||
-          tag === "select" ||
-          (el as HTMLElement).isContentEditable === true
-        );
-      })
-      .catch(() => false);
-    if (fillable) {
-      await chosenUserField.fill(PRINTER_USER);
-    }
+    await fillFieldIfPossible(chosenUserField, PRINTER_USER);
   }
 
   const chosenPassField = (await passField.count()) ? passField : passByRole;
   if (await chosenPassField.count()) {
     console.log("[login] filling password");
-    const fillable = await chosenPassField
-      .evaluate((el) => {
-        const tag = el.tagName.toLowerCase();
-        return (
-          tag === "input" ||
-          tag === "textarea" ||
-          tag === "select" ||
-          (el as HTMLElement).isContentEditable === true
-        );
-      })
-      .catch(() => false);
-    if (fillable) {
-      await chosenPassField.fill(PRINTER_PASS);
-    }
+    await fillFieldIfPossible(chosenPassField, PRINTER_PASS);
   } else if ((await passwordInputs.count()) > 0) {
     await passwordInputs.first().fill(PRINTER_PASS);
   }
@@ -236,6 +248,7 @@ export async function login(page: Page): Promise<void> {
 }
 
 async function finalizeLogin(page: Page): Promise<void> {
+  hasAuthenticatedSession = true;
   await page.waitForLoadState("networkidle").catch(() => null);
   await dismissPostLoginDialogs(page);
 }

@@ -1,4 +1,40 @@
 -
+  ref: node.page.access-control.access-control.https-192-168-0-107-home-index-html
+  title: "Access Control"
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: "Access Control"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\access-control.png"
+-
+  ref: node.page.copy.copy.https-192-168-0-107-home-index-html
+  title: Copy
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: Copy
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\copy.png"
+-
   ref: node.page.details.device-details.https-192-168-0-107-home-index-html
   title: "Device Details"
   breadcrumb:
@@ -149,7 +185,7 @@
     -
       label: Save
       kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\home-2-device-details.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\recorded-flow-device-details.png"
 -
   ref: node.page.details.device-details.https-192-168-0-107-home-index-html.2
   title: "Device Details"
@@ -167,7 +203,7 @@
     -
       label: Save
       kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow-device-details.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\access-control-device-details.png"
 -
   ref: node.page.details.device-details.https-192-168-0-107-home-index-html.3
   title: "Device Details"
@@ -185,7 +221,7 @@
     -
       label: Save
       kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\email-device-details.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\copy-device-details.png"
 -
   ref: node.page.details.device-details.https-192-168-0-107-home-index-html.4
   title: "Device Details"
@@ -203,7 +239,25 @@
     -
       label: Save
       kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance-device-details.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\email-device-details.png"
+-
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html.5
+  title: "Device Details"
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\remote-assistance-device-details.png"
 -
   ref: node.page.email.email.https-192-168-0-107-home-index-html
   title: Email
@@ -215,8 +269,13 @@
   groups:
     []
   actions:
-    []
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\email.png"
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\email.png"
 -
   ref: node.page.field.field.https-192-168-0-107-home-index-html
   title: field
@@ -229,7 +288,7 @@
     []
   actions:
     []
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\field.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\field.png"
 -
   ref: node.page.home.home.https-192-168-0-107-home-index-html
   title: Home
@@ -259,20 +318,7 @@
           modalTitle: "Yellow Toner (Y)"
   actions:
     []
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\home.png"
--
-  ref: node.page.home.home.https-192-168-0-107-home-index-html.2
-  title: Home
-  breadcrumb:
-    []
-  container:
-    type: page
-    title: Home
-  groups:
-    []
-  actions:
-    []
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\home-2.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\home.png"
 -
   ref: node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html
   title: "Recorded Flow"
@@ -284,13 +330,8 @@
   groups:
     []
   actions:
-    -
-      label: Cancel
-      kind: cancel
-    -
-      label: Save
-      kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow.png"
+    []
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\recorded-flow.png"
 -
   ref: node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html
   title: "Remote Assistance"
@@ -308,7 +349,7 @@
     -
       label: Save
       kind: save
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\remote-assistance.png"
 -
   ref: node.modal.replace-soon-yellow-toner-y.yellow-toner-y.https-192-168-0-107-home-index-html
   title: "Yellow Toner (Y)"
@@ -323,7 +364,7 @@
     -
       label: Close
       kind: close
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\modal-notification-0-yellow-toner-y.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\modal-notification-0-yellow-toner-y.png"
 -
   ref: node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html
   title: "Yellow Toner (Y)"
@@ -338,4 +379,4 @@
     -
       label: Close
       kind: close
-  snapshot: "tools\\recordings\\crawler-20260213105004\\nodes\\home-yellow-toner-y.png"
+  snapshot: "tools\\recordings\\crawler-20260213114125\\nodes\\home-yellow-toner-y.png"

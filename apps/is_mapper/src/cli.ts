@@ -1,4 +1,5 @@
 import { NAV_TIMEOUT_MS, PRINTER_URL } from "@is-browser/env";
+import { pathToFileURL } from "node:url";
 
 export type MapperCliOptions = {
   manual: boolean;
@@ -99,4 +100,37 @@ export function parseMapperCliArgs(argv: string[]): MapperCliOptions {
   }
 
   return { manual, location, screenshot, url, maxClicks, timeoutMs };
+}
+
+export async function runGenerateCaptureArtifactsCli(
+  argv: string[],
+): Promise<void> {
+  const mapPath = argv[0] ?? process.env.MAP_PATH ?? "state/printer-ui-map.json";
+  const distDir = argv[1] ?? "dist";
+  const { writeCaptureArtifactsFromMapPath } = await import(
+    "./writeCaptureArtifacts.js"
+  );
+  const result = await writeCaptureArtifactsFromMapPath(mapPath, distDir);
+  console.log(
+    `Wrote ${result.paths.schema} (${result.schema.containers.length} containers, ${result.schema.settings.length} settings)`,
+  );
+  console.log(`Wrote ${result.paths.form}`);
+  console.log(`Wrote ${result.paths.verify}`);
+}
+
+async function main(): Promise<void> {
+  const [command, ...rest] = process.argv.slice(2);
+  if (command === "contract") {
+    await runGenerateCaptureArtifactsCli(rest);
+    return;
+  }
+  throw new Error("Usage: tsx src/cli.ts contract [mapPath] [distDir]");
+}
+
+const invokedPath = process.argv[1];
+if (invokedPath && import.meta.url === pathToFileURL(invokedPath).href) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
 }

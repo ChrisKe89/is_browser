@@ -106,7 +106,7 @@ async function main(): Promise<void> {
     .filter(Boolean);
   if (args.length === 0 || args.length > 2) {
     throw new Error(
-      "Usage: tsx src/verifyDropdownValues.ts <after-map.json> [before-map.json]",
+      "Usage: tsx scripts/verifyDropdownValues.ts <after-map.json> [before-map.json]",
     );
   }
 

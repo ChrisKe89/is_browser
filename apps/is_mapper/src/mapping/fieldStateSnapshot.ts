@@ -7,6 +7,9 @@ import {
 import { type FieldStateSnapshotEntry } from "../clickCapture.js";
 
 const SNAPSHOT_TIMEOUT_MS = 750;
+const UNSAFE_SELECTOR_RE = /^(xpath|_react|_vue|text|has-text)=|>>/;
+const SAFE_DROPDOWN_ID_RE = /^#[A-Za-z0-9_-]+$/;
+const UI_DYNAMIC_ID_RE = /^#ui-id-/i;
 
 export type VisibleFieldDescriptor = {
   fieldId: string;
@@ -21,14 +24,43 @@ export type VisibleFieldDescriptor = {
 
 function resolveLocator(
   page: Page,
-  selectors: Selector[],
+  descriptor: VisibleFieldDescriptor,
   scope?: Locator,
 ): Locator | undefined {
   const root = scope ?? page;
+  const selectors = descriptor.selectors;
+  const isDropdownLike =
+    descriptor.type === "select" || descriptor.controlType === "dropdown";
 
+  const cssSelectors = selectors.filter(
+    (selector): selector is Selector & { value: string } =>
+      selector.kind === "css" && typeof selector.value === "string",
+  );
+  const cssSelector = cssSelectors[0];
+  const labelSelector = selectors.find((s) => s.kind === "label" && s.value);
   const roleSelector = selectors.find(
     (s) => s.kind === "role" && s.role && s.name,
   );
+
+  const isUnsafeCssSelector = (value: string): boolean =>
+    UNSAFE_SELECTOR_RE.test(value);
+  const isSafeDropdownIdSelector = (value: string): boolean =>
+    SAFE_DROPDOWN_ID_RE.test(value) && !UI_DYNAMIC_ID_RE.test(value);
+
+  if (isDropdownLike) {
+    const safeDropdownCss = cssSelectors.find((selector) =>
+      isSafeDropdownIdSelector(selector.value),
+    );
+    const value = safeDropdownCss?.value;
+    if (value && !isUnsafeCssSelector(value) && isSafeDropdownIdSelector(value)) {
+      return root.locator(`css=select${value}, input${value}`);
+    }
+  }
+
+  if (labelSelector) {
+    return root.getByLabel(labelSelector.value!, { exact: false });
+  }
+
   if (roleSelector) {
     return root.getByRole(
       roleSelector.role as Parameters<typeof root.getByRole>[0],
@@ -39,15 +71,9 @@ function resolveLocator(
     );
   }
 
-  const labelSelector = selectors.find((s) => s.kind === "label" && s.value);
-  if (labelSelector) {
-    return root.getByLabel(labelSelector.value!, { exact: false });
-  }
-
-  const cssSelector = selectors.find((s) => s.kind === "css" && s.value);
   if (cssSelector) {
     const value = cssSelector.value!;
-    if (/^(xpath|_react|_vue|text|has-text)=|>>/.test(value)) {
+    if (isUnsafeCssSelector(value)) {
       return undefined;
     }
     return root.locator(`css=${value}`);
@@ -196,7 +222,7 @@ export async function captureFieldStateSnapshot(
 
   for (const descriptor of descriptors) {
     try {
-      const locator = resolveLocator(page, descriptor.selectors, scopeLocator);
+      const locator = resolveLocator(page, descriptor, scopeLocator);
       if (!locator) {
         results.push({
           fieldId: descriptor.fieldId,

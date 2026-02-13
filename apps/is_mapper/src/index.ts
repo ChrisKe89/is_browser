@@ -1500,6 +1500,30 @@ function normalizeUrl(url: string): string {
   return parsed.toString();
 }
 
+function assertDropdownNullRate(fields: FieldEntry[]): void {
+  const dropdownFields = fields.filter(
+    (field) => field.controlType === "dropdown" || field.type === "select",
+  );
+  const nullCurrentValueCount = dropdownFields.filter(
+    (field) => field.currentValue === null || field.currentValue === undefined,
+  ).length;
+  const totalDropdownFields = dropdownFields.length;
+  const nullRatePct =
+    totalDropdownFields > 0
+      ? (nullCurrentValueCount / totalDropdownFields) * 100
+      : 0;
+
+  console.log(`Dropdown/select fields captured: ${totalDropdownFields}`);
+  console.log(`Dropdown/select fields with null currentValue: ${nullCurrentValueCount}`);
+  console.log(`Dropdown/select null rate: ${nullRatePct.toFixed(2)}%`);
+
+  if (totalDropdownFields > 0 && nullRatePct > 5) {
+    throw new Error(
+      `Dropdown null-rate regression: ${nullRatePct.toFixed(2)}% > 5.00%`,
+    );
+  }
+}
+
 async function runCrawler(opts: MapperCliOptions): Promise<void> {
   requireCreds();
   const runId = new Date()
@@ -1730,6 +1754,8 @@ async function runCrawler(opts: MapperCliOptions): Promise<void> {
     pages,
     fields,
   };
+
+  assertDropdownNullRate(map.fields);
 
   attachCanonicalGraph(map, {
     runId,

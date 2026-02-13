@@ -5,8 +5,8 @@
   "scripts": {
     "is_mapper:map": "tsx src/index.ts",
     "is_mapper:manual": "tsx src/index.ts --manual",
-    "is_mapper:contract": "tsx src/generateCaptureArtifactsCli.ts",
-    "verify:dropdowns": "tsx src/verifyDropdownValues.ts",
+    "is_mapper:contract": "tsx src/cli.ts contract",
+    "verify:dropdowns": "tsx scripts/verifyDropdownValues.ts",
     "dev": "tsx src/index.ts",
     "auth:capture": "tsx src/auth/capture.ts",
     "test": "tsx --test test/*.test.js"

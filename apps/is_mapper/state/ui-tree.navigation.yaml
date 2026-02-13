@@ -1,4 +1,22 @@
 -
+  ref: node.page.access-control.access-control.https-192-168-0-107-home-index-html
+  path:
+    - "Access Control"
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: "Access Control"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
   ref: node.page.home.home.https-192-168-0-107-home-index-html
   path:
     - Administrator
@@ -28,6 +46,24 @@
           modalTitle: "Yellow Toner (Y)"
   actions:
     []
+-
+  ref: node.page.copy.copy.https-192-168-0-107-home-index-html
+  path:
+    - Copy
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: Copy
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
 -
   ref: node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html
   path:
@@ -250,6 +286,24 @@
       label: Save
       kind: save
 -
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html.5
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
   ref: node.page.email.email.https-192-168-0-107-home-index-html
   path:
     - Email
@@ -261,7 +315,12 @@
   groups:
     []
   actions:
-    []
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
 -
   ref: node.page.field.field.https-192-168-0-107-home-index-html
   path:
@@ -271,19 +330,6 @@
   container:
     type: page
     title: field
-  groups:
-    []
-  actions:
-    []
--
-  ref: node.page.home.home.https-192-168-0-107-home-index-html.2
-  path:
-    - Help
-  breadcrumb:
-    []
-  container:
-    type: page
-    title: Home
   groups:
     []
   actions:
@@ -300,12 +346,7 @@
   groups:
     []
   actions:
-    -
-      label: Cancel
-      kind: cancel
-    -
-      label: Save
-      kind: save
+    []
 -
   ref: node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html
   path:

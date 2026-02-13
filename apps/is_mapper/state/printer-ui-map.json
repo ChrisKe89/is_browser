@@ -1,11 +1,12 @@
 {
   "meta": {
-    "generatedAt": "2026-02-13T10:54:42.968Z",
+    "generatedAt": "2026-02-13T11:50:35.633Z",
     "printerUrl": "http://192.168.0.107",
     "schemaVersion": "1.1",
-    "capturedAt": "2026-02-13T10:54:42.968Z",
+    "capturedAt": "2026-02-13T11:50:35.633Z",
     "version": "ui-graph-1",
-    "runId": "20260213105004"
+    "mapperVersion": "0.3.0",
+    "runId": "20260213114125"
   },
   "pages": [
     {
@@ -123,44 +124,24 @@
       ]
     },
     {
-      "id": "home-2",
-      "title": "Home",
+      "id": "recorded-flow",
+      "title": "Recorded Flow",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
           "action": "goto",
-          "url": "http://192.168.0.107"
-        },
-        {
-          "action": "click",
-          "selector": {
-            "kind": "role",
-            "role": "button",
-            "name": "Help"
-          },
-          "label": "Help",
-          "kind": "button"
+          "url": "https://192.168.0.107/home/index.html#hashHome"
         }
       ]
     },
     {
-      "id": "home-2.device-details",
+      "id": "recorded-flow.device-details",
       "title": "Device Details",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
           "action": "goto",
-          "url": "http://192.168.0.107"
-        },
-        {
-          "action": "click",
-          "selector": {
-            "kind": "role",
-            "role": "button",
-            "name": "Help"
-          },
-          "label": "Help",
-          "kind": "button"
+          "url": "https://192.168.0.107/home/index.html#hashHome"
         },
         {
           "action": "click",
@@ -194,8 +175,8 @@
       ]
     },
     {
-      "id": "recorded-flow",
-      "title": "Recorded Flow",
+      "id": "access-control",
+      "title": "Access Control",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
@@ -223,7 +204,76 @@
       ]
     },
     {
-      "id": "recorded-flow.device-details",
+      "id": "access-control.device-details",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "copy",
+      "title": "Copy",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "copy.device-details",
       "title": "Device Details",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
@@ -270,6 +320,24 @@
         {
           "action": "goto",
           "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
         }
       ]
     },
@@ -385,7 +453,7 @@
   ],
   "fields": [
     {
-      "id": "home-2.device-details.comment",
+      "id": "recorded-flow.device-details.comment",
       "fieldId": "6319f8f63139aa60",
       "label": "Comment",
       "labelQuality": "explicit",
@@ -405,7 +473,7 @@
           "value": "#commentInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "6319f8f63139aa60",
       "groupKey": "group:device-details",
       "groupTitle": "Device Details",
@@ -424,7 +492,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -446,7 +514,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.customer-asset-tag",
+      "id": "recorded-flow.device-details.customer-asset-tag",
       "fieldId": "ae59ee49a49a63ad",
       "label": "Customer Asset Tag",
       "labelQuality": "explicit",
@@ -466,7 +534,7 @@
           "value": "#customerAssetInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "ae59ee49a49a63ad",
       "groupKey": "group:device-details",
       "groupTitle": "Device Details",
@@ -485,7 +553,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -507,7 +575,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.device-email-address",
+      "id": "recorded-flow.device-details.device-email-address",
       "fieldId": "02bf744216ad7d36",
       "label": "Device Email Address",
       "labelQuality": "explicit",
@@ -527,7 +595,7 @@
           "value": "#localEmailInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "02bf744216ad7d36",
       "groupKey": "group:device-details",
       "groupTitle": "Device Details",
@@ -546,7 +614,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -568,7 +636,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.device-name",
+      "id": "recorded-flow.device-details.device-name",
       "fieldId": "be4294d054962c73",
       "label": "Device Name*",
       "labelQuality": "explicit",
@@ -588,7 +656,7 @@
           "value": "#deviceNameInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "be4294d054962c73",
       "groupKey": "group:device-details",
       "groupTitle": "Device Details",
@@ -607,7 +675,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -629,7 +697,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.manufacturer-asset-tag",
+      "id": "recorded-flow.device-details.manufacturer-asset-tag",
       "fieldId": "0496e6f39cc0b21c",
       "label": "Manufacturer Asset Tag",
       "labelQuality": "explicit",
@@ -649,7 +717,7 @@
           "value": "#providerAssetInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "0496e6f39cc0b21c",
       "groupKey": "group:device-details",
       "groupTitle": "Device Details",
@@ -668,7 +736,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -732,11 +800,11 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       }
     },
     {
-      "id": "home-2.device-details.latitude",
+      "id": "recorded-flow.device-details.latitude",
       "fieldId": "9acd101e654ab683",
       "label": "Latitude",
       "labelQuality": "explicit",
@@ -756,7 +824,7 @@
           "value": "#latitudeInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "9acd101e654ab683",
       "groupKey": "group:device-location",
       "groupTitle": "Device Location",
@@ -777,7 +845,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -799,7 +867,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.location",
+      "id": "recorded-flow.device-details.location",
       "fieldId": "c9a9981e4cf35b7e",
       "label": "Location",
       "labelQuality": "explicit",
@@ -819,7 +887,7 @@
           "value": "#locationInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "c9a9981e4cf35b7e",
       "groupKey": "group:device-location",
       "groupTitle": "Device Location",
@@ -838,7 +906,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -860,7 +928,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.longitude",
+      "id": "recorded-flow.device-details.longitude",
       "fieldId": "62288e7a44e51d3a",
       "label": "Longitude",
       "labelQuality": "explicit",
@@ -880,7 +948,7 @@
           "value": "#longitudeInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "62288e7a44e51d3a",
       "groupKey": "group:device-location",
       "groupTitle": "Device Location",
@@ -901,7 +969,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -923,7 +991,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.email",
+      "id": "recorded-flow.device-details.email",
       "fieldId": "7576f00b3422988d",
       "label": "Email",
       "labelQuality": "explicit",
@@ -943,7 +1011,7 @@
           "value": "#adminEmailInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "7576f00b3422988d",
       "groupKey": "group:system-administrator",
       "groupTitle": "System Administrator",
@@ -962,7 +1030,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -984,7 +1052,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.name",
+      "id": "recorded-flow.device-details.name",
       "fieldId": "b3ce2f4910da0f68",
       "label": "Name",
       "labelQuality": "explicit",
@@ -1004,7 +1072,7 @@
           "value": "#adminNameInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "b3ce2f4910da0f68",
       "groupKey": "group:system-administrator",
       "groupTitle": "System Administrator",
@@ -1023,7 +1091,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -1045,7 +1113,7 @@
       ]
     },
     {
-      "id": "home-2.device-details.phone",
+      "id": "recorded-flow.device-details.phone",
       "fieldId": "d9c6e043d922240f",
       "label": "Phone",
       "labelQuality": "explicit",
@@ -1065,7 +1133,7 @@
           "value": "#adminPhoneInput"
         }
       ],
-      "pageId": "home-2.device-details",
+      "pageId": "recorded-flow.device-details",
       "selectorKey": "d9c6e043d922240f",
       "groupKey": "group:system-administrator",
       "groupTitle": "System Administrator",
@@ -1084,7 +1152,7 @@
       },
       "source": {
         "discoveredFrom": "scan",
-        "runId": "20260213105004"
+        "runId": "20260213114125"
       },
       "actions": [
         {
@@ -1122,7 +1190,7 @@
       "actions": [],
       "fingerprint": "b0b238e18d4f1aee6f18f27e98f7b8be7e445fda",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\field.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\field.png"
       }
     },
     {
@@ -1195,7 +1263,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               }
             }
           ]
@@ -1204,7 +1272,7 @@
       "actions": [],
       "fingerprint": "438df9c573cdb052d45948ce3ee9fb522f0a89ad",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\home.png"
       }
     },
     {
@@ -1255,7 +1323,7 @@
       ],
       "fingerprint": "b24552940bceae5accb876d7948c851fa202559c",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\modal-notification-0-yellow-toner-y.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\modal-notification-0-yellow-toner-y.png"
       }
     },
     {
@@ -1307,35 +1375,25 @@
       ],
       "fingerprint": "8a43a10138618a48aa8a3f264dd55185008f626c",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-yellow-toner-y.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\home-yellow-toner-y.png"
       }
     },
     {
-      "nodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
+      "nodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
       "kind": "page",
-      "title": "Home",
+      "title": "Recorded Flow",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
           "action": "goto",
-          "url": "http://192.168.0.107"
-        },
-        {
-          "action": "click",
-          "selector": {
-            "kind": "role",
-            "role": "button",
-            "name": "Help"
-          },
-          "label": "Help",
-          "kind": "button"
+          "url": "https://192.168.0.107/home/index.html#hashHome"
         }
       ],
       "groups": [],
       "actions": [],
-      "fingerprint": "74e4fa6cf037b69337de603ce8ea082eb280b8b4",
+      "fingerprint": "836831c7b1a718921964deb12461d9ce5893f38e",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-2.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\recorded-flow.png"
       }
     },
     {
@@ -1349,17 +1407,7 @@
       "navPath": [
         {
           "action": "goto",
-          "url": "http://192.168.0.107"
-        },
-        {
-          "action": "click",
-          "selector": {
-            "kind": "role",
-            "role": "button",
-            "name": "Help"
-          },
-          "label": "Help",
-          "kind": "button"
+          "url": "https://192.168.0.107/home/index.html#hashHome"
         },
         {
           "action": "click",
@@ -1380,7 +1428,7 @@
           "order": 1,
           "fields": [
             {
-              "id": "home-2.device-details.comment",
+              "id": "recorded-flow.device-details.comment",
               "fieldId": "6319f8f63139aa60",
               "label": "Comment",
               "labelQuality": "explicit",
@@ -1400,7 +1448,7 @@
                   "value": "#commentInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "6319f8f63139aa60",
               "groupKey": "group:device-details",
               "groupTitle": "Device Details",
@@ -1419,7 +1467,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1441,7 +1489,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.customer-asset-tag",
+              "id": "recorded-flow.device-details.customer-asset-tag",
               "fieldId": "ae59ee49a49a63ad",
               "label": "Customer Asset Tag",
               "labelQuality": "explicit",
@@ -1461,7 +1509,7 @@
                   "value": "#customerAssetInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "ae59ee49a49a63ad",
               "groupKey": "group:device-details",
               "groupTitle": "Device Details",
@@ -1480,7 +1528,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1502,7 +1550,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.device-email-address",
+              "id": "recorded-flow.device-details.device-email-address",
               "fieldId": "02bf744216ad7d36",
               "label": "Device Email Address",
               "labelQuality": "explicit",
@@ -1522,7 +1570,7 @@
                   "value": "#localEmailInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "02bf744216ad7d36",
               "groupKey": "group:device-details",
               "groupTitle": "Device Details",
@@ -1541,7 +1589,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1563,7 +1611,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.device-name",
+              "id": "recorded-flow.device-details.device-name",
               "fieldId": "be4294d054962c73",
               "label": "Device Name*",
               "labelQuality": "explicit",
@@ -1583,7 +1631,7 @@
                   "value": "#deviceNameInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "be4294d054962c73",
               "groupKey": "group:device-details",
               "groupTitle": "Device Details",
@@ -1602,7 +1650,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1624,7 +1672,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.manufacturer-asset-tag",
+              "id": "recorded-flow.device-details.manufacturer-asset-tag",
               "fieldId": "0496e6f39cc0b21c",
               "label": "Manufacturer Asset Tag",
               "labelQuality": "explicit",
@@ -1644,7 +1692,7 @@
                   "value": "#providerAssetInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "0496e6f39cc0b21c",
               "groupKey": "group:device-details",
               "groupTitle": "Device Details",
@@ -1663,7 +1711,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1692,7 +1740,7 @@
           "order": 2,
           "fields": [
             {
-              "id": "home-2.device-details.latitude",
+              "id": "recorded-flow.device-details.latitude",
               "fieldId": "9acd101e654ab683",
               "label": "Latitude",
               "labelQuality": "explicit",
@@ -1712,7 +1760,7 @@
                   "value": "#latitudeInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "9acd101e654ab683",
               "groupKey": "group:device-location",
               "groupTitle": "Device Location",
@@ -1733,7 +1781,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1755,7 +1803,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.location",
+              "id": "recorded-flow.device-details.location",
               "fieldId": "c9a9981e4cf35b7e",
               "label": "Location",
               "labelQuality": "explicit",
@@ -1775,7 +1823,7 @@
                   "value": "#locationInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "c9a9981e4cf35b7e",
               "groupKey": "group:device-location",
               "groupTitle": "Device Location",
@@ -1794,7 +1842,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1816,7 +1864,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.longitude",
+              "id": "recorded-flow.device-details.longitude",
               "fieldId": "62288e7a44e51d3a",
               "label": "Longitude",
               "labelQuality": "explicit",
@@ -1836,7 +1884,7 @@
                   "value": "#longitudeInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "62288e7a44e51d3a",
               "groupKey": "group:device-location",
               "groupTitle": "Device Location",
@@ -1857,7 +1905,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1886,7 +1934,7 @@
           "order": 3,
           "fields": [
             {
-              "id": "home-2.device-details.email",
+              "id": "recorded-flow.device-details.email",
               "fieldId": "7576f00b3422988d",
               "label": "Email",
               "labelQuality": "explicit",
@@ -1906,7 +1954,7 @@
                   "value": "#adminEmailInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "7576f00b3422988d",
               "groupKey": "group:system-administrator",
               "groupTitle": "System Administrator",
@@ -1925,7 +1973,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -1947,7 +1995,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.name",
+              "id": "recorded-flow.device-details.name",
               "fieldId": "b3ce2f4910da0f68",
               "label": "Name",
               "labelQuality": "explicit",
@@ -1967,7 +2015,7 @@
                   "value": "#adminNameInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "b3ce2f4910da0f68",
               "groupKey": "group:system-administrator",
               "groupTitle": "System Administrator",
@@ -1986,7 +2034,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -2008,7 +2056,7 @@
               ]
             },
             {
-              "id": "home-2.device-details.phone",
+              "id": "recorded-flow.device-details.phone",
               "fieldId": "d9c6e043d922240f",
               "label": "Phone",
               "labelQuality": "explicit",
@@ -2028,7 +2076,7 @@
                   "value": "#adminPhoneInput"
                 }
               ],
-              "pageId": "home-2.device-details",
+              "pageId": "recorded-flow.device-details",
               "selectorKey": "d9c6e043d922240f",
               "groupKey": "group:system-administrator",
               "groupTitle": "System Administrator",
@@ -2047,7 +2095,7 @@
               },
               "source": {
                 "discoveredFrom": "scan",
-                "runId": "20260213105004"
+                "runId": "20260213114125"
               },
               "actions": [
                 {
@@ -2093,13 +2141,13 @@
       ],
       "fingerprint": "a4baa0b8def9d17f25f0390970f7227450c1ed77",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-2-device-details.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\recorded-flow-device-details.png"
       }
     },
     {
-      "nodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
+      "nodeId": "node.page.access-control.access-control.https-192-168-0-107-home-index-html",
       "kind": "page",
-      "title": "Recorded Flow",
+      "title": "Access Control",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
@@ -2128,9 +2176,9 @@
           }
         }
       ],
-      "fingerprint": "836831c7b1a718921964deb12461d9ce5893f38e",
+      "fingerprint": "490b9c352dad818a8e352e64096f2d13759fb820",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\access-control.png"
       }
     },
     {
@@ -2181,13 +2229,13 @@
       ],
       "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow-device-details.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\access-control-device-details.png"
       }
     },
     {
-      "nodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
+      "nodeId": "node.page.copy.copy.https-192-168-0-107-home-index-html",
       "kind": "page",
-      "title": "Email",
+      "title": "Copy",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
@@ -2196,10 +2244,29 @@
         }
       ],
       "groups": [],
-      "actions": [],
-      "fingerprint": "62e1a338f208c1602385e4f68dc3980c2a3cee90",
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "b877250cc685c840432e33a2a34c1ffcca717c3d",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\email.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\copy.png"
       }
     },
     {
@@ -2250,13 +2317,13 @@
       ],
       "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\email-device-details.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\copy-device-details.png"
       }
     },
     {
-      "nodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "nodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
       "kind": "page",
-      "title": "Remote Assistance",
+      "title": "Email",
       "url": "https://192.168.0.107/home/index.html#hashHome",
       "navPath": [
         {
@@ -2285,9 +2352,9 @@
           }
         }
       ],
-      "fingerprint": "1d9bf6e069edc7889b02388ae89a3b806c148930",
+      "fingerprint": "62e1a338f208c1602385e4f68dc3980c2a3cee90",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\email.png"
       }
     },
     {
@@ -2338,7 +2405,95 @@
       ],
       "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
       "snapshots": {
-        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance-device-details.png"
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\email-device-details.png"
+      }
+    },
+    {
+      "nodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Remote Assistance",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "1d9bf6e069edc7889b02388ae89a3b806c148930",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\remote-assistance.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.5",
+      "kind": "page",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213114125\\nodes\\remote-assistance-device-details.png"
       }
     }
   ],
@@ -2390,22 +2545,7 @@
       "edgeType": "close_modal"
     },
     {
-      "fromNodeId": "node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html",
-      "toNodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
-      "trigger": {
-        "action": "click",
-        "selector": {
-          "kind": "role",
-          "role": "button",
-          "name": "Help"
-        },
-        "label": "Help",
-        "kind": "button"
-      },
-      "edgeType": "expand_section"
-    },
-    {
-      "fromNodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
+      "fromNodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
       "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html",
       "trigger": {
         "action": "click",
@@ -2421,7 +2561,7 @@
       "edgeType": "expand_section"
     },
     {
-      "fromNodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
+      "fromNodeId": "node.page.access-control.access-control.https-192-168-0-107-home-index-html",
       "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.2",
       "trigger": {
         "action": "click",
@@ -2437,7 +2577,7 @@
       "edgeType": "expand_section"
     },
     {
-      "fromNodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
+      "fromNodeId": "node.page.copy.copy.https-192-168-0-107-home-index-html",
       "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.3",
       "trigger": {
         "action": "click",
@@ -2453,8 +2593,24 @@
       "edgeType": "expand_section"
     },
     {
-      "fromNodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "fromNodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
       "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.4",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.5",
       "trigger": {
         "action": "click",
         "selector": {
