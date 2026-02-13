@@ -17,7 +17,14 @@ type PageEntry = {
 type FieldEntry = {
   id: string;
   label?: string;
-  type: "text" | "number" | "checkbox" | "radio" | "select" | "button" | "textarea";
+  type:
+    | "text"
+    | "number"
+    | "checkbox"
+    | "radio"
+    | "select"
+    | "button"
+    | "textarea";
   selectors: Selector[];
   pageId: string;
   constraints?: {
@@ -39,13 +46,21 @@ type UiMap = {
   fields: FieldEntry[];
 };
 
-const mapPath = process.env.MAP_INPUT_PATH ?? "state/printer-ui-map.clicks.json";
-const graphPath = process.env.MAP_GRAPH_PATH ?? "state/printer-ui-map.clicks.relationships.mmd";
-const reportPath = process.env.MAP_REL_REPORT_PATH ?? "state/printer-ui-map.clicks.relationships.md";
-const fieldCsvPath = process.env.MAP_FIELD_CSV_PATH ?? "state/printer-ui-map.clicks.fields.csv";
-const pageCsvPath = process.env.MAP_PAGE_CSV_PATH ?? "state/printer-ui-map.clicks.pages.csv";
+const mapPath =
+  process.env.MAP_INPUT_PATH ?? "state/printer-ui-map.clicks.json";
+const graphPath =
+  process.env.MAP_GRAPH_PATH ?? "state/printer-ui-map.clicks.relationships.mmd";
+const reportPath =
+  process.env.MAP_REL_REPORT_PATH ??
+  "state/printer-ui-map.clicks.relationships.md";
+const fieldCsvPath =
+  process.env.MAP_FIELD_CSV_PATH ?? "state/printer-ui-map.clicks.fields.csv";
+const pageCsvPath =
+  process.env.MAP_PAGE_CSV_PATH ?? "state/printer-ui-map.clicks.pages.csv";
 
-function escapeCsv(value: string | number | boolean | null | undefined): string {
+function escapeCsv(
+  value: string | number | boolean | null | undefined,
+): string {
   if (value === null || value === undefined) return "";
   const str = String(value);
   if (/[",\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
@@ -95,13 +110,24 @@ async function main(): Promise<void> {
     sectionBuckets.set(section, list);
   }
 
-  const sections = ["Home", "Apps", "Connectivity", "Permissions", "System", "Other"];
+  const sections = [
+    "Home",
+    "Apps",
+    "Connectivity",
+    "Permissions",
+    "System",
+    "Other",
+  ];
 
   const mermaidLines: string[] = [];
   mermaidLines.push("flowchart LR");
-  mermaidLines.push(`root["Printer UI Click Map\\nPages: ${map.pages.length} | Fields: ${map.fields.length}"]`);
+  mermaidLines.push(
+    `root["Printer UI Click Map\\nPages: ${map.pages.length} | Fields: ${map.fields.length}"]`,
+  );
   mermaidLines.push("classDef root fill:#1f2937,stroke:#111827,color:#fff;");
-  mermaidLines.push("classDef section fill:#dbeafe,stroke:#1d4ed8,color:#111827;");
+  mermaidLines.push(
+    "classDef section fill:#dbeafe,stroke:#1d4ed8,color:#111827;",
+  );
   mermaidLines.push("classDef page fill:#ecfeff,stroke:#0f766e,color:#0f172a;");
   mermaidLines.push("class root root;");
 
@@ -116,7 +142,8 @@ async function main(): Promise<void> {
     for (const page of pages) {
       const pageFields = fieldsByPage.get(page.id) ?? [];
       const counts = new Map<string, number>();
-      for (const f of pageFields) counts.set(f.type, (counts.get(f.type) ?? 0) + 1);
+      for (const f of pageFields)
+        counts.set(f.type, (counts.get(f.type) ?? 0) + 1);
       const typeSummary = [...counts.entries()]
         .sort((a, b) => b[1] - a[1])
         .slice(0, 4)
@@ -146,8 +173,8 @@ async function main(): Promise<void> {
       "min",
       "max",
       "pattern",
-      "read_only"
-    ].join(",")
+      "read_only",
+    ].join(","),
   );
   for (const field of map.fields) {
     const page = pageById.get(field.pageId);
@@ -163,20 +190,22 @@ async function main(): Promise<void> {
         escapeCsv(
           field.selectors
             .map((s) => `${s.kind}:${s.role ?? ""}:${s.name ?? s.value ?? ""}`)
-            .join(" || ")
+            .join(" || "),
         ),
         escapeCsv(enumValues.length),
         escapeCsv(enumValues.join(" | ")),
         escapeCsv(field.constraints?.min ?? ""),
         escapeCsv(field.constraints?.max ?? ""),
         escapeCsv(field.constraints?.pattern ?? ""),
-        escapeCsv(field.constraints?.readOnly ?? "")
-      ].join(",")
+        escapeCsv(field.constraints?.readOnly ?? ""),
+      ].join(","),
     );
   }
 
   const pageCsvLines: string[] = [];
-  pageCsvLines.push(["page_id", "title", "url", "section", "field_count"].join(","));
+  pageCsvLines.push(
+    ["page_id", "title", "url", "section", "field_count"].join(","),
+  );
   for (const page of map.pages) {
     pageCsvLines.push(
       [
@@ -184,8 +213,8 @@ async function main(): Promise<void> {
         escapeCsv(page.title ?? ""),
         escapeCsv(page.url),
         escapeCsv(sectionForUrl(page.url)),
-        escapeCsv((fieldsByPage.get(page.id) ?? []).length)
-      ].join(",")
+        escapeCsv((fieldsByPage.get(page.id) ?? []).length),
+      ].join(","),
     );
   }
 
@@ -214,7 +243,7 @@ async function main(): Promise<void> {
   reportLines.push("|---|---|---:|---:|");
   for (const item of topPages) {
     reportLines.push(
-      `| ${item.page.id} | ${item.page.title ?? ""} | ${sectionForUrl(item.page.url)} | ${item.count} |`
+      `| ${item.page.id} | ${item.page.title ?? ""} | ${sectionForUrl(item.page.url)} | ${item.count} |`,
     );
   }
   reportLines.push("");
@@ -232,7 +261,7 @@ async function main(): Promise<void> {
   const reportDir = path.dirname(reportPath);
   process.stdout.write(
     `Generated relationship outputs in ${reportDir}\n` +
-      `- ${reportPath}\n- ${graphPath}\n- ${pageCsvPath}\n- ${fieldCsvPath}\n`
+      `- ${reportPath}\n- ${graphPath}\n- ${pageCsvPath}\n- ${fieldCsvPath}\n`,
   );
 }
 

@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import os from "node:os";
 import { mkdtemp, rm } from "node:fs/promises";
-import { getOperatorDiscoveryConfig, saveOperatorDiscoveryConfig } from "@is-browser/sqlite-store";
+import {
+  getOperatorDiscoveryConfig,
+  saveOperatorDiscoveryConfig,
+} from "@is-browser/sqlite-store";
 
 async function makeTempDbPath() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-opcfg-"));
@@ -20,7 +23,7 @@ test("operator discovery config persists subnet ranges, manual IPs, and csv mode
     const saved = await saveOperatorDiscoveryConfig(dbPath, {
       subnetRanges: ["192.168.0.0/24", "192.168.10.10-192.168.10.20"],
       manualIps: ["192.168.0.31", "192.168.0.32"],
-      csvMode: "daily"
+      csvMode: "daily",
     });
     assert.equal(saved.csvMode, "daily");
     assert.equal(saved.subnetRanges.length, 2);
@@ -34,4 +37,3 @@ test("operator discovery config persists subnet ranges, manual IPs, and csv mode
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

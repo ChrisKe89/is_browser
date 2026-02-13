@@ -3,7 +3,11 @@ import assert from "node:assert/strict";
 import os from "node:os";
 import path from "node:path";
 import { mkdtemp, rm } from "node:fs/promises";
-import { ensureManualRunPaths, formatRunTimestamp, resolveManualRunPaths } from "../src/runPaths.ts";
+import {
+  ensureManualRunPaths,
+  formatRunTimestamp,
+  resolveManualRunPaths,
+} from "../src/runPaths.ts";
 
 test("manual run paths: uses location folder when provided", () => {
   const now = new Date("2026-02-11T12:34:56.000Z");

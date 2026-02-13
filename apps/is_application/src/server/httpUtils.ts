@@ -3,17 +3,28 @@ import path from "node:path";
 import { constants as fsConstants } from "node:fs";
 import { access, readFile, readdir, stat } from "node:fs/promises";
 
-export function json(res: http.ServerResponse, status: number, data: unknown): void {
+export function json(
+  res: http.ServerResponse,
+  status: number,
+  data: unknown,
+): void {
   res.writeHead(status, { "Content-Type": "application/json" });
   res.end(JSON.stringify(data));
 }
 
-export function text(res: http.ServerResponse, status: number, data: string): void {
+export function text(
+  res: http.ServerResponse,
+  status: number,
+  data: string,
+): void {
   res.writeHead(status, { "Content-Type": "text/plain" });
   res.end(data);
 }
 
-export async function serveFile(res: http.ServerResponse, filePath: string): Promise<void> {
+export async function serveFile(
+  res: http.ServerResponse,
+  filePath: string,
+): Promise<void> {
   try {
     const data = await readFile(filePath);
     const ext = path.extname(filePath).toLowerCase();
@@ -32,7 +43,9 @@ export async function serveFile(res: http.ServerResponse, filePath: string): Pro
   }
 }
 
-export async function parseBody(req: http.IncomingMessage): Promise<Record<string, unknown>> {
+export async function parseBody(
+  req: http.IncomingMessage,
+): Promise<Record<string, unknown>> {
   const chunks: Buffer[] = [];
   for await (const chunk of req) {
     chunks.push(Buffer.from(chunk));
@@ -55,7 +68,7 @@ export async function pathExists(filePath: string): Promise<boolean> {
 
 export async function findLatestFileByName(
   rootDir: string,
-  fileName: string
+  fileName: string,
 ): Promise<string | null> {
   let latestPath: string | null = null;
   let latestMtimeMs = -1;
@@ -63,7 +76,10 @@ export async function findLatestFileByName(
   async function walk(currentDir: string): Promise<void> {
     let entries;
     try {
-      entries = await readdir(currentDir, { withFileTypes: true, encoding: "utf8" });
+      entries = await readdir(currentDir, {
+        withFileTypes: true,
+        encoding: "utf8",
+      });
     } catch {
       return;
     }
@@ -96,19 +112,28 @@ export async function resolveMapPath(): Promise<string | null> {
     return envMapPath;
   }
 
-  const staticCandidates = ["state/printer-ui-map.clicks.json", "state/printer-ui-map.json"];
+  const staticCandidates = [
+    "state/printer-ui-map.clicks.json",
+    "state/printer-ui-map.json",
+  ];
   for (const candidate of staticCandidates) {
     if (await pathExists(candidate)) {
       return candidate;
     }
   }
 
-  const latestClickMap = await findLatestFileByName("state", "printer-ui-map.clicks.json");
+  const latestClickMap = await findLatestFileByName(
+    "state",
+    "printer-ui-map.clicks.json",
+  );
   if (latestClickMap) {
     return latestClickMap;
   }
 
-  const latestCrawlerMap = await findLatestFileByName("state", "printer-ui-map.json");
+  const latestCrawlerMap = await findLatestFileByName(
+    "state",
+    "printer-ui-map.json",
+  );
   if (latestCrawlerMap) {
     return latestCrawlerMap;
   }
@@ -116,7 +141,9 @@ export async function resolveMapPath(): Promise<string | null> {
   return null;
 }
 
-export async function resolveFieldCsvPath(mapPath: string): Promise<string | null> {
+export async function resolveFieldCsvPath(
+  mapPath: string,
+): Promise<string | null> {
   const envFieldCsvPath = process.env.MAP_FIELD_CSV_PATH?.trim();
   if (envFieldCsvPath && (await pathExists(envFieldCsvPath))) {
     return envFieldCsvPath;

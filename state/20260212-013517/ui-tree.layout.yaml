@@ -1,5 +1,4 @@
--
-  ref: node-3c11363ba64e
+- ref: node-3c11363ba64e
   title: "Device Details"
   breadcrumb:
     - "https://192.168.0.107/home/index.html#hashHome"
@@ -9,53 +8,45 @@
     type: modal
     title: "Device Details"
   groups:
-    -
-      ref: group:device-details
+    - ref: group:device-details
       title: "Device Details"
       order: 1
       fields:
-        -
-          ref: 6319f8f63139aa60
+        - ref: 6319f8f63139aa60
           label: Comment
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: ae59ee49a49a63ad
+        - ref: ae59ee49a49a63ad
           label: "Customer Asset Tag"
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: 02bf744216ad7d36
+        - ref: 02bf744216ad7d36
           label: "Device Email Address"
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: be4294d054962c73
+        - ref: be4294d054962c73
           label: "Device Name*"
           control: textbox
           valueType: string
           default: Test_Printer
           current: Test_Printer
-        -
-          ref: 0496e6f39cc0b21c
+        - ref: 0496e6f39cc0b21c
           label: "Manufacturer Asset Tag"
           control: textbox
           valueType: string
           default: ""
           current: ""
-    -
-      ref: group:device-location
+    - ref: group:device-location
       title: "Device Location"
       order: 2
       fields:
-        -
-          ref: 9acd101e654ab683
+        - ref: 9acd101e654ab683
           label: Latitude
           control: number
           valueType: number
@@ -64,15 +55,13 @@
           range:
             - -90
             - 90
-        -
-          ref: c9a9981e4cf35b7e
+        - ref: c9a9981e4cf35b7e
           label: Location
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: 62288e7a44e51d3a
+        - ref: 62288e7a44e51d3a
           label: Longitude
           control: number
           valueType: number
@@ -81,38 +70,32 @@
           range:
             - -180
             - 180
-    -
-      ref: group:system-administrator
+    - ref: group:system-administrator
       title: "System Administrator"
       order: 3
       fields:
-        -
-          ref: 7576f00b3422988d
+        - ref: 7576f00b3422988d
           label: Email
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: b3ce2f4910da0f68
+        - ref: b3ce2f4910da0f68
           label: Name
           control: textbox
           valueType: string
           default: ""
           current: ""
-        -
-          ref: d9c6e043d922240f
+        - ref: d9c6e043d922240f
           label: Phone
           control: textbox
           valueType: string
           default: ""
           current: ""
   actions:
-    -
-      label: Save
+    - label: Save
       kind: save
--
-  ref: node-d123921af01f
+- ref: node-d123921af01f
   title: Home
   breadcrumb:
     - "https://192.168.0.107/home/index.html#hashHome"
@@ -121,7 +104,5 @@
   container:
     type: page
     title: Home
-  groups:
-    []
-  actions:
-    []
+  groups: []
+  actions: []

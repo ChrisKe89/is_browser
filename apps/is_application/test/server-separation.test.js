@@ -7,7 +7,9 @@ import { createFormServer } from "../../is_form/src/server/formServer.js";
 import { createOperatorServer } from "../src/server/operatorServer.js";
 
 async function makeTempDbPath() {
-  const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-server-split-"));
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "printer-ui-server-split-"),
+  );
   return { tempDir, dbPath: path.join(tempDir, "test.sqlite") };
 }
 
@@ -45,20 +47,22 @@ test("operator product exposes operator API surface and excludes form API surfac
   const server = createOperatorServer({
     profileDbPath: dbPath,
     customerMapCsvPath: "../../tools/samples/devices/customer-map.csv",
-    formPublicUrl: "http://localhost:5051/"
+    formPublicUrl: "http://localhost:5051/",
   });
 
   try {
     const port = await listen(server);
     const baseUrl = `http://127.0.0.1:${port}`;
 
-    const operatorConfigResponse = await fetch(`${baseUrl}/api/operator/config`);
+    const operatorConfigResponse = await fetch(
+      `${baseUrl}/api/operator/config`,
+    );
     assert.equal(operatorConfigResponse.status, 200);
     const operatorConfig = await operatorConfigResponse.json();
     assert.equal(operatorConfig.formUrl, "http://localhost:5051/");
 
     const formApiResponse = await fetch(
-      `${baseUrl}/api/profiles/list?accountNumber=${encodeURIComponent("10001")}`
+      `${baseUrl}/api/profiles/list?accountNumber=${encodeURIComponent("10001")}`,
     );
     assert.equal(formApiResponse.status, 404);
   } finally {
@@ -71,7 +75,7 @@ test("form product exposes form API surface and excludes operator API surface", 
   const { tempDir, dbPath } = await makeTempDbPath();
   const server = createFormServer({
     profileDbPath: dbPath,
-    operatorPublicUrl: "http://localhost:5050/"
+    operatorPublicUrl: "http://localhost:5050/",
   });
 
   try {
@@ -89,7 +93,7 @@ test("form product exposes form API surface and excludes operator API surface", 
     const applyApiResponse = await fetch(`${baseUrl}/api/start/profile`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     });
     assert.equal(applyApiResponse.status, 404);
   } finally {
@@ -97,4 +101,3 @@ test("form product exposes form API surface and excludes operator API surface", 
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

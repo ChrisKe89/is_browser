@@ -8,11 +8,13 @@ import { importUiMapToDatabase } from "@is-browser/sqlite-store";
 import { importFieldOptionsFromCsvFile } from "@is-browser/sqlite-store";
 
 async function makeTempPaths() {
-  const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-csv-options-"));
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "printer-ui-csv-options-"),
+  );
   return {
     tempDir,
     dbPath: path.join(tempDir, "test.sqlite"),
-    csvPath: path.join(tempDir, "fields.csv")
+    csvPath: path.join(tempDir, "fields.csv"),
   };
 }
 
@@ -23,10 +25,15 @@ test("csv option import enriches select/radio setting options", async () => {
       meta: {
         generatedAt: "2026-02-10T00:00:00.000Z",
         printerUrl: "http://192.168.0.50",
-        schemaVersion: "manual-1.0"
+        schemaVersion: "manual-1.0",
       },
       pages: [
-        { id: "apps", title: "Apps", url: "http://192.168.0.50/apps", navPath: [] }
+        {
+          id: "apps",
+          title: "Apps",
+          url: "http://192.168.0.50/apps",
+          navPath: [],
+        },
       ],
       fields: [
         {
@@ -34,16 +41,16 @@ test("csv option import enriches select/radio setting options", async () => {
           label: "Mode",
           type: "select",
           selectors: [{ kind: "css", value: "#mode" }],
-          pageId: "apps"
+          pageId: "apps",
         },
         {
           id: "apps.notifications",
           label: "Notifications",
           type: "radio",
           selectors: [{ kind: "css", value: "#notifications" }],
-          pageId: "apps"
-        }
-      ]
+          pageId: "apps",
+        },
+      ],
     });
 
     await writeFile(
@@ -51,9 +58,9 @@ test("csv option import enriches select/radio setting options", async () => {
       [
         "field_id,page_id,page_title,label,type,selector_count,selectors,enum_count,enum_values,min,max,pattern,read_only",
         "apps.mode,apps,Apps,Mode,select,1,css::#mode,3,Off | Basic | Advanced,,,,",
-        "apps.notifications,apps,Apps,Notifications,radio,1,css::#notifications,2,Enabled | Disabled,,,,"
+        "apps.notifications,apps,Apps,Notifications,radio,1,css::#notifications,2,Enabled | Disabled,,,,",
       ].join("\n"),
-      "utf8"
+      "utf8",
     );
 
     const summary = await importFieldOptionsFromCsvFile(dbPath, csvPath);
@@ -61,11 +68,15 @@ test("csv option import enriches select/radio setting options", async () => {
 
     const db = new DatabaseSync(dbPath);
     const modeOptions = db
-      .prepare("SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order")
+      .prepare(
+        "SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order",
+      )
       .all("apps.mode")
       .map((row) => row.option_key);
     const radioOptions = db
-      .prepare("SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order")
+      .prepare(
+        "SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order",
+      )
       .all("apps.notifications")
       .map((row) => row.option_key);
     db.close();
@@ -76,4 +87,3 @@ test("csv option import enriches select/radio setting options", async () => {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

@@ -28,9 +28,7 @@
       "kind": "page",
       "title": "Home",
       "url": "https://192.168.0.107/home/index.html#hashHome",
-      "breadcrumbs": [
-        "https://192.168.0.107/home/index.html#hashHome"
-      ],
+      "breadcrumbs": ["https://192.168.0.107/home/index.html#hashHome"],
       "navPath": [
         {
           "action": "goto",

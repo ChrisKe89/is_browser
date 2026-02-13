@@ -5,6 +5,7 @@
 - `tools/samples`: Sample/manual assets that support troubleshooting and local experimentation.
 
 This folder contains operational tooling only. Product runtime code lives under:
+
 - `is_mapper/`
 - `is_form/`
 - `is_application/`

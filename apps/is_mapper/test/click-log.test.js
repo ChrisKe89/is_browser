@@ -7,7 +7,7 @@ test("click log: screenshot path is optional", () => {
       generatedAt: "2026-02-11T00:00:00.000Z",
       baseUrl: "http://127.0.0.1",
       runPath: "permissions/20260211-120000",
-      clickCount: 2
+      clickCount: 2,
     },
     clicks: [
       {
@@ -23,7 +23,8 @@ test("click log: screenshot path is optional", () => {
         newFieldIds: ["page.advanced"],
         newlyVisibleFieldIds: ["page.advanced"],
         newlyDiscoveredFieldIds: ["page.advanced"],
-        screenshotPath: "permissions/20260211-120000/screenshots/click-0001.png"
+        screenshotPath:
+          "permissions/20260211-120000/screenshots/click-0001.png",
       },
       {
         index: 2,
@@ -35,15 +36,21 @@ test("click log: screenshot path is optional", () => {
         nodeIdBefore: "advanced-modal",
         nodeIdAfter: "permissions",
         transitionType: "close_modal",
-        newFieldIds: []
-      }
-    ]
+        newFieldIds: [],
+      },
+    ],
   };
 
   const serialized = JSON.parse(JSON.stringify(log));
-  assert.equal(serialized.clicks[0].screenshotPath.includes("click-0001.png"), true);
+  assert.equal(
+    serialized.clicks[0].screenshotPath.includes("click-0001.png"),
+    true,
+  );
   assert.equal(serialized.clicks[0].nodeIdBefore, "permissions");
   assert.equal(serialized.clicks[0].transitionType, "open_modal");
   assert.equal(Object.hasOwn(serialized.clicks[1], "screenshotPath"), false);
-  assert.equal(Object.hasOwn(serialized.clicks[1], "newlyVisibleFieldIds"), false);
+  assert.equal(
+    Object.hasOwn(serialized.clicks[1], "newlyVisibleFieldIds"),
+    false,
+  );
 });

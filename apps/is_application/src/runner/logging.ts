@@ -25,10 +25,12 @@ export type DeviceLogContext = {
 export async function writeDeviceLog(
   context: DeviceLogContext,
   entries: LogEntry[],
-  status: "COMPLETED" | "FAILED"
+  status: "COMPLETED" | "FAILED",
 ): Promise<string> {
   const identity = normalizeIdentity(context);
-  const safeCustomer = sanitizePath(`${context.customerName} - ${context.accountNumber}`);
+  const safeCustomer = sanitizePath(
+    `${context.customerName} - ${context.accountNumber}`,
+  );
   const safeDevice = sanitizePath(`${identity.serial}_${context.model}`);
   const dir = path.join("devices", "logs", "customers", safeCustomer);
   await mkdir(dir, { recursive: true });
@@ -44,9 +46,9 @@ export async function writeDeviceLog(
       customerName: context.customerName,
       accountNumber: context.accountNumber,
       scriptApplied: context.scriptApplied,
-      scriptLocation: context.scriptLocation
+      scriptLocation: context.scriptLocation,
     },
-    entries
+    entries,
   };
   await writeFile(logPath, JSON.stringify(payload, null, 2), "utf8");
   return logPath;
@@ -55,14 +57,15 @@ export async function writeDeviceLog(
 export async function appendDeviceReport(
   context: DeviceLogContext,
   status: "COMPLETED" | "FAILED",
-  mode: "all-time" | "daily"
+  mode: "all-time" | "daily",
 ): Promise<string> {
   const identity = normalizeIdentity(context);
   const dir = path.join("devices", "reports");
   await mkdir(dir, { recursive: true });
   const date = new Date();
   const dateStamp = date.toISOString().slice(0, 10);
-  const fileName = mode === "daily" ? `${dateStamp}-device_log.csv` : "device_log.csv";
+  const fileName =
+    mode === "daily" ? `${dateStamp}-device_log.csv` : "device_log.csv";
   const filePath = path.join(dir, fileName);
 
   const headers =
@@ -76,7 +79,7 @@ export async function appendDeviceReport(
     context.accountNumber,
     context.scriptApplied,
     context.scriptLocation,
-    status
+    status,
   ]
     .map((value) => `"${String(value).replace(/\"/g, '""')}"`)
     .join(",");
@@ -88,14 +91,22 @@ export async function appendDeviceReport(
     existing = "";
   }
 
-  const content = existing.trim().length > 0 ? `${existing.trim()}\n${line}\n` : `${headers}\n${line}\n`;
+  const content =
+    existing.trim().length > 0
+      ? `${existing.trim()}\n${line}\n`
+      : `${headers}\n${line}\n`;
   await writeFile(filePath, content, "utf8");
   return filePath;
 }
 
-function normalizeIdentity(context: DeviceLogContext): { serial: string; productCode?: string } {
+function normalizeIdentity(context: DeviceLogContext): {
+  serial: string;
+  productCode?: string;
+} {
   if (context.rawSerialCombined) {
-    const { productCode, serial } = splitProductCodeAndSerial(context.rawSerialCombined);
+    const { productCode, serial } = splitProductCodeAndSerial(
+      context.rawSerialCombined,
+    );
     return { serial, productCode };
   }
   if (context.productCode || context.serial) {
@@ -104,7 +115,10 @@ function normalizeIdentity(context: DeviceLogContext): { serial: string; product
   return { serial: "unknown", productCode: undefined };
 }
 
-export function splitProductCodeAndSerial(raw: string): { productCode: string; serial: string } {
+export function splitProductCodeAndSerial(raw: string): {
+  productCode: string;
+  serial: string;
+} {
   const trimmed = String(raw ?? "").trim();
   if (trimmed.length <= 6) {
     return { productCode: "", serial: trimmed.padStart(6, "0") };
@@ -117,4 +131,3 @@ export function splitProductCodeAndSerial(raw: string): { productCode: string; s
 function sanitizePath(input: string): string {
   return input.replace(/[<>:"/\\|?*]+/g, "_").trim();
 }
-

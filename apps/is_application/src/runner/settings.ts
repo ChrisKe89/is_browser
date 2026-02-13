@@ -39,13 +39,24 @@ export async function readSettings(pathToFile: string): Promise<SettingsFile> {
   return JSON.parse(raw) as SettingsFile;
 }
 
-export function resolveCustomerFolder(customerName?: string, accountNumber?: string): string {
+export function resolveCustomerFolder(
+  customerName?: string,
+  accountNumber?: string,
+): string {
   const safeCustomer = sanitizePath(customerName ?? "unknown-customer");
   const safeAccount = sanitizePath(accountNumber ?? "unknown-account");
-  return path.join("tools", "samples", "settings", `${safeCustomer} - ${safeAccount}`);
+  return path.join(
+    "tools",
+    "samples",
+    "settings",
+    `${safeCustomer} - ${safeAccount}`,
+  );
 }
 
-export async function resolveSettingsFromCsv(model?: string, serial?: string): Promise<string | null> {
+export async function resolveSettingsFromCsv(
+  model?: string,
+  serial?: string,
+): Promise<string | null> {
   if (!model || !serial) return null;
   let raw = "";
   try {
@@ -72,4 +83,3 @@ export async function resolveSettingsFromCsv(model?: string, serial?: string): P
 function sanitizePath(input: string): string {
   return input.replace(/[<>:"/\\|?*]+/g, "_").trim();
 }
-

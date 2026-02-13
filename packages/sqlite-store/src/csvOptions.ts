@@ -88,7 +88,7 @@ function arraysEqual(left: string[], right: string[]): boolean {
 
 export async function importFieldOptionsFromCsvFile(
   dbPath: string,
-  csvPath: string
+  csvPath: string,
 ): Promise<CsvOptionImportSummary> {
   await migrateDatabase(dbPath);
   const raw = await readFile(csvPath, "utf8");
@@ -103,7 +103,7 @@ export async function importFieldOptionsFromCsvFile(
     settingsUnchanged: 0,
     optionsWritten: 0,
     skippedMissingSetting: 0,
-    skippedUnsupportedType: 0
+    skippedUnsupportedType: 0,
   };
 
   if (lines.length < 2) {
@@ -152,14 +152,16 @@ export async function importFieldOptionsFromCsvFile(
   db.exec("PRAGMA foreign_keys = ON;");
 
   const selectSetting = db.prepare(
-    "SELECT id, control_type FROM ui_setting WHERE id = ?"
+    "SELECT id, control_type FROM ui_setting WHERE id = ?",
   );
   const selectExistingOptions = db.prepare(
-    "SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order"
+    "SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order",
   );
-  const clearOptions = db.prepare("DELETE FROM ui_setting_option WHERE setting_id = ?");
+  const clearOptions = db.prepare(
+    "DELETE FROM ui_setting_option WHERE setting_id = ?",
+  );
   const insertOption = db.prepare(
-    "INSERT INTO ui_setting_option (setting_id, option_key, option_label, sort_order) VALUES (?, ?, ?, ?)"
+    "INSERT INTO ui_setting_option (setting_id, option_key, option_label, sort_order) VALUES (?, ?, ?, ?)",
   );
 
   let transactionOpen = false;
@@ -176,7 +178,10 @@ export async function importFieldOptionsFromCsvFile(
         summary.skippedMissingSetting += 1;
         continue;
       }
-      if (setting.control_type !== "select" && setting.control_type !== "radio") {
+      if (
+        setting.control_type !== "select" &&
+        setting.control_type !== "radio"
+      ) {
         summary.skippedUnsupportedType += 1;
         continue;
       }
@@ -213,4 +218,3 @@ export async function importFieldOptionsFromCsvFile(
 
   return summary;
 }
-

@@ -29,8 +29,16 @@
         color: var(--ink);
         font-family: "Trebuchet MS", "Lucida Grande", "Segoe UI", sans-serif;
         background:
-          radial-gradient(circle at 8% -2%, rgba(15, 148, 136, 0.22), transparent 28%),
-          radial-gradient(circle at 92% 8%, rgba(20, 105, 196, 0.2), transparent 26%),
+          radial-gradient(
+            circle at 8% -2%,
+            rgba(15, 148, 136, 0.22),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 92% 8%,
+            rgba(20, 105, 196, 0.2),
+            transparent 26%
+          ),
           linear-gradient(165deg, #f7f9ff 0%, var(--bg-0) 42%, #f4f8fb 100%);
       }
 
@@ -297,7 +305,13 @@
         <div id="jobState" class="status-state state-idle">IDLE</div>
       </div>
       <div class="top-links">
-        <a id="openFormLink" href="http://localhost:5051/" target="_blank" rel="noreferrer">Open Profile Form</a>
+        <a
+          id="openFormLink"
+          href="http://localhost:5051/"
+          target="_blank"
+          rel="noreferrer"
+          >Open Profile Form</a
+        >
       </div>
     </div>
 
@@ -306,12 +320,16 @@
         <section class="panel">
           <h1>Printer Discovery and Resolution</h1>
           <p class="muted">
-            Configure subnet ranges, run discovery, add manual IPs, resolve account/variation, then start apply.
+            Configure subnet ranges, run discovery, add manual IPs, resolve
+            account/variation, then start apply.
           </p>
           <div class="toolbar">
             <div class="field" style="min-width: 360px; flex: 1">
               <label for="subnetRanges">Subnet Ranges (comma or newline)</label>
-              <textarea id="subnetRanges" placeholder="192.168.0.0/24&#10;192.168.10.1-192.168.10.20"></textarea>
+              <textarea
+                id="subnetRanges"
+                placeholder="192.168.0.0/24&#10;192.168.10.1-192.168.10.20"
+              ></textarea>
             </div>
             <div class="field">
               <label for="csvMode">CSV Mode</label>
@@ -331,7 +349,9 @@
             <button id="manualAddBtn">Add Manual IP</button>
             <button id="retryBtn" class="warn">Retry Pending Run</button>
           </div>
-          <p id="uiStatus" class="muted" style="margin-top: 0.6rem">Loading operator settings...</p>
+          <p id="uiStatus" class="muted" style="margin-top: 0.6rem">
+            Loading operator settings...
+          </p>
         </section>
 
         <section class="panel">
@@ -369,7 +389,8 @@
       const subnetRangesEl = document.getElementById("subnetRanges");
       const csvModeEl = document.getElementById("csvMode");
       const manualIpEl = document.getElementById("manualIp");
-      const accountSuggestionsEl = document.getElementById("accountSuggestions");
+      const accountSuggestionsEl =
+        document.getElementById("accountSuggestions");
       const openFormLinkEl = document.getElementById("openFormLink");
 
       const accountCache = new Map();
@@ -394,7 +415,8 @@
       function renderJobState(state) {
         const normalized = String(state || "IDLE").replace(/_/g, " ");
         jobStateEl.textContent = normalized;
-        jobStateEl.className = "status-state " + normalizeStateClass(normalized);
+        jobStateEl.className =
+          "status-state " + normalizeStateClass(normalized);
       }
 
       async function api(path, options) {
@@ -422,7 +444,7 @@
         return {
           accountNumber: existing.accountNumber || device.accountNumber || "",
           variation: existing.variation || device.variation || "",
-          customerName: existing.customerName || device.customerName || ""
+          customerName: existing.customerName || device.customerName || "",
         };
       }
 
@@ -446,9 +468,11 @@
         const data = await api("/api/discovery/config", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subnetRanges, csvMode })
+          body: JSON.stringify({ subnetRanges, csvMode }),
         });
-        subnetRangesEl.value = serializeSubnetRanges(data.config.subnetRanges || subnetRanges);
+        subnetRangesEl.value = serializeSubnetRanges(
+          data.config.subnetRanges || subnetRanges,
+        );
         setUiStatus("Saved network inputs.");
       }
 
@@ -459,10 +483,19 @@
         if (device.status === "USER_INTERVENTION_REQUIRED") {
           return '<span class="pill intervention">USER INTERVENTION REQUIRED</span>';
         }
-        if (device.status === "WEBUI_UNREACHABLE" || device.status === "UNREACHABLE") {
-          return '<span class="pill down">' + device.status.replace(/_/g, " ") + "</span>";
+        if (
+          device.status === "WEBUI_UNREACHABLE" ||
+          device.status === "UNREACHABLE"
+        ) {
+          return (
+            '<span class="pill down">' +
+            device.status.replace(/_/g, " ") +
+            "</span>"
+          );
         }
-        return '<span class="pill">' + String(device.status || "UNKNOWN") + "</span>";
+        return (
+          '<span class="pill">' + String(device.status || "UNKNOWN") + "</span>"
+        );
       }
 
       function buildAccountInput(device, draft) {
@@ -478,10 +511,14 @@
         const items = ['<option value="">Select variation</option>'];
         variations.forEach((item) => {
           const selected = item.variation === selectedValue ? "selected" : "";
-          const requirements = Array.isArray(item.modelRequirements) && item.modelRequirements.length > 0
-            ? ` data-requirements="${item.modelRequirements.join(" | ")}"`
-            : "";
-          items.push(`<option value="${item.variation}" ${selected}${requirements}>${item.variation}</option>`);
+          const requirements =
+            Array.isArray(item.modelRequirements) &&
+            item.modelRequirements.length > 0
+              ? ` data-requirements="${item.modelRequirements.join(" | ")}"`
+              : "";
+          items.push(
+            `<option value="${item.variation}" ${selected}${requirements}>${item.variation}</option>`,
+          );
         });
         return items.join("");
       }
@@ -489,10 +526,18 @@
       function buildResolutionCell(device) {
         const draft = defaultDraftForDevice(device);
         const variations = variationCache.get(draft.accountNumber) || [];
-        const variationHtml = buildVariationOptions(variations, draft.variation);
+        const variationHtml = buildVariationOptions(
+          variations,
+          draft.variation,
+        );
         const variationNeeded = variations.length > 1;
 
-        if (device.resolved && device.accountNumber && device.variation && !device.requiresIntervention) {
+        if (
+          device.resolved &&
+          device.accountNumber &&
+          device.variation &&
+          !device.requiresIntervention
+        ) {
           return `
             <div>
               <div><strong>${device.accountNumber}</strong> / <strong>${device.variation}</strong></div>
@@ -518,7 +563,8 @@
 
       function buildActionCell(device) {
         const draft = defaultDraftForDevice(device);
-        const canRun = device.webUiReachable && draft.accountNumber && draft.variation;
+        const canRun =
+          device.webUiReachable && draft.accountNumber && draft.variation;
         return `
           <div class="inline-actions">
             <button data-action="start-apply" data-ip="${device.ip}" ${canRun ? "" : "disabled"}>Start Apply</button>
@@ -533,7 +579,8 @@
 
       function renderDevices(devices) {
         if (!Array.isArray(devices) || devices.length === 0) {
-          deviceRowsEl.innerHTML = '<tr><td colspan="5" class="muted">No devices yet. Run discovery or add manual IP.</td></tr>';
+          deviceRowsEl.innerHTML =
+            '<tr><td colspan="5" class="muted">No devices yet. Run discovery or add manual IP.</td></tr>';
           return;
         }
 
@@ -565,7 +612,9 @@
       }
 
       function updateVariationSelect(ip, accountNumber, selectedVariation) {
-        const select = deviceRowsEl.querySelector(`select[data-action="variation-select"][data-ip="${CSS.escape(ip)}"]`);
+        const select = deviceRowsEl.querySelector(
+          `select[data-action="variation-select"][data-ip="${CSS.escape(ip)}"]`,
+        );
         if (!select) return;
         const variations = variationCache.get(accountNumber) || [];
         select.innerHTML = buildVariationOptions(variations, selectedVariation);
@@ -582,10 +631,12 @@
         const data = await api("/api/discover", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subnetRanges })
+          body: JSON.stringify({ subnetRanges }),
         });
         renderDevices(data.devices || []);
-        setUiStatus(`Discovery complete: ${(data.devices || []).length} reachable devices.`);
+        setUiStatus(
+          `Discovery complete: ${(data.devices || []).length} reachable devices.`,
+        );
       }
 
       async function addManualIp() {
@@ -597,7 +648,7 @@
         const data = await api("/api/devices/manual", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ip })
+          body: JSON.stringify({ ip }),
         });
         manualIpEl.value = "";
         renderDevices(data.devices || []);
@@ -608,7 +659,7 @@
         const data = await api("/api/devices/manual/delete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ip })
+          body: JSON.stringify({ ip }),
         });
         renderDevices(data.devices || []);
         setUiStatus(`Manual device removed: ${ip}`);
@@ -644,8 +695,12 @@
         if (variationCache.has(key)) {
           return variationCache.get(key);
         }
-        const data = await api(`/api/accounts/variations?accountNumber=${encodeURIComponent(key)}`);
-        const variations = Array.isArray(data.variations) ? data.variations : [];
+        const data = await api(
+          `/api/accounts/variations?accountNumber=${encodeURIComponent(key)}`,
+        );
+        const variations = Array.isArray(data.variations)
+          ? data.variations
+          : [];
         variationCache.set(key, variations);
         return variations;
       }
@@ -653,7 +708,10 @@
       async function resolveDevice(ip) {
         const draft = perDeviceDraft.get(ip) || {};
         if (!draft.accountNumber || !draft.variation) {
-          setUiStatus("Account and variation are required to resolve a device.", true);
+          setUiStatus(
+            "Account and variation are required to resolve a device.",
+            true,
+          );
           return;
         }
         const data = await api("/api/devices/resolve", {
@@ -663,17 +721,22 @@
             ip,
             accountNumber: draft.accountNumber,
             variation: draft.variation,
-            customerName: draft.customerName
-          })
+            customerName: draft.customerName,
+          }),
         });
         await loadDevices();
-        setUiStatus(`Device resolved: ${ip} -> ${data.device.accountNumber}/${data.device.variation}`);
+        setUiStatus(
+          `Device resolved: ${ip} -> ${data.device.accountNumber}/${data.device.variation}`,
+        );
       }
 
       async function startApply(ip) {
         const draft = perDeviceDraft.get(ip) || {};
         if (!draft.accountNumber || !draft.variation) {
-          setUiStatus("Account and variation are required before starting apply.", true);
+          setUiStatus(
+            "Account and variation are required before starting apply.",
+            true,
+          );
           return;
         }
         await api("/api/start/profile", {
@@ -684,8 +747,8 @@
             accountNumber: draft.accountNumber,
             variation: draft.variation,
             customerName: draft.customerName || undefined,
-            deviceLogMode: csvModeEl.value === "daily" ? "daily" : "all-time"
-          })
+            deviceLogMode: csvModeEl.value === "daily" ? "daily" : "all-time",
+          }),
         });
         setUiStatus(`Apply started for ${ip}.`);
       }
@@ -695,7 +758,8 @@
           const data = await api("/api/status");
           renderJobState(data.state || "IDLE");
           const lines = Array.isArray(data.console) ? data.console : [];
-          consoleOutputEl.textContent = lines.length > 0 ? lines.join("\n") : "No output yet.";
+          consoleOutputEl.textContent =
+            lines.length > 0 ? lines.join("\n") : "No output yet.";
         } catch {
           renderJobState("FAILED");
         }
@@ -767,38 +831,46 @@
         setUiStatus("Retry signal sent.");
       }
 
-      document.getElementById("saveConfigBtn").addEventListener("click", async () => {
-        try {
-          await saveConfig();
-        } catch (error) {
-          setUiStatus(String(error), true);
-        }
-      });
+      document
+        .getElementById("saveConfigBtn")
+        .addEventListener("click", async () => {
+          try {
+            await saveConfig();
+          } catch (error) {
+            setUiStatus(String(error), true);
+          }
+        });
 
-      document.getElementById("discoverBtn").addEventListener("click", async () => {
-        try {
-          await saveConfig();
-          await discoverDevices();
-        } catch (error) {
-          setUiStatus(String(error), true);
-        }
-      });
+      document
+        .getElementById("discoverBtn")
+        .addEventListener("click", async () => {
+          try {
+            await saveConfig();
+            await discoverDevices();
+          } catch (error) {
+            setUiStatus(String(error), true);
+          }
+        });
 
-      document.getElementById("manualAddBtn").addEventListener("click", async () => {
-        try {
-          await addManualIp();
-        } catch (error) {
-          setUiStatus(String(error), true);
-        }
-      });
+      document
+        .getElementById("manualAddBtn")
+        .addEventListener("click", async () => {
+          try {
+            await addManualIp();
+          } catch (error) {
+            setUiStatus(String(error), true);
+          }
+        });
 
-      document.getElementById("retryBtn").addEventListener("click", async () => {
-        try {
-          await retryPending();
-        } catch (error) {
-          setUiStatus(String(error), true);
-        }
-      });
+      document
+        .getElementById("retryBtn")
+        .addEventListener("click", async () => {
+          try {
+            await retryPending();
+          } catch (error) {
+            setUiStatus(String(error), true);
+          }
+        });
 
       deviceRowsEl.addEventListener("input", handleDeviceTableAction);
       deviceRowsEl.addEventListener("change", handleDeviceTableAction);

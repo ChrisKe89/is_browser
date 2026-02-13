@@ -4,7 +4,14 @@ import { ZodError } from "zod";
 import { MapSchema, type FieldEntry, type UiMap } from "@is-browser/contract";
 import { migrateDatabase } from "./migrations.js";
 
-type ControlType = "text" | "number" | "textarea" | "select" | "radio" | "switch" | "button";
+type ControlType =
+  | "text"
+  | "number"
+  | "textarea"
+  | "select"
+  | "radio"
+  | "switch"
+  | "button";
 
 export type ImportSummary = {
   pages: number;
@@ -36,11 +43,14 @@ function toControlType(type: FieldEntry["type"]): ControlType {
   }
 }
 
-function buildSettingOptions(field: FieldEntry, controlType: ControlType): SettingOption[] {
+function buildSettingOptions(
+  field: FieldEntry,
+  controlType: ControlType,
+): SettingOption[] {
   if (controlType === "switch") {
     return [
       { key: "On", label: "On", sortOrder: 1 },
-      { key: "Off", label: "Off", sortOrder: 2 }
+      { key: "Off", label: "Off", sortOrder: 2 },
     ];
   }
 
@@ -90,20 +100,25 @@ function toErrorMessage(error: unknown): string {
   return String(error);
 }
 
-export async function importUiMapFile(dbPath: string, mapPath: string): Promise<ImportSummary> {
+export async function importUiMapFile(
+  dbPath: string,
+  mapPath: string,
+): Promise<ImportSummary> {
   const raw = await readFile(mapPath, "utf8");
   let payload: unknown;
   try {
     payload = JSON.parse(raw);
   } catch (error) {
-    throw new Error(`Invalid UI map JSON at ${mapPath}: ${toErrorMessage(error)}`);
+    throw new Error(
+      `Invalid UI map JSON at ${mapPath}: ${toErrorMessage(error)}`,
+    );
   }
   return importUiMapToDatabase(dbPath, payload);
 }
 
 export async function importUiMapToDatabase(
   dbPath: string,
-  payload: unknown
+  payload: unknown,
 ): Promise<ImportSummary> {
   const map = parseMapPayload(payload);
   await migrateDatabase(dbPath);
@@ -126,7 +141,9 @@ ON CONFLICT(id) DO UPDATE SET
   updated_at = excluded.updated_at
 `);
 
-  const clearPageNavSteps = db.prepare("DELETE FROM ui_page_nav_step WHERE page_id = ?");
+  const clearPageNavSteps = db.prepare(
+    "DELETE FROM ui_page_nav_step WHERE page_id = ?",
+  );
   const insertPageNavStep = db.prepare(`
 INSERT INTO ui_page_nav_step (
   page_id, step_index, action, target_url, selector_kind, selector_role, selector_name, selector_value
@@ -150,7 +167,9 @@ ON CONFLICT(id) DO UPDATE SET
   updated_at = excluded.updated_at
 `);
 
-  const clearSettingSelectors = db.prepare("DELETE FROM ui_setting_selector WHERE setting_id = ?");
+  const clearSettingSelectors = db.prepare(
+    "DELETE FROM ui_setting_selector WHERE setting_id = ?",
+  );
   const insertSettingSelector = db.prepare(`
 INSERT INTO ui_setting_selector (
   setting_id, priority, kind, role, name, value
@@ -158,7 +177,9 @@ INSERT INTO ui_setting_selector (
 VALUES (?, ?, ?, ?, ?, ?)
 `);
 
-  const clearSettingOptions = db.prepare("DELETE FROM ui_setting_option WHERE setting_id = ?");
+  const clearSettingOptions = db.prepare(
+    "DELETE FROM ui_setting_option WHERE setting_id = ?",
+  );
   const insertSettingOption = db.prepare(`
 INSERT INTO ui_setting_option (
   setting_id, option_key, option_label, sort_order
@@ -172,7 +193,7 @@ VALUES (?, ?, ?, ?)
     settings: 0,
     selectors: 0,
     options: 0,
-    navSteps: 0
+    navSteps: 0,
   };
 
   let transactionOpen = false;
@@ -190,7 +211,7 @@ VALUES (?, ?, ?, ?)
           map.meta.printerUrl,
           map.meta.firmware ?? null,
           map.meta.schemaVersion ?? null,
-          now
+          now,
         );
         summary.pages += 1;
 
@@ -204,7 +225,9 @@ VALUES (?, ?, ?, ?)
             throw new Error(`navPath[${index}] has action "goto" but no url`);
           }
           if (step.action === "click" && !step.selector) {
-            throw new Error(`navPath[${index}] has action "click" but no selector`);
+            throw new Error(
+              `navPath[${index}] has action "click" but no selector`,
+            );
           }
 
           insertPageNavStep.run(
@@ -215,7 +238,7 @@ VALUES (?, ?, ?, ?)
             step.selector?.kind ?? null,
             step.selector?.role ?? null,
             step.selector?.name ?? null,
-            step.selector?.value ?? null
+            step.selector?.value ?? null,
           );
           summary.navSteps += 1;
         }
@@ -236,7 +259,7 @@ VALUES (?, ?, ?, ?)
           field.constraints?.max ?? null,
           field.constraints?.pattern ?? null,
           field.constraints?.readOnly ? 1 : 0,
-          now
+          now,
         );
         summary.settings += 1;
 
@@ -249,7 +272,7 @@ VALUES (?, ?, ?, ?)
             selector.kind,
             selector.role ?? null,
             selector.name ?? null,
-            selector.value ?? null
+            selector.value ?? null,
           );
           summary.selectors += 1;
         }
@@ -257,11 +280,18 @@ VALUES (?, ?, ?, ?)
         const options = buildSettingOptions(field, controlType);
         clearSettingOptions.run(field.id);
         options.forEach((option) => {
-          insertSettingOption.run(field.id, option.key, option.label, option.sortOrder);
+          insertSettingOption.run(
+            field.id,
+            option.key,
+            option.label,
+            option.sortOrder,
+          );
           summary.options += 1;
         });
       } catch (error) {
-        throw new Error(`Invalid setting "${field.id}": ${toErrorMessage(error)}`);
+        throw new Error(
+          `Invalid setting "${field.id}": ${toErrorMessage(error)}`,
+        );
       }
     }
 
@@ -277,4 +307,3 @@ VALUES (?, ?, ?, ?)
     db.close();
   }
 }
-

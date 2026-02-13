@@ -1,5 +1,11 @@
 import { createHash } from "node:crypto";
-import { type FieldEntry, type NavStep, type PageEntry, type Selector, type UiMap } from "@is-browser/contract";
+import {
+  type FieldEntry,
+  type NavStep,
+  type PageEntry,
+  type Selector,
+  type UiMap,
+} from "@is-browser/contract";
 import { slugify } from "./utils.js";
 
 type PrimitiveValue = string | number | boolean | null;
@@ -8,8 +14,19 @@ const ACTION_LABEL_RE = /^(save|apply|ok|cancel|close|done)$/i;
 const REQUIRED_MARK_RE = /\*\s*$/;
 
 export type CaptureSelector =
-  | { kind: "role"; role: string; name: string; exact: true; stability?: "stable" | "fragile" }
-  | { kind: "label"; text: string; exact: true; stability?: "stable" | "fragile" }
+  | {
+      kind: "role";
+      role: string;
+      name: string;
+      exact: true;
+      stability?: "stable" | "fragile";
+    }
+  | {
+      kind: "label";
+      text: string;
+      exact: true;
+      stability?: "stable" | "fragile";
+    }
   | { kind: "css"; value: string; stability?: "stable" | "fragile" };
 
 export type CaptureNavStep = {
@@ -180,12 +197,18 @@ function normalizeUrlIdentity(url: string): string {
   }
 }
 
-function mapSelector(selector: Selector | undefined): CaptureSelector | undefined {
+function mapSelector(
+  selector: Selector | undefined,
+): CaptureSelector | undefined {
   if (!selector) return undefined;
   if (selector.kind === "css") {
     const value = normalizeText(selector.value);
     if (!value) return undefined;
-    return { kind: "css", value, stability: value.startsWith("#") ? "stable" : "fragile" };
+    return {
+      kind: "css",
+      value,
+      stability: value.startsWith("#") ? "stable" : "fragile",
+    };
   }
   if (selector.kind === "label" || selector.kind === "text") {
     const text = normalizeText(selector.value);
@@ -212,13 +235,16 @@ function actionKind(label: string): CaptureContainerAction["kind"] {
 function inferContainerType(page: PageEntry): "page" | "modal" {
   const probe = `${page.id} ${page.title ?? ""}`.toLowerCase();
   if (probe.includes("modal") || probe.includes("dialog")) return "modal";
-  return (page.navPath ?? []).some((step) => step.kind === "modal_open") ? "modal" : "page";
+  return (page.navPath ?? []).some((step) => step.kind === "modal_open")
+    ? "modal"
+    : "page";
 }
 
 function inferBreadcrumb(page: PageEntry): string[] {
   const isNoise = (label: string): boolean => {
     const normalized = label.toLowerCase();
-    if (["span", "input", "button", "a", "div", "label"].includes(normalized)) return true;
+    if (["span", "input", "button", "a", "div", "label"].includes(normalized))
+      return true;
     if (label.length > 80) return true;
     return false;
   };
@@ -239,8 +265,13 @@ function inferBreadcrumb(page: PageEntry): string[] {
   const seen = new Set<string>();
   return (page.navPath ?? [])
     .filter((step) => step.action === "click")
-    .map((step) => normalizeText(step.label ?? step.selector?.name ?? step.selector?.value))
-    .filter((label) => label.length > 0 && !ACTION_LABEL_RE.test(label) && !isNoise(label))
+    .map((step) =>
+      normalizeText(step.label ?? step.selector?.name ?? step.selector?.value),
+    )
+    .filter(
+      (label) =>
+        label.length > 0 && !ACTION_LABEL_RE.test(label) && !isNoise(label),
+    )
     .filter((label) => {
       const key = label.toLowerCase();
       if (seen.has(key)) return false;
@@ -249,7 +280,10 @@ function inferBreadcrumb(page: PageEntry): string[] {
     });
 }
 
-function inferFrameContext(page: PageEntry): { inFrame: boolean; frameUrl: string | null } {
+function inferFrameContext(page: PageEntry): {
+  inFrame: boolean;
+  frameUrl: string | null;
+} {
   for (let i = (page.navPath ?? []).length - 1; i >= 0; i -= 1) {
     const frameUrl = normalizeText(page.navPath?.[i]?.frameUrl);
     if (frameUrl) {
@@ -269,7 +303,7 @@ function dedupeNavPath(path: CaptureNavStep[]): CaptureNavStep[] {
       kind: step.kind,
       selector: step.selector,
       url: normalizeText(step.url),
-      frameUrl: normalizeText(step.frameUrl)
+      frameUrl: normalizeText(step.frameUrl),
     });
     if (key === lastKey) continue;
     deduped.push(step);
@@ -280,7 +314,8 @@ function dedupeNavPath(path: CaptureNavStep[]): CaptureNavStep[] {
 
 function buildContainer(page: PageEntry): CaptureContainer {
   const type = inferContainerType(page);
-  const title = normalizeText(page.title) || normalizeText(page.id) || "Untitled";
+  const title =
+    normalizeText(page.title) || normalizeText(page.id) || "Untitled";
   const breadcrumb = inferBreadcrumb(page);
   const frameContext = inferFrameContext(page);
   const navPath = dedupeNavPath(
@@ -292,8 +327,14 @@ function buildContainer(page: PageEntry): CaptureContainer {
           return { action: "goto", url: normalizeUrlIdentity(url) };
         }
         if (step.action !== "click") return undefined;
-        const label = normalizeText(step.label ?? step.selector?.name ?? step.selector?.value);
-        if (ACTION_LABEL_RE.test(label) && step.kind !== "modal_open" && step.kind !== "modal_close") {
+        const label = normalizeText(
+          step.label ?? step.selector?.name ?? step.selector?.value,
+        );
+        if (
+          ACTION_LABEL_RE.test(label) &&
+          step.kind !== "modal_open" &&
+          step.kind !== "modal_close"
+        ) {
           return undefined;
         }
         return {
@@ -301,18 +342,24 @@ function buildContainer(page: PageEntry): CaptureContainer {
           kind: step.kind,
           label: label || undefined,
           frameUrl: normalizeText(step.frameUrl) || undefined,
-          selector: mapSelector(step.selector)
+          selector: mapSelector(step.selector),
         };
       })
-      .filter((step): step is CaptureNavStep => Boolean(step))
+      .filter((step): step is CaptureNavStep => Boolean(step)),
   );
 
   const actions = (page.actions ?? [])
     .map((action) => {
-      const label = normalizeText(action.label ?? action.selector.name ?? action.selector.value);
+      const label = normalizeText(
+        action.label ?? action.selector.name ?? action.selector.value,
+      );
       const selector = mapSelector(action.selector);
       if (!label || !selector) return undefined;
-      return { label, kind: actionKind(label), selector } as CaptureContainerAction;
+      return {
+        label,
+        kind: actionKind(label),
+        selector,
+      } as CaptureContainerAction;
     })
     .filter((action): action is CaptureContainerAction => Boolean(action));
 
@@ -330,35 +377,62 @@ function buildContainer(page: PageEntry): CaptureContainer {
     breadcrumb,
     frameContext,
     navPath,
-    actions
+    actions,
   };
 }
 
 function inferSettingType(field: FieldEntry): CaptureSettingType {
-  if (field.opensModal || field.interaction === "opensModal") return "button_dialog";
-  if (field.controlType === "radio_group" || field.type === "radio") return "radio_group";
+  if (field.opensModal || field.interaction === "opensModal")
+    return "button_dialog";
+  if (field.controlType === "radio_group" || field.type === "radio")
+    return "radio_group";
   if (field.controlType === "dropdown" || field.type === "select") {
-    return field.valueQuality === "native-select" ? "dropdown_native" : "dropdown_aria";
+    return field.valueQuality === "native-select"
+      ? "dropdown_native"
+      : "dropdown_aria";
   }
   if (field.controlType === "switch") return "switch";
-  if (field.controlType === "checkbox" || field.type === "checkbox") return "checkbox";
-  if (field.controlType === "number" || field.type === "number") return "spinbutton";
-  if ((field.readonly || field.constraints?.readOnly) && field.valueQuality === "static-text") return "text_display";
-  if (field.controlType === "staticTextButton") return field.opensModal ? "button_dialog" : "text_display";
-  if (field.type === "textarea" || field.type === "text" || field.controlType === "textbox") {
-    return field.readonly || field.constraints?.readOnly ? "text_display" : "textbox";
+  if (field.controlType === "checkbox" || field.type === "checkbox")
+    return "checkbox";
+  if (field.controlType === "number" || field.type === "number")
+    return "spinbutton";
+  if (
+    (field.readonly || field.constraints?.readOnly) &&
+    field.valueQuality === "static-text"
+  )
+    return "text_display";
+  if (field.controlType === "staticTextButton")
+    return field.opensModal ? "button_dialog" : "text_display";
+  if (
+    field.type === "textarea" ||
+    field.type === "text" ||
+    field.controlType === "textbox"
+  ) {
+    return field.readonly || field.constraints?.readOnly
+      ? "text_display"
+      : "textbox";
   }
   return "text_display";
 }
 
-function inferValueType(type: CaptureSettingType): FieldRecord["value"]["value_type"] {
+function inferValueType(
+  type: CaptureSettingType,
+): FieldRecord["value"]["value_type"] {
   if (type === "spinbutton") return "number";
   if (type === "checkbox" || type === "switch") return "boolean";
-  if (type === "radio_group" || type === "dropdown_native" || type === "dropdown_aria") return "enum";
+  if (
+    type === "radio_group" ||
+    type === "dropdown_native" ||
+    type === "dropdown_aria"
+  )
+    return "enum";
   return "string";
 }
 
-function normalizePrimitive(value: unknown, valueType: FieldRecord["value"]["value_type"]): PrimitiveValue {
+function normalizePrimitive(
+  value: unknown,
+  valueType: FieldRecord["value"]["value_type"],
+): PrimitiveValue {
   if (value === null || value === undefined) return null;
   if (valueType === "number") {
     const parsed = Number(value);
@@ -388,7 +462,9 @@ function pickCanonicalControlId(field: FieldEntry): string {
   return `source:${field.id}`;
 }
 
-function normalizeOptions(field: FieldEntry): Array<{ value: string; label: string }> {
+function normalizeOptions(
+  field: FieldEntry,
+): Array<{ value: string; label: string }> {
   const byValue = new Map<string, string>();
   for (const option of field.options ?? []) {
     const value = normalizeText(option.value);
@@ -408,13 +484,22 @@ function normalizeOptions(field: FieldEntry): Array<{ value: string; label: stri
     .sort((a, b) => a.value.localeCompare(b.value));
 }
 
-function inferPrimarySelector(field: FieldEntry, type: CaptureSettingType): { role: string; name: string } {
-  const role = (field.selectors ?? []).find((selector) => selector.kind === "role");
-  if (role?.role && role.name) return { role: normalizeText(role.role), name: normalizeText(role.name) };
-  const label = normalizeText(field.label) || normalizeText(field.fieldId) || field.id;
+function inferPrimarySelector(
+  field: FieldEntry,
+  type: CaptureSettingType,
+): { role: string; name: string } {
+  const role = (field.selectors ?? []).find(
+    (selector) => selector.kind === "role",
+  );
+  if (role?.role && role.name)
+    return { role: normalizeText(role.role), name: normalizeText(role.name) };
+  const label =
+    normalizeText(field.label) || normalizeText(field.fieldId) || field.id;
   if (type === "radio_group") return { role: "radio", name: label };
-  if (type === "dropdown_native" || type === "dropdown_aria") return { role: "combobox", name: label };
-  if (type === "checkbox" || type === "switch") return { role: "checkbox", name: label };
+  if (type === "dropdown_native" || type === "dropdown_aria")
+    return { role: "combobox", name: label };
+  if (type === "checkbox" || type === "switch")
+    return { role: "checkbox", name: label };
   if (type === "spinbutton") return { role: "spinbutton", name: label };
   if (type === "button_dialog") return { role: "button", name: label };
   return { role: "textbox", name: label };
@@ -424,7 +509,11 @@ function toCaptureSelector(selector: Selector): CaptureSelector | undefined {
   return mapSelector(selector);
 }
 
-function deterministicFieldId(container: CaptureContainer, groupTitle: string, canonicalControlId: string): string {
+function deterministicFieldId(
+  container: CaptureContainer,
+  groupTitle: string,
+  canonicalControlId: string,
+): string {
   const pathPart = slugify(container.breadcrumb.join("-") || container.title);
   const containerPart = slugify(container.title);
   const groupPart = slugify(groupTitle);
@@ -435,19 +524,39 @@ function deterministicFieldId(container: CaptureContainer, groupTitle: string, c
     groupTitle,
     canonicalControlId,
     container.frameContext.frameUrl ?? "",
-    container.type === "modal" ? container.title : ""
+    container.type === "modal" ? container.title : "",
   ].join("|");
   return `field.${pathPart}.${containerPart}.${groupPart}.${controlPart}.${sha1(identity).slice(0, 10)}`;
 }
 
-function valueQuality(field: FieldEntry, options: Array<{ value: string; label: string }>, currentValue: PrimitiveValue): { quality: FieldRecord["value"]["value_quality"]; reason?: string } {
-  if ((field.type === "select" || field.controlType === "dropdown") && options.length === 0) {
-    const unknownReason = (field.hints ?? []).find((hint) => hint.startsWith("options_unavailable:"))?.replace("options_unavailable:", "") ?? "unable to enumerate dropdown options";
+function valueQuality(
+  field: FieldEntry,
+  options: Array<{ value: string; label: string }>,
+  currentValue: PrimitiveValue,
+): { quality: FieldRecord["value"]["value_quality"]; reason?: string } {
+  if (
+    (field.type === "select" || field.controlType === "dropdown") &&
+    options.length === 0
+  ) {
+    const unknownReason =
+      (field.hints ?? [])
+        .find((hint) => hint.startsWith("options_unavailable:"))
+        ?.replace("options_unavailable:", "") ??
+      "unable to enumerate dropdown options";
     return { quality: "unknown", reason: unknownReason };
   }
-  if (currentValue === null || currentValue === "") return { quality: "low", reason: "missing current value" };
-  if (field.valueQuality === "native-select" || field.valueQuality === "opened-options") return { quality: "high" };
-  if (field.valueQuality === "trigger-text" || field.valueQuality === "static-text") return { quality: "medium" };
+  if (currentValue === null || currentValue === "")
+    return { quality: "low", reason: "missing current value" };
+  if (
+    field.valueQuality === "native-select" ||
+    field.valueQuality === "opened-options"
+  )
+    return { quality: "high" };
+  if (
+    field.valueQuality === "trigger-text" ||
+    field.valueQuality === "static-text"
+  )
+    return { quality: "medium" };
   return { quality: "high" };
 }
 
@@ -459,7 +568,7 @@ export type SnapshotOverlayEntry = {
 
 export function buildCaptureSchema(
   map: UiMap,
-  snapshotOverlay?: Map<string, SnapshotOverlayEntry>
+  snapshotOverlay?: Map<string, SnapshotOverlayEntry>,
 ): CaptureSchema {
   const containersByPageId = new Map<string, CaptureContainer>();
   for (const page of map.pages) {
@@ -482,15 +591,28 @@ export function buildCaptureSchema(
     const overlay = snapshotOverlay?.get(field.id);
     if (overlay) {
       // current_value: last-write-wins — the snapshot is a more recent, accurate re-read
-      if (overlay.current_value !== null && overlay.current_value !== undefined) {
-        const overlayCurrentValue = normalizePrimitive(overlay.current_value, valueType);
+      if (
+        overlay.current_value !== null &&
+        overlay.current_value !== undefined
+      ) {
+        const overlayCurrentValue = normalizePrimitive(
+          overlay.current_value,
+          valueType,
+        );
         if (overlayCurrentValue !== null) {
           currentValue = overlayCurrentValue;
         }
       }
       // default_value: only fill nulls — default is set once during initial discovery
-      if (overlay.default_value !== null && overlay.default_value !== undefined && defaultValue === null) {
-        const overlayDefaultValue = normalizePrimitive(overlay.default_value, valueType);
+      if (
+        overlay.default_value !== null &&
+        overlay.default_value !== undefined &&
+        defaultValue === null
+      ) {
+        const overlayDefaultValue = normalizePrimitive(
+          overlay.default_value,
+          valueType,
+        );
         if (overlayDefaultValue !== null) {
           defaultValue = overlayDefaultValue;
         }
@@ -508,9 +630,18 @@ export function buildCaptureSchema(
       .filter((selector): selector is CaptureSelector => Boolean(selector))
       .filter((selector) => !(selector.kind === "role"));
 
-    const constraintsEnum = Array.from(new Set([...(field.constraints?.enum ?? []), ...options.map((option) => option.value)]));
+    const constraintsEnum = Array.from(
+      new Set([
+        ...(field.constraints?.enum ?? []),
+        ...options.map((option) => option.value),
+      ]),
+    );
 
-    const field_id = deterministicFieldId(container, groupTitle, canonicalControlId);
+    const field_id = deterministicFieldId(
+      container,
+      groupTitle,
+      canonicalControlId,
+    );
 
     records.push({
       field_id,
@@ -521,30 +652,34 @@ export function buildCaptureSchema(
       breadcrumb: container.breadcrumb,
       container: {
         type: container.type,
-        title: container.title
+        title: container.title,
       },
       group: {
         title: groupTitle,
-        order: groupOrder
+        order: groupOrder,
       },
       control: {
         primary_selector: inferPrimarySelector(field, type),
         fallback_selectors,
-        canonical_control_id: canonicalControlId
+        canonical_control_id: canonicalControlId,
       },
       context: {
         frame_url: container.frameContext.frameUrl,
         in_modal: container.type === "modal",
-        modal_title: container.type === "modal" ? container.title : null
+        modal_title: container.type === "modal" ? container.title : null,
       },
       value: {
         value_type: valueType,
         default_value: defaultValue,
         current_value: currentValue,
-        current_label: (overlayLabel != null ? normalizeText(overlayLabel) : null) || normalizeText(field.currentLabel) || null,
+        current_label:
+          (overlayLabel != null ? normalizeText(overlayLabel) : null) ||
+          normalizeText(field.currentLabel) ||
+          null,
         value_quality: quality.quality,
         value_quality_reason: quality.reason,
-        is_default: JSON.stringify(defaultValue) === JSON.stringify(currentValue)
+        is_default:
+          JSON.stringify(defaultValue) === JSON.stringify(currentValue),
       },
       options,
       constraints: {
@@ -553,23 +688,30 @@ export function buildCaptureSchema(
         max: field.constraints?.max,
         step: field.constraints?.step,
         pattern: field.constraints?.pattern,
-        required: REQUIRED_MARK_RE.test(normalizeText(field.label)) || undefined
+        required:
+          REQUIRED_MARK_RE.test(normalizeText(field.label)) || undefined,
       },
       type,
       readonly: field.readonly ?? field.constraints?.readOnly ?? false,
       visibility: {
         visible: field.visibility?.visible ?? true,
-        enabled: field.visibility?.enabled ?? !(field.readonly ?? field.constraints?.readOnly ?? false)
+        enabled:
+          field.visibility?.enabled ??
+          !(field.readonly ?? field.constraints?.readOnly ?? false),
       },
       selectorProof: {
         resolvedBy: "primary",
-        count: 1
-      }
+        count: 1,
+      },
     });
   }
 
-  const sortedContainers = Array.from(containersByPageId.values()).sort((a, b) => a.container_id.localeCompare(b.container_id));
-  const sortedRecords = records.sort((a, b) => a.field_id.localeCompare(b.field_id));
+  const sortedContainers = Array.from(containersByPageId.values()).sort(
+    (a, b) => a.container_id.localeCompare(b.container_id),
+  );
+  const sortedRecords = records.sort((a, b) =>
+    a.field_id.localeCompare(b.field_id),
+  );
 
   const model = normalizeText(map.meta.deviceModel);
   const firmware = normalizeText(map.meta.firmware);
@@ -578,16 +720,21 @@ export function buildCaptureSchema(
     meta: {
       generatedAt: new Date().toISOString(),
       printerBaseUrl: map.meta.printerUrl,
-      deviceProfile: model || firmware ? { model: model || null, firmware: firmware || null } : null,
-      schemaVersion: "4.0.0"
+      deviceProfile:
+        model || firmware
+          ? { model: model || null, firmware: firmware || null }
+          : null,
+      schemaVersion: "4.0.0",
     },
     containers: sortedContainers,
     fieldRecords: sortedRecords,
-    settings: sortedRecords
+    settings: sortedRecords,
   };
 }
 
-export function buildCaptureVerifyReport(schema: CaptureSchema): CaptureVerifyReport {
+export function buildCaptureVerifyReport(
+  schema: CaptureSchema,
+): CaptureVerifyReport {
   const byType: Record<string, number> = {};
   const unstableSelectors: CaptureVerifyReport["unstableSelectors"] = [];
   const missingEnums: CaptureVerifyReport["missingEnums"] = [];
@@ -603,12 +750,14 @@ export function buildCaptureVerifyReport(schema: CaptureSchema): CaptureVerifyRe
         label: setting.control.primary_selector.name,
         resolvedBy: setting.selectorProof.resolvedBy,
         count: setting.selectorProof.count,
-        diagnostics: setting.selectorProof.diagnostics
+        diagnostics: setting.selectorProof.diagnostics,
       });
     }
 
     if (
-      (setting.type === "dropdown_native" || setting.type === "dropdown_aria" || setting.type === "radio_group") &&
+      (setting.type === "dropdown_native" ||
+        setting.type === "dropdown_aria" ||
+        setting.type === "radio_group") &&
       setting.visibility.visible &&
       setting.visibility.enabled &&
       setting.options.length === 0
@@ -618,16 +767,22 @@ export function buildCaptureVerifyReport(schema: CaptureSchema): CaptureVerifyRe
         container_id: setting.containerKey,
         label: setting.control.primary_selector.name,
         type: setting.type,
-        reason: setting.value.value_quality_reason ?? "visible+enabled enum control has empty options[]"
+        reason:
+          setting.value.value_quality_reason ??
+          "visible+enabled enum control has empty options[]",
       });
     }
 
-    if (setting.value.current_value === null || setting.value.current_value === undefined || setting.value.current_value === "") {
+    if (
+      setting.value.current_value === null ||
+      setting.value.current_value === undefined ||
+      setting.value.current_value === ""
+    ) {
       missingCurrentValue.push({
         field_id: setting.field_id,
         container_id: setting.containerKey,
         label: setting.control.primary_selector.name,
-        type: setting.type
+        type: setting.type,
       });
     }
   }
@@ -635,24 +790,25 @@ export function buildCaptureVerifyReport(schema: CaptureSchema): CaptureVerifyRe
   return {
     meta: {
       generatedAt: new Date().toISOString(),
-      schemaVersion: schema.meta.schemaVersion
+      schemaVersion: schema.meta.schemaVersion,
     },
     counts: {
       totalSettings: schema.fieldRecords.length,
       byType,
       unstableSelectors: unstableSelectors.length,
       missingEnums: missingEnums.length,
-      missingCurrentValue: missingCurrentValue.length
+      missingCurrentValue: missingCurrentValue.length,
     },
     unstableSelectors,
     missingEnums,
-    missingCurrentValue
+    missingCurrentValue,
   };
 }
 
 function scalar(value: unknown): string {
   if (value === null) return "null";
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
   if (typeof value !== "string") return JSON.stringify(value);
   if (value.length === 0) return '""';
   if (/^[a-zA-Z0-9_./:-]+$/.test(value)) return value;
@@ -670,7 +826,12 @@ function renderYaml(value: unknown, indent = 0): string {
     if (value.length === 0) return `${pad}[]`;
     return value
       .map((item) => {
-        if (item === null || typeof item === "string" || typeof item === "number" || typeof item === "boolean") {
+        if (
+          item === null ||
+          typeof item === "string" ||
+          typeof item === "number" ||
+          typeof item === "boolean"
+        ) {
           return `${pad}- ${scalar(item)}`;
         }
         return `${pad}-\n${renderYaml(item, indent + 2)}`;
@@ -679,11 +840,18 @@ function renderYaml(value: unknown, indent = 0): string {
   }
 
   if (value && typeof value === "object") {
-    const entries = Object.entries(value as Record<string, unknown>).filter(([, entryValue]) => entryValue !== undefined);
+    const entries = Object.entries(value as Record<string, unknown>).filter(
+      ([, entryValue]) => entryValue !== undefined,
+    );
     if (entries.length === 0) return `${pad}{}`;
     return entries
       .map(([key, entryValue]) => {
-        if (entryValue === null || typeof entryValue === "string" || typeof entryValue === "number" || typeof entryValue === "boolean") {
+        if (
+          entryValue === null ||
+          typeof entryValue === "string" ||
+          typeof entryValue === "number" ||
+          typeof entryValue === "boolean"
+        ) {
           return `${pad}${keyName(key)}: ${scalar(entryValue)}`;
         }
         return `${pad}${keyName(key)}:\n${renderYaml(entryValue, indent + 2)}`;
@@ -712,8 +880,8 @@ export function captureSchemaToFormYaml(schema: CaptureSchema): string {
         options: field.options,
         constraints: field.constraints,
         readonly: field.readonly,
-        visibility: field.visibility
-      }))
+        visibility: field.visibility,
+      })),
   }));
 
   return `${renderYaml({ meta: schema.meta, containers })}\n`;

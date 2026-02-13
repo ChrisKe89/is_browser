@@ -8,28 +8,38 @@ export type LabelQuality = "explicit" | "derived" | "missing";
 
 async function safeGetAttribute(
   element: ReturnType<Page["locator"]>,
-  name: string
+  name: string,
 ): Promise<string | null> {
-  return element.getAttribute(name, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => null);
+  return element
+    .getAttribute(name, { timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => null);
 }
 
-async function safeInnerText(element: ReturnType<Page["locator"]>): Promise<string> {
-  return element.innerText({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => "");
+async function safeInnerText(
+  element: ReturnType<Page["locator"]>,
+): Promise<string> {
+  return element
+    .innerText({ timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => "");
 }
 
 async function safeEvaluate<T>(
   element: ReturnType<Page["locator"]>,
-  pageFunction: (el: SVGElement | HTMLElement) => T
+  pageFunction: (el: SVGElement | HTMLElement) => T,
 ): Promise<T | undefined> {
-  return element.evaluate(pageFunction, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined);
+  return element
+    .evaluate(pageFunction, { timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => undefined);
 }
 
 export function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60) || "field";
+  return (
+    input
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "field"
+  );
 }
 
 export function uniqueId(base: string, used: Set<string>): string {
@@ -45,8 +55,8 @@ export function uniqueId(base: string, used: Set<string>): string {
 
 export async function buildSelectorCandidates(
   page: Page,
-  element: ReturnType<Page["locator"]>
-): Promise<{ label?: string; selectors: Selector[] }>{
+  element: ReturnType<Page["locator"]>,
+): Promise<{ label?: string; selectors: Selector[] }> {
   const selectors: Selector[] = [];
 
   const ariaLabel = await safeGetAttribute(element, "aria-label");
@@ -88,7 +98,9 @@ export async function buildSelectorCandidates(
   }
 
   if (!labelText) {
-    const parentLabel = element.locator("xpath=ancestor-or-self::label").first();
+    const parentLabel = element
+      .locator("xpath=ancestor-or-self::label")
+      .first();
     if (await parentLabel.count()) {
       labelText = (await safeInnerText(parentLabel)).trim();
     }
@@ -138,7 +150,9 @@ function titleCaseWords(words: string[]): string {
     .trim();
 }
 
-function humanizeIdentifier(identifier: string | null | undefined): string | undefined {
+function humanizeIdentifier(
+  identifier: string | null | undefined,
+): string | undefined {
   const raw = (identifier ?? "").trim();
   if (!raw) return undefined;
   const spaced = raw
@@ -152,8 +166,20 @@ function humanizeIdentifier(identifier: string | null | undefined): string | und
   const words = spaced.split(" ").filter(Boolean);
   if (words.length === 0) return undefined;
 
-  const trailingNoise = new Set(["input", "select", "textbox", "text", "field", "value", "option", "control"]);
-  while (words.length > 1 && trailingNoise.has(words[words.length - 1].toLowerCase())) {
+  const trailingNoise = new Set([
+    "input",
+    "select",
+    "textbox",
+    "text",
+    "field",
+    "value",
+    "option",
+    "control",
+  ]);
+  while (
+    words.length > 1 &&
+    trailingNoise.has(words[words.length - 1].toLowerCase())
+  ) {
     words.pop();
   }
 
@@ -167,7 +193,7 @@ function humanizeIdentifier(identifier: string | null | undefined): string | und
     "config",
     "configuration",
     "printer",
-    "device"
+    "device",
   ]);
   while (words.length > 2 && leadingNoise.has(words[0].toLowerCase())) {
     words.shift();
@@ -179,23 +205,30 @@ function humanizeIdentifier(identifier: string | null | undefined): string | und
 async function resolveAriaLabelledBy(
   page: Page,
   ariaLabelledBy: string,
-  scopeRoot?: ReturnType<Page["locator"]>
+  scopeRoot?: ReturnType<Page["locator"]>,
 ): Promise<string | undefined> {
-  const ids = ariaLabelledBy.split(/\s+/).map((id) => id.trim()).filter(Boolean);
+  const ids = ariaLabelledBy
+    .split(/\s+/)
+    .map((id) => id.trim())
+    .filter(Boolean);
   if (ids.length === 0) return undefined;
 
   const resolvedParts: string[] = [];
   for (const id of ids) {
     let text = "";
     if (scopeRoot) {
-      text = normalizeLabel(
-        await safeInnerText(scopeRoot.locator(`[id="${cssEscape(id)}"]`).first())
-      ) ?? "";
+      text =
+        normalizeLabel(
+          await safeInnerText(
+            scopeRoot.locator(`[id="${cssEscape(id)}"]`).first(),
+          ),
+        ) ?? "";
     }
     if (!text) {
-      text = normalizeLabel(
-        await safeInnerText(page.locator(`[id="${cssEscape(id)}"]`).first())
-      ) ?? "";
+      text =
+        normalizeLabel(
+          await safeInnerText(page.locator(`[id="${cssEscape(id)}"]`).first()),
+        ) ?? "";
     }
     if (text) resolvedParts.push(text);
   }
@@ -204,19 +237,20 @@ async function resolveAriaLabelledBy(
 }
 
 async function resolveRowBasedLabel(
-  element: ReturnType<Page["locator"]>
+  element: ReturnType<Page["locator"]>,
 ): Promise<string | undefined> {
   const fromRow = await safeEvaluate(element, (el) => {
-    const normalize = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
+    const normalize = (value: string | null | undefined) =>
+      (value ?? "").replace(/\s+/g, " ").trim();
     const row = el.closest(
-      "tr,[role='row'],.row,.form-row,.xux-row,.setting-row,.setting-item,.xux-form-row,li"
+      "tr,[role='row'],.row,.form-row,.xux-row,.setting-row,.setting-item,.xux-form-row,li",
     );
     if (!row) return "";
 
     const directCandidates = Array.from(
       row.querySelectorAll<HTMLElement>(
-        ":scope > th, :scope > td, :scope > .label, :scope > .name, :scope > .title, :scope > .left"
-      )
+        ":scope > th, :scope > td, :scope > .label, :scope > .name, :scope > .title, :scope > .left",
+      ),
     );
     for (const candidate of directCandidates) {
       if (candidate.contains(el)) continue;
@@ -226,7 +260,8 @@ async function resolveRowBasedLabel(
       return text;
     }
 
-    let sibling = el.parentElement?.previousElementSibling as HTMLElement | null;
+    let sibling = el.parentElement
+      ?.previousElementSibling as HTMLElement | null;
     while (sibling) {
       const text = normalize(sibling.textContent);
       if (text && text.length <= 120) return text;
@@ -240,7 +275,7 @@ async function resolveRowBasedLabel(
 }
 
 async function resolveStableIdentifier(
-  element: ReturnType<Page["locator"]>
+  element: ReturnType<Page["locator"]>,
 ): Promise<string | undefined> {
   const fromDataAttribute = await safeEvaluate(element, (el) => {
     const attrs = [
@@ -251,7 +286,7 @@ async function resolveStableIdentifier(
       "data-testid",
       "data-test-id",
       "data-id",
-      "data-key"
+      "data-key",
     ];
     for (const attr of attrs) {
       const value = el.getAttribute(attr)?.trim();
@@ -273,16 +308,22 @@ async function resolveStableIdentifier(
 export async function deriveFieldLabel(
   page: Page,
   element: ReturnType<Page["locator"]>,
-  scopeRoot?: ReturnType<Page["locator"]>
+  scopeRoot?: ReturnType<Page["locator"]>,
 ): Promise<{ label: string; labelQuality: LabelQuality }> {
-  const ariaLabel = normalizeLabel(await safeGetAttribute(element, "aria-label"));
+  const ariaLabel = normalizeLabel(
+    await safeGetAttribute(element, "aria-label"),
+  );
   if (ariaLabel) {
     return { label: ariaLabel, labelQuality: "explicit" };
   }
 
   const ariaLabelledBy = await safeGetAttribute(element, "aria-labelledby");
   if (ariaLabelledBy) {
-    const resolved = await resolveAriaLabelledBy(page, ariaLabelledBy, scopeRoot);
+    const resolved = await resolveAriaLabelledBy(
+      page,
+      ariaLabelledBy,
+      scopeRoot,
+    );
     if (resolved) {
       return { label: resolved, labelQuality: "explicit" };
     }
@@ -307,13 +348,15 @@ export async function deriveFieldLabel(
         .map((label) => label.textContent?.trim())
         .filter(Boolean)
         .join(" ");
-    })
+    }),
   );
   if (fromLabelElement) {
     return { label: fromLabelElement, labelQuality: "explicit" };
   }
 
-  const fromParentLabel = element.locator("xpath=ancestor-or-self::label[1]").first();
+  const fromParentLabel = element
+    .locator("xpath=ancestor-or-self::label[1]")
+    .first();
   if (await fromParentLabel.count()) {
     const text = normalizeLabel(await safeInnerText(fromParentLabel));
     if (text) {
@@ -328,7 +371,10 @@ export async function deriveFieldLabel(
 
   const fromStableId = await resolveStableIdentifier(element);
   if (fromStableId) {
-    return { label: `${DERIVED_LABEL_PREFIX} ${fromStableId}`, labelQuality: "derived" };
+    return {
+      label: `${DERIVED_LABEL_PREFIX} ${fromStableId}`,
+      labelQuality: "derived",
+    };
   }
 
   return { label: "(Unknown Setting)", labelQuality: "missing" };
@@ -345,4 +391,3 @@ export function roleForType(type: string): string | undefined {
 function cssEscape(value: string): string {
   return value.replace(/"/g, '\\"');
 }
-

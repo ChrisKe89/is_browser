@@ -1,9 +1,13 @@
 # TODO
+
 ## Project: is_mapper
+
 ## Branch: fix/crawl-quality-graph-correctness
+
 ## Updated: 2026-02-11
 
 ### [x] TSK-001 — Isolate system alert interactions from graph semantics (US-001, FR-1, FR-2)
+
 - scope:
   - Classify system-level alerts as diagnostic-only interaction records so they never affect canonical navigation or dependency semantics.
 - accepts:
@@ -14,6 +18,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-002 — Enforce scope-locked discovery and same-scope diffing (US-003, FR-5)
+
 - scope:
   - Constrain field discovery and before/after diffing to the active UI scope root for deterministic modal vs page behavior.
 - accepts:
@@ -24,6 +29,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-003 — Apply transition-aware reveal policy with restore-safe close/cancel behavior (US-002, FR-3, FR-4)
+
 - scope:
   - Restrict positive reveal semantics to context-expanding transitions and treat cancel/close as state restoration.
 - accepts:
@@ -34,6 +40,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-004 — Normalize radio interactions into one logical action (US-004, FR-6)
+
 - scope:
   - Collapse duplicate label-then-input radio interaction sequences into a single intent-level record.
 - accepts:
@@ -44,6 +51,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-005 — Improve click-kind classification and suppress wrapper-click noise (US-004, FR-7)
+
 - scope:
   - Expand semantic click classification and suppress non-semantic wrapper clicks that immediately precede real control interactions.
 - accepts:
@@ -54,6 +62,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-006 — Add typed transitions and consistent modal action inventories (US-005, FR-8, FR-9)
+
 - scope:
   - Represent interaction transitions with intent types and consistently expose modal action capabilities on active nodes.
 - accepts:
@@ -64,6 +73,7 @@
   - Completed 2026-02-11
 
 ### [x] TSK-007 — Add node identity context to click logs with additive schema compatibility (US-005, FR-10, FR-11)
+
 - scope:
   - Capture before/after node identity in click logs to support deterministic reconstruction under hash-routing and URL drift.
 - accepts:

@@ -14,12 +14,15 @@ async function pathExists(filePath: string): Promise<boolean> {
 }
 
 async function run(): Promise<void> {
-  const mapPath = process.argv[2] ?? process.env.MAP_PATH ?? "state/printer-ui-map.json";
+  const mapPath =
+    process.argv[2] ?? process.env.MAP_PATH ?? "state/printer-ui-map.json";
   const dbPath = process.argv[3] ?? PROFILE_DB_PATH;
   const csvPath =
     process.argv[4] ??
     process.env.MAP_FIELD_CSV_PATH ??
-    (mapPath.endsWith(".json") ? mapPath.replace(/\.json$/i, ".fields.csv") : "");
+    (mapPath.endsWith(".json")
+      ? mapPath.replace(/\.json$/i, ".fields.csv")
+      : "");
   const summary = await importUiMapFile(dbPath, mapPath);
   const csvSummary =
     csvPath && (await pathExists(csvPath))
@@ -36,13 +39,14 @@ async function run(): Promise<void> {
       `navSteps=${summary.navSteps}`,
       csvSummary
         ? `csv=${csvPath} (updated=${csvSummary.settingsUpdated}, unchanged=${csvSummary.settingsUnchanged}, optionsWritten=${csvSummary.optionsWritten})`
-        : "csv=none"
-    ].join(" | ")
+        : "csv=none",
+    ].join(" | "),
   );
 }
 
 run().catch((error) => {
-  console.error(`Failed to import UI map: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(
+    `Failed to import UI map: ${error instanceof Error ? error.message : String(error)}`,
+  );
   process.exit(1);
 });
-

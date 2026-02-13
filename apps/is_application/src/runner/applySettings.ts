@@ -3,13 +3,18 @@ import {
   NAV_TIMEOUT_MS,
   PRINTER_URL,
   PROFILE_DB_PATH,
-  REMOTE_PANEL_URL
+  REMOTE_PANEL_URL,
 } from "@is-browser/env";
 import { readMap } from "@is-browser/contract";
 import { type FieldEntry, type UiMap } from "@is-browser/contract";
 import { isLoginPage, login } from "../../../is_mapper/src/login.js";
 import { mkdir } from "node:fs/promises";
-import { appendDeviceReport, type DeviceLogContext, type LogEntry, writeDeviceLog } from "./logging.js";
+import {
+  appendDeviceReport,
+  type DeviceLogContext,
+  type LogEntry,
+  writeDeviceLog,
+} from "./logging.js";
 import { type SettingsFile } from "./settings.js";
 import { runRemotePanel } from "./remotePanel.js";
 import { buildResolvedApplyPlan } from "./plan.js";
@@ -17,7 +22,7 @@ import {
   applyFieldValue,
   buildPageCommitActionMap,
   executePageNavigation,
-  resolveLocatorByPriority
+  resolveLocatorByPriority,
 } from "./engine.js";
 import { classifyApplyError, shouldRetryFailure } from "./retry.js";
 import { startRunAudit } from "@is-browser/sqlite-store";
@@ -70,7 +75,7 @@ function toErrorString(error: unknown): string {
 function finalRunStatus(
   hasFatalError: boolean,
   successCount: number,
-  errorCount: number
+  errorCount: number,
 ): "completed" | "partial" | "failed" {
   if (hasFatalError) {
     return successCount > 0 ? "partial" : "failed";
@@ -85,7 +90,7 @@ async function navigateToSettingPage(
   page: import("playwright").Page,
   map: UiMap,
   field: FieldEntry,
-  baseUrl: string
+  baseUrl: string,
 ): Promise<void> {
   const pageEntry = map.pages.find((entry) => entry.id === field.pageId);
   if (!pageEntry) {
@@ -97,7 +102,7 @@ async function navigateToSettingPage(
 async function applySettingValue(
   page: import("playwright").Page,
   field: FieldEntry,
-  value: unknown
+  value: unknown,
 ): Promise<void> {
   if (field.constraints?.readOnly) {
     return;
@@ -115,10 +120,16 @@ async function applySettingValue(
     if (Number.isNaN(numeric)) {
       throw new Error(`Value "${value}" is not numeric for ${field.id}`);
     }
-    if (field.constraints.min !== undefined && numeric < field.constraints.min) {
+    if (
+      field.constraints.min !== undefined &&
+      numeric < field.constraints.min
+    ) {
       throw new Error(`Value ${numeric} below min for ${field.id}`);
     }
-    if (field.constraints.max !== undefined && numeric > field.constraints.max) {
+    if (
+      field.constraints.max !== undefined &&
+      numeric > field.constraints.max
+    ) {
       throw new Error(`Value ${numeric} above max for ${field.id}`);
     }
   }
@@ -126,13 +137,13 @@ async function applySettingValue(
   const resolved = await resolveLocatorByPriority(
     page,
     field.selectors,
-    `setting "${field.id}" on page "${field.pageId}"`
+    `setting "${field.id}" on page "${field.pageId}"`,
   );
   await applyFieldValue(page, resolved.locator, field, value);
 }
 
 export async function applySettings(
-  options: ApplyOptions
+  options: ApplyOptions,
 ): Promise<{ status: "COMPLETED" | "FAILED"; logPath: string }> {
   const runtime: ApplyRuntime = {
     readMap,
@@ -144,7 +155,7 @@ export async function applySettings(
     startRunAudit,
     writeDeviceLog,
     appendDeviceReport,
-    ...options.runtime
+    ...options.runtime,
   };
 
   const map = await runtime.readMap(options.mapPath);
@@ -154,12 +165,15 @@ export async function applySettings(
   const logEntries: LogEntry[] = [];
   const pageCommitActions = buildPageCommitActionMap(map.fields);
 
-  const runAudit = await runtime.startRunAudit(options.auditDbPath ?? PROFILE_DB_PATH, {
-    accountNumber: options.settings.meta?.accountNumber ?? "unknown",
-    variation: options.settings.meta?.variation ?? "default",
-    deviceIp: options.deviceIp,
-    mapPath: options.mapPath
-  });
+  const runAudit = await runtime.startRunAudit(
+    options.auditDbPath ?? PROFILE_DB_PATH,
+    {
+      accountNumber: options.settings.meta?.accountNumber ?? "unknown",
+      variation: options.settings.meta?.variation ?? "default",
+      deviceIp: options.deviceIp,
+      mapPath: options.mapPath,
+    },
+  );
 
   let successRunItems = 0;
   let errorRunItems = 0;
@@ -195,7 +209,7 @@ export async function applySettings(
     rawSerialCombined: options.settings.meta?.rawSerialCombined,
     deviceIp: options.deviceIp,
     scriptApplied: options.settings.meta?.scriptVariant ?? "default",
-    scriptLocation: options.mapPath
+    scriptLocation: options.mapPath,
   };
 
   let browser: BrowserLike | null = null;
@@ -225,7 +239,7 @@ export async function applySettings(
         const resolvedAction = await resolveLocatorByPriority(
           page,
           [action.selector],
-          `page commit for "${activePageId}" via "${action.label ?? "unnamed"}"`
+          `page commit for "${activePageId}" via "${action.label ?? "unnamed"}"`,
         );
         await resolvedAction.locator.click();
         await page.waitForLoadState("networkidle");
@@ -236,13 +250,13 @@ export async function applySettings(
           step: "commit",
           status: "ok",
           fieldId: activePageLastFieldId,
-          message: successMessage
+          message: successMessage,
         });
         recordRunItem({
           settingId: activePageLastFieldId,
           attempt,
           status: "ok",
-          message: successMessage
+          message: successMessage,
         });
         activePageHasPendingChanges = false;
         return;
@@ -253,7 +267,7 @@ export async function applySettings(
           `classification=${classified.classification}`,
           `reason=${classified.reason}`,
           `attempt=${attempt}`,
-          `error=${classified.message}`
+          `error=${classified.message}`,
         ].join(" | ");
         log({
           timestamp: new Date().toISOString(),
@@ -261,13 +275,13 @@ export async function applySettings(
           status: "error",
           fieldId: activePageLastFieldId,
           message: failMessage,
-          error: toErrorString(error)
+          error: toErrorString(error),
         });
         recordRunItem({
           settingId: activePageLastFieldId,
           attempt,
           status: "error",
-          message: failMessage
+          message: failMessage,
         });
 
         if (!shouldRetryFailure(classified, attempt, MAX_COMMIT_ATTEMPTS)) {
@@ -277,7 +291,9 @@ export async function applySettings(
         if (options.onRetryPrompt) {
           const shouldRetry = await options.onRetryPrompt(error, attempt);
           if (!shouldRetry) {
-            throw new Error(`Retry cancelled during page commit for ${activePageId}`);
+            throw new Error(
+              `Retry cancelled during page commit for ${activePageId}`,
+            );
           }
         }
       }
@@ -291,7 +307,10 @@ export async function applySettings(
       throw new Error("Failed to initialize browser page.");
     }
 
-    await page.goto(baseUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+    await page.goto(baseUrl, {
+      waitUntil: "networkidle",
+      timeout: NAV_TIMEOUT_MS,
+    });
     if (await runtime.isLoginPage(page)) {
       await runtime.login(page);
     }
@@ -303,13 +322,13 @@ export async function applySettings(
         step: "plan",
         status: "ok",
         fieldId: skipped.settingId,
-        message
+        message,
       });
       recordRunItem({
         settingId: skipped.settingId,
         attempt: 1,
         status: "skipped",
-        message
+        message,
       });
     }
 
@@ -334,13 +353,13 @@ export async function applySettings(
             step: "apply",
             status: "ok",
             fieldId: item.settingId,
-            message: successMessage
+            message: successMessage,
           });
           recordRunItem({
             settingId: item.settingId,
             attempt,
             status: "ok",
-            message: successMessage
+            message: successMessage,
           });
           activePageHasPendingChanges = true;
           break;
@@ -351,7 +370,7 @@ export async function applySettings(
             `classification=${classified.classification}`,
             `reason=${classified.reason}`,
             `attempt=${attempt}`,
-            `error=${classified.message}`
+            `error=${classified.message}`,
           ].join(" | ");
           log({
             timestamp: new Date().toISOString(),
@@ -359,13 +378,13 @@ export async function applySettings(
             status: "error",
             fieldId: item.settingId,
             message: failMessage,
-            error: toErrorString(error)
+            error: toErrorString(error),
           });
           recordRunItem({
             settingId: item.settingId,
             attempt,
             status: "error",
-            message: failMessage
+            message: failMessage,
           });
 
           if (!shouldRetryFailure(classified, attempt, MAX_SETTING_ATTEMPTS)) {
@@ -375,7 +394,9 @@ export async function applySettings(
           if (options.onRetryPrompt) {
             const shouldRetry = await options.onRetryPrompt(error, attempt);
             if (!shouldRetry) {
-              throw new Error(`Retry cancelled while applying ${item.settingId}`);
+              throw new Error(
+                `Retry cancelled while applying ${item.settingId}`,
+              );
             }
           }
         }
@@ -386,26 +407,35 @@ export async function applySettings(
 
     if (options.settings.remotePanel) {
       const panelUrl = REMOTE_PANEL_URL || baseUrl;
-      await runtime.runRemotePanel(page, panelUrl, options.settings.remotePanel);
+      await runtime.runRemotePanel(
+        page,
+        panelUrl,
+        options.settings.remotePanel,
+      );
       log({
         timestamp: new Date().toISOString(),
         step: "remote-panel",
         status: "ok",
-        message: "Remote panel actions completed"
+        message: "Remote panel actions completed",
       });
     }
   } catch (error) {
     fatalError = error;
     const ts = new Date().toISOString().replace(/[:.]/g, "-");
     if (page) {
-      await page.screenshot({ path: `tools/recordings/apply-error-${ts}.png`, fullPage: true }).catch(() => null);
+      await page
+        .screenshot({
+          path: `tools/recordings/apply-error-${ts}.png`,
+          fullPage: true,
+        })
+        .catch(() => null);
     }
     log({
       timestamp: new Date().toISOString(),
       step: "run",
       status: "error",
       message: "Run failed",
-      error: toErrorString(error)
+      error: toErrorString(error),
     });
   } finally {
     if (browser) {
@@ -413,8 +443,13 @@ export async function applySettings(
     }
   }
 
-  const runStatus = finalRunStatus(fatalError !== null, successRunItems, errorRunItems);
-  const deviceStatus: "COMPLETED" | "FAILED" = runStatus === "completed" ? "COMPLETED" : "FAILED";
+  const runStatus = finalRunStatus(
+    fatalError !== null,
+    successRunItems,
+    errorRunItems,
+  );
+  const deviceStatus: "COMPLETED" | "FAILED" =
+    runStatus === "completed" ? "COMPLETED" : "FAILED";
   const runMessage = fatalError
     ? `Run ended with fatal error: ${toErrorString(fatalError)}`
     : runStatus === "partial"
@@ -422,13 +457,19 @@ export async function applySettings(
       : "Run completed.";
   runAudit.finish({
     status: runStatus,
-    message: runMessage
+    message: runMessage,
   });
   runAudit.close();
 
-  const logPath = await runtime.writeDeviceLog(context, logEntries, deviceStatus);
-  await runtime.appendDeviceReport(context, deviceStatus, options.deviceLogMode);
+  const logPath = await runtime.writeDeviceLog(
+    context,
+    logEntries,
+    deviceStatus,
+  );
+  await runtime.appendDeviceReport(
+    context,
+    deviceStatus,
+    options.deviceLogMode,
+  );
   return { status: deviceStatus, logPath };
 }
-
-

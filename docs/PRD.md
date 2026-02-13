@@ -28,10 +28,10 @@ The system must generate stable identifiers for UI nodes and settings across rep
 
 Profiles must be tied to:
 
-* Device model
-* Optional firmware variation
-* Customer account
-* Profile variation
+- Device model
+- Optional firmware variation
+- Customer account
+- Profile variation
 
 No configuration may assume cross-model compatibility without explicit validation.
 
@@ -39,18 +39,18 @@ No configuration may assume cross-model compatibility without explicit validatio
 
 The system architecture must maintain strict separation between:
 
-* UI Knowledge (what exists on the device)
-* Customer Configuration (what should be applied)
-* Automation Execution (how it is applied)
-* Documentation (how it is presented)
+- UI Knowledge (what exists on the device)
+- Customer Configuration (what should be applied)
+- Automation Execution (how it is applied)
+- Documentation (how it is presented)
 
 ### 2.4 Human Transparency
 
 Every automated run must:
 
-* Provide step-level progress visibility
-* Produce structured logs
-* Be auditable after completion
+- Provide step-level progress visibility
+- Produce structured logs
+- Be auditable after completion
 
 ---
 
@@ -61,16 +61,16 @@ Every automated run must:
 Purpose:
 Create a canonical representation of the printer UI that is:
 
-* Navigable (button path sequence)
-* Structured (layout groups and sections)
-* Semantic (control types, constraints, options)
-* Versioned
-* Stable across repeated runs
+- Navigable (button path sequence)
+- Structured (layout groups and sections)
+- Semantic (control types, constraints, options)
+- Versioned
+- Stable across repeated runs
 
 Outputs:
 
-* Canonical JSON knowledge graph
-* Auto-generated YAML representations (navigation + layout views)
+- Canonical JSON knowledge graph
+- Auto-generated YAML representations (navigation + layout views)
 
 This layer defines system truth.
 
@@ -83,11 +83,11 @@ Generate structured configuration profiles derived from the mapped UI.
 
 Characteristics:
 
-* Mimics device labels and grouping
-* Preserves option sets and defaults
-* Allows customer-specific overrides
-* Supports multiple variations per customer
-* Versioned and diffable
+- Mimics device labels and grouping
+- Preserves option sets and defaults
+- Allows customer-specific overrides
+- Supports multiple variations per customer
+- Versioned and diffable
 
 Profiles must not embed automation logic.
 
@@ -98,16 +98,16 @@ Profiles must not embed automation logic.
 Purpose:
 Store profiles keyed by:
 
-* Model
-* Optional firmware version
-* Customer account
-* Variation identifier
+- Model
+- Optional firmware version
+- Customer account
+- Variation identifier
 
 Must support:
 
-* Retrieval by model + serial
-* Comparison between profiles
-* Controlled version evolution
+- Retrieval by model + serial
+- Comparison between profiles
+- Controlled version evolution
 
 ---
 
@@ -118,12 +118,12 @@ Apply configuration profiles deterministically using the stored UI knowledge gra
 
 Must:
 
-* Navigate using mapped paths
-* Use stable selectors
-* Verify state transitions
-* Respect modal save scopes
-* Avoid destructive actions unless specified
-* Provide real-time progress output
+- Navigate using mapped paths
+- Use stable selectors
+- Verify state transitions
+- Respect modal save scopes
+- Avoid destructive actions unless specified
+- Provide real-time progress output
 
 Automation must be deterministic and observable.
 
@@ -151,20 +151,20 @@ This layer does not define configuration — it orchestrates application.
 
 ### In Scope
 
-* UI mapping via Playwright
-* Knowledge graph generation
-* YAML documentation generation
-* Profile storage per model/customer
-* SNMP-based model detection
-* Deterministic configuration replay
-* Structured logging and audit reporting
+- UI mapping via Playwright
+- Knowledge graph generation
+- YAML documentation generation
+- Profile storage per model/customer
+- SNMP-based model detection
+- Deterministic configuration replay
+- Structured logging and audit reporting
 
 ### Out of Scope (Current Phase)
 
-* Multi-vendor abstraction
-* Cloud-hosted SaaS model
-* Non-WebUI configuration channels
-* Full UI visual replication
+- Multi-vendor abstraction
+- Cloud-hosted SaaS model
+- Non-WebUI configuration channels
+- Full UI visual replication
 
 ---
 
@@ -207,15 +207,15 @@ This PRD defines strategic direction and architectural principles.
 
 Implementation details belong in:
 
-* `prd-feature-*.md` files
-* Technical design documents
-* Task tracking artifacts
+- `prd-feature-*.md` files
+- Technical design documents
+- Task tracking artifacts
 
 The PRD may evolve when:
 
-* Architectural boundaries shift
-* Model abstraction requirements expand
-* Platform identity changes
+- Architectural boundaries shift
+- Model abstraction requirements expand
+- Platform identity changes
 
 It must not devolve into a task checklist.
 
@@ -223,13 +223,13 @@ It must not devolve into a task checklist.
 
 # Key Difference From Original PRD
 
-The earlier PRD  was operational and feature-driven.
+The earlier PRD was operational and feature-driven.
 
 This executive version:
 
-* Defines system identity.
-* Establishes architectural invariants.
-* Sets structural success criteria.
-* Separates vision from implementation.
+- Defines system identity.
+- Establishes architectural invariants.
+- Sets structural success criteria.
+- Separates vision from implementation.
 
 ---

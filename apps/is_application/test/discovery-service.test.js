@@ -9,11 +9,13 @@ import { upsertDeviceResolutionRecords } from "@is-browser/sqlite-store";
 import {
   addManualDevice,
   discoverDevicesFromSubnets,
-  expandSubnetRanges
+  expandSubnetRanges,
 } from "../src/discovery/service.js";
 
 async function makeTempDbPath() {
-  const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-discovery-"));
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "printer-ui-discovery-"),
+  );
   return { tempDir, dbPath: path.join(tempDir, "test.sqlite") };
 }
 
@@ -22,18 +24,25 @@ function minimalMap() {
     meta: {
       generatedAt: "2026-02-10T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
-    pages: [{ id: "system", title: "System", url: "http://192.168.0.10/#/system", navPath: [] }],
+    pages: [
+      {
+        id: "system",
+        title: "System",
+        url: "http://192.168.0.10/#/system",
+        navPath: [],
+      },
+    ],
     fields: [
       {
         id: "system.device-name",
         label: "Device Name",
         type: "text",
         selectors: [{ kind: "css", value: "#deviceName" }],
-        pageId: "system"
-      }
-    ]
+        pageId: "system",
+      },
+    ],
   };
 }
 
@@ -56,7 +65,7 @@ test("discoverDevicesFromSubnets resolves known model+serial and flags unknown d
     await saveProfile(dbPath, {
       accountNumber: "10001",
       variation: "default",
-      values: [{ settingId: "system.device-name", value: "Name" }]
+      values: [{ settingId: "system.device-name", value: "Name" }],
     });
     await upsertDeviceResolutionRecords(dbPath, [
       {
@@ -64,19 +73,23 @@ test("discoverDevicesFromSubnets resolves known model+serial and flags unknown d
         serial: "043240",
         customerName: "Test MFD",
         accountNumber: "10001",
-        variation: "default"
-      }
+        variation: "default",
+      },
     ]);
 
     const ipIdentity = new Map([
       ["192.168.10.5", { model: "Apeos C3530", serial: "TC101894043240" }],
-      ["192.168.10.6", { model: "Unknown MFP", serial: "000999" }]
+      ["192.168.10.6", { model: "Unknown MFP", serial: "000999" }],
     ]);
-    const devices = await discoverDevicesFromSubnets(dbPath, ["192.168.10.5-192.168.10.6"], {
-      pingHost: async () => true,
-      tcpProbe: async () => true,
-      fetchIdentity: async (ip) => ipIdentity.get(ip) || null
-    });
+    const devices = await discoverDevicesFromSubnets(
+      dbPath,
+      ["192.168.10.5-192.168.10.6"],
+      {
+        pingHost: async () => true,
+        tcpProbe: async () => true,
+        fetchIdentity: async (ip) => ipIdentity.get(ip) || null,
+      },
+    );
 
     assert.equal(devices.length, 2);
     const known = devices.find((item) => item.ip === "192.168.10.5");
@@ -101,19 +114,18 @@ test("addManualDevice requires reachable host and validates IPv4", async () => {
 
     await assert.rejects(
       async () => addManualDevice(dbPath, "bad-ip"),
-      /valid IPv4/
+      /valid IPv4/,
     );
     await assert.rejects(
       async () =>
         addManualDevice(dbPath, "192.168.10.10", {
           pingHost: async () => false,
           tcpProbe: async () => false,
-          fetchIdentity: async () => null
+          fetchIdentity: async () => null,
         }),
-      /not reachable/
+      /not reachable/,
     );
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

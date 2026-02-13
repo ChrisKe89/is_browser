@@ -7,27 +7,28 @@ import { shouldContributeToBreadcrumb } from "../src/graph.ts";
 function emptyLocatorResult() {
   return {
     count: async () => 0,
-    innerText: async () => ""
+    innerText: async () => "",
   };
 }
 
 function emptyLocator() {
   return {
-    first: () => emptyLocatorResult()
+    first: () => emptyLocatorResult(),
   };
 }
 
 function fakePage() {
   return {
-    locator: () => emptyLocator()
+    locator: () => emptyLocator(),
   };
 }
 
 test("deriveFieldLabel prefers aria-label and marks it explicit", async () => {
   const element = {
-    getAttribute: async (name) => (name === "aria-label" ? "Login Attempts" : null),
+    getAttribute: async (name) =>
+      name === "aria-label" ? "Login Attempts" : null,
     evaluate: async () => "",
-    locator: () => emptyLocator()
+    locator: () => emptyLocator(),
   };
   const result = await deriveFieldLabel(fakePage(), element);
   assert.equal(result.label, "Login Attempts");
@@ -36,11 +37,12 @@ test("deriveFieldLabel prefers aria-label and marks it explicit", async () => {
 
 test("deriveFieldLabel falls back to derived id text", async () => {
   const element = {
-    getAttribute: async (name) => (name === "id" ? "failedAttemptsInput" : null),
+    getAttribute: async (name) =>
+      name === "id" ? "failedAttemptsInput" : null,
     evaluate: async () => {
       throw new Error("no-eval");
     },
-    locator: () => emptyLocator()
+    locator: () => emptyLocator(),
   };
   const result = await deriveFieldLabel(fakePage(), element);
   assert.equal(result.label, "(Derived) Failed Attempts");
@@ -53,7 +55,7 @@ test("deriveFieldLabel emits unknown label when no signal exists", async () => {
     evaluate: async () => {
       throw new Error("no-eval");
     },
-    locator: () => emptyLocator()
+    locator: () => emptyLocator(),
   };
   const result = await deriveFieldLabel(fakePage(), element);
   assert.equal(result.label, "(Unknown Setting)");
@@ -63,9 +65,9 @@ test("deriveFieldLabel emits unknown label when no signal exists", async () => {
 test("readControlState parses checkbox via isChecked", async () => {
   const state = await readControlState(
     {
-      isChecked: async () => true
+      isChecked: async () => true,
     },
-    { fieldType: "checkbox" }
+    { fieldType: "checkbox" },
   );
   assert.equal(state.valueType, "boolean");
   assert.equal(state.currentValue, true);
@@ -79,11 +81,11 @@ test("readControlState parses native select with selected-label fallback", async
         selectedLabel: "None",
         options: [
           { value: "none", label: "None", selected: true },
-          { value: "allow", label: "Allow", selected: false }
-        ]
-      })
+          { value: "allow", label: "Allow", selected: false },
+        ],
+      }),
     },
-    { fieldType: "select", tagName: "select" }
+    { fieldType: "select", tagName: "select" },
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "none");
@@ -100,10 +102,10 @@ test("readControlState parses custom combobox active option", async () => {
         selectedOption: undefined,
         expanded: false,
         controlText: "",
-        options: [{ value: "accounting", label: "Accounting" }]
-      })
+        options: [{ value: "accounting", label: "Accounting" }],
+      }),
     },
-    { fieldType: "select", tagName: "div", roleAttr: "combobox" }
+    { fieldType: "select", tagName: "div", roleAttr: "combobox" },
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "accounting");
@@ -119,10 +121,10 @@ test("readControlState parses custom combobox aria-valuetext fallback", async ()
         selectedOption: undefined,
         expanded: false,
         controlText: "Permit",
-        options: []
-      })
+        options: [],
+      }),
     },
-    { fieldType: "select", tagName: "div", roleAttr: "combobox" }
+    { fieldType: "select", tagName: "div", roleAttr: "combobox" },
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "Permit");
@@ -138,10 +140,10 @@ test("readControlState parses custom combobox selected option fallback", async (
         selectedOption: { value: "allow", label: "Allow" },
         expanded: false,
         controlText: "",
-        options: [{ value: "allow", label: "Allow" }]
-      })
+        options: [{ value: "allow", label: "Allow" }],
+      }),
     },
-    { fieldType: "select", tagName: "div", roleAttr: "combobox" }
+    { fieldType: "select", tagName: "div", roleAttr: "combobox" },
   );
   assert.equal(state.valueType, "enum");
   assert.equal(state.currentValue, "allow");
@@ -157,8 +159,8 @@ test("readControlState prefers native select from dropdown root even when trigge
         selectedOption: undefined,
         expanded: false,
         controlText: "On",
-        options: []
-      })
+        options: [],
+      }),
     },
     { fieldType: "select", tagName: "a", roleAttr: "combobox" },
     {
@@ -166,10 +168,10 @@ test("readControlState prefers native select from dropdown root even when trigge
         locator: () => ({
           first: () => ({
             innerText: async () => "",
-            evaluateAll: async () => []
-          })
+            evaluateAll: async () => [],
+          }),
         }),
-        keyboard: { press: async () => undefined }
+        keyboard: { press: async () => undefined },
       },
       dropdownRoot: {
         locator: (selector) => {
@@ -182,28 +184,28 @@ test("readControlState prefers native select from dropdown root even when trigge
                   selectedLabel: "Off",
                   options: [
                     { value: "false", label: "Off", selected: true },
-                    { value: "true", label: "On", selected: false }
-                  ]
-                })
-              })
+                    { value: "true", label: "On", selected: false },
+                  ],
+                }),
+              }),
             };
           }
           return {
             first: () => ({
               count: async () => 0,
-              innerText: async () => ""
-            })
+              innerText: async () => "",
+            }),
           };
-        }
-      }
-    }
+        },
+      },
+    },
   );
   assert.equal(state.currentValue, "false");
   assert.equal(state.currentLabel, "Off");
   assert.equal(state.valueQuality, "native-select");
   assert.deepEqual(state.options, [
     { value: "false", label: "Off" },
-    { value: "true", label: "On" }
+    { value: "true", label: "On" },
   ]);
 });
 
@@ -213,18 +215,18 @@ test("shouldContributeToBreadcrumb keeps meaningful nav labels", () => {
       action: "click",
       kind: "tab",
       label: "Access Control",
-      selector: { kind: "role", role: "tab", name: "Access Control" }
+      selector: { kind: "role", role: "tab", name: "Access Control" },
     }),
-    true
+    true,
   );
   assert.equal(
     shouldContributeToBreadcrumb({
       action: "click",
       kind: "modal_open",
       label: "Device Details",
-      selector: { kind: "role", role: "button", name: "Device Details" }
+      selector: { kind: "role", role: "button", name: "Device Details" },
     }),
-    true
+    true,
   );
 });
 
@@ -233,16 +235,16 @@ test("shouldContributeToBreadcrumb rejects option-like blobs and unknown steps",
     shouldContributeToBreadcrumb({
       action: "click",
       kind: "unknown",
-      label: "Access Control"
+      label: "Access Control",
     }),
-    false
+    false,
   );
   assert.equal(
     shouldContributeToBreadcrumb({
       action: "click",
       kind: "button",
-      label: "None | Numbers | Special | Characters | Uppercase | Lowercase"
+      label: "None | Numbers | Special | Characters | Uppercase | Lowercase",
     }),
-    false
+    false,
   );
 });

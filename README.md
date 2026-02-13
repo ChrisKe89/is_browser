@@ -4,12 +4,12 @@ is_browser is a model-aware platform that maps printer WebUIs into a canonical k
 
 It replaces manual click-driven configuration with:
 
-* Stable UI mapping
-* Versioned configuration storage
-* Deterministic Playwright replay
-* SNMP-based device detection
-* Human-readable YAML documentation
-* Structured run auditing
+- Stable UI mapping
+- Versioned configuration storage
+- Deterministic Playwright replay
+- SNMP-based device detection
+- Human-readable YAML documentation
+- Structured run auditing
 
 ---
 
@@ -31,18 +31,18 @@ Operator UX and deterministic apply engine.
 
 Shared packages provide:
 
-* Data contracts (`packages/contract`)
-* SQLite persistence (`packages/sqlite-store`)
-* Browser and environment helpers
+- Data contracts (`packages/contract`)
+- SQLite persistence (`packages/sqlite-store`)
+- Browser and environment helpers
 
 ---
 
 ## Authoritative Documentation
 
-* [Product Requirements Document](docs/PRD.md) 
-* [Technical Strategy Document](`docs/TechnicalStrategyDocument.md)
-* [Architecture](docs/Architecture.md)
-* [Documentation Governance](docs/Governance.md)
+- [Product Requirements Document](docs/PRD.md)
+- [Technical Strategy Document](`docs/TechnicalStrategyDocument.md)
+- [Architecture](docs/Architecture.md)
+- [Documentation Governance](docs/Governance.md)
 
 Feature work is defined in `prd-feature-*.md`.
 
@@ -76,8 +76,8 @@ make dev-all
 
 Default URLs:
 
-* Operator UI: [http://localhost:5050](http://localhost:5050)
-* Form UI: [http://localhost:5051](http://localhost:5051)
+- Operator UI: [http://localhost:5050](http://localhost:5050)
+- Form UI: [http://localhost:5051](http://localhost:5051)
 
 For detailed product usage, see each app’s README.
 
@@ -94,9 +94,9 @@ make is-mapper-contract MAP_PATH=state/printer-ui-map.json DIST_DIR=dist
 
 Key outputs:
 
-* `dist/ui_schema.json`
-* `dist/ui_form.yaml`
-* `dist/verify_report.json`
+- `dist/ui_schema.json`
+- `dist/ui_form.yaml`
+- `dist/verify_report.json`
 
 Validation and replay scripts:
 

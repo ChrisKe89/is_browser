@@ -1,6 +1,11 @@
 import { type Page } from "playwright";
 import { type FieldEntry, type Selector } from "@is-browser/contract";
-import { buildSelectorCandidates, deriveFieldLabel, roleForType, slugify } from "../utils.js";
+import {
+  buildSelectorCandidates,
+  deriveFieldLabel,
+  roleForType,
+  slugify,
+} from "../utils.js";
 import { fieldFingerprint } from "./fingerprint.js";
 
 const LOCATOR_READ_TIMEOUT_MS = 750;
@@ -86,24 +91,36 @@ type GroupContext = {
 
 async function safeGetAttribute(
   locator: ReturnType<Page["locator"]>,
-  name: string
+  name: string,
 ): Promise<string | null> {
-  return locator.getAttribute(name, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => null);
+  return locator
+    .getAttribute(name, { timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => null);
 }
 
 async function safeEvaluate<T>(
   locator: ReturnType<Page["locator"]>,
-  pageFunction: (el: SVGElement | HTMLElement) => T
+  pageFunction: (el: SVGElement | HTMLElement) => T,
 ): Promise<T | undefined> {
-  return locator.evaluate(pageFunction, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined);
+  return locator
+    .evaluate(pageFunction, { timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => undefined);
 }
 
-async function safeInputValue(locator: ReturnType<Page["locator"]>): Promise<string | null> {
-  return locator.inputValue({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => null);
+async function safeInputValue(
+  locator: ReturnType<Page["locator"]>,
+): Promise<string | null> {
+  return locator
+    .inputValue({ timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => null);
 }
 
-async function safeInnerText(locator: ReturnType<Page["locator"]>): Promise<string> {
-  return locator.innerText({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => "");
+async function safeInnerText(
+  locator: ReturnType<Page["locator"]>,
+): Promise<string> {
+  return locator
+    .innerText({ timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => "");
 }
 
 function asNumber(value: string | null): number | undefined {
@@ -125,22 +142,31 @@ function normalizeLabel(value: string | null | undefined): string | undefined {
   return normalized || undefined;
 }
 
-function normalizeCurrentString(value: string | null | undefined): string | null {
+function normalizeCurrentString(
+  value: string | null | undefined,
+): string | null {
   const normalized = normalizeLabel(value);
   return normalized ?? null;
 }
 
-function normalizeLabelQuality(label: string | undefined): FieldEntry["labelQuality"] {
+function normalizeLabelQuality(
+  label: string | undefined,
+): FieldEntry["labelQuality"] {
   if (!label) return "missing";
   if (label === "(Unknown Setting)") return "missing";
   if (label.startsWith("(Derived)")) return "derived";
   return "explicit";
 }
 
-export function mergeEnums(existing: string[] = [], incoming: string[] = []): string[] {
-  return Array.from(new Set([...existing, ...incoming].map((value) => value.trim()).filter(Boolean))).sort(
-    (a, b) => a.localeCompare(b)
-  );
+export function mergeEnums(
+  existing: string[] = [],
+  incoming: string[] = [],
+): string[] {
+  return Array.from(
+    new Set(
+      [...existing, ...incoming].map((value) => value.trim()).filter(Boolean),
+    ),
+  ).sort((a, b) => a.localeCompare(b));
 }
 
 function normalizeOptions(options: OptionEntry[] = []): OptionEntry[] {
@@ -157,10 +183,14 @@ function normalizeOptions(options: OptionEntry[] = []): OptionEntry[] {
       existing.label = normalizeLabel(option.label);
     }
   }
-  return Array.from(byValue.values()).sort((a, b) => a.value.localeCompare(b.value));
+  return Array.from(byValue.values()).sort((a, b) =>
+    a.value.localeCompare(b.value),
+  );
 }
 
-function mergeOptionLists(...lists: Array<OptionEntry[] | undefined>): OptionEntry[] {
+function mergeOptionLists(
+  ...lists: Array<OptionEntry[] | undefined>
+): OptionEntry[] {
   const merged: OptionEntry[] = [];
   for (const list of lists) {
     if (!list || list.length === 0) continue;
@@ -178,7 +208,7 @@ function toEnumValues(options?: OptionEntry[]): string[] | undefined {
 function inferControlType(
   fieldType: FieldEntry["type"],
   roleAttr: string | undefined,
-  constraints: FieldEntry["constraints"] | undefined
+  constraints: FieldEntry["constraints"] | undefined,
 ): NonNullable<FieldEntry["controlType"]> {
   if (fieldType === "checkbox" && roleAttr === "switch") return "switch";
   if (fieldType === "checkbox") return "checkbox";
@@ -191,7 +221,10 @@ function inferControlType(
   return "unknown";
 }
 
-function normalizeGroupTitle(groupKey: string, groupTitle?: string): string | undefined {
+function normalizeGroupTitle(
+  groupKey: string,
+  groupTitle?: string,
+): string | undefined {
   if (groupTitle) return groupTitle;
   if (!groupKey || groupKey === "group:general") return "General";
   const normalized = groupKey
@@ -203,27 +236,33 @@ function normalizeGroupTitle(groupKey: string, groupTitle?: string): string | un
   return normalized.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-async function readNativeSelectState(select: ReturnType<Page["locator"]>): Promise<ControlStateRead> {
+async function readNativeSelectState(
+  select: ReturnType<Page["locator"]>,
+): Promise<ControlStateRead> {
   const snapshot = await select
-    .evaluate((el) => {
-      const normalize = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
-      const node = el as HTMLSelectElement;
-      const options = Array.from(node.options).map((option) => {
-        const label = normalize(option.textContent);
-        const value = normalize(option.value) || label;
+    .evaluate(
+      (el) => {
+        const normalize = (value: string | null | undefined) =>
+          (value ?? "").replace(/\s+/g, " ").trim();
+        const node = el as HTMLSelectElement;
+        const options = Array.from(node.options).map((option) => {
+          const label = normalize(option.textContent);
+          const value = normalize(option.value) || label;
+          return {
+            value,
+            label: label || undefined,
+            selected: option.selected,
+          };
+        });
+        const selected = node.selectedOptions?.[0];
         return {
-          value,
-          label: label || undefined,
-          selected: option.selected
+          value: normalize(node.value),
+          selectedLabel: normalize(selected?.textContent),
+          options,
         };
-      });
-      const selected = node.selectedOptions?.[0];
-      return {
-        value: normalize(node.value),
-        selectedLabel: normalize(selected?.textContent),
-        options
-      };
-    }, { timeout: LOCATOR_READ_TIMEOUT_MS })
+      },
+      { timeout: LOCATOR_READ_TIMEOUT_MS },
+    )
     .catch(() => undefined);
 
   const options = normalizeOptions(
@@ -231,8 +270,8 @@ async function readNativeSelectState(select: ReturnType<Page["locator"]>): Promi
       .filter((option) => Boolean(option.value))
       .map((option) => ({
         value: option.value,
-        label: option.label
-      }))
+        label: option.label,
+      })),
   );
   const selected = snapshot?.options?.find((option) => option.selected);
 
@@ -245,7 +284,8 @@ async function readNativeSelectState(select: ReturnType<Page["locator"]>): Promi
     currentLabel = normalizeCurrentString(selected.label);
   }
   if (!currentLabel && currentValue) {
-    currentLabel = options.find((option) => option.value === currentValue)?.label ?? null;
+    currentLabel =
+      options.find((option) => option.value === currentValue)?.label ?? null;
   }
   if (!currentValue && currentLabel) {
     currentValue = currentLabel;
@@ -257,118 +297,143 @@ async function readNativeSelectState(select: ReturnType<Page["locator"]>): Promi
     currentLabel,
     valueQuality: "native-select",
     displayValue: currentLabel,
-    options: options.length ? options : undefined
+    options: options.length ? options : undefined,
   };
 }
 
 async function readCustomComboboxState(
-  handle: ReturnType<Page["locator"]>
+  handle: ReturnType<Page["locator"]>,
 ): Promise<ControlStateRead> {
   const snapshot = await handle
-    .evaluate((el) => {
-      const normalize = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
-      const isNoisy = (value: string) => value.length > 120 || (value.match(/[|/]/g) ?? []).length >= 4;
-      const isVisible = (option: HTMLElement) => {
-        const style = window.getComputedStyle(option);
-        if (style.display === "none" || style.visibility === "hidden") return false;
-        if (option.offsetParent === null && style.position !== "fixed") return false;
-        return true;
-      };
-      const resolveOption = (option: Element | null) => {
-        if (!option) return undefined;
-        const node = option as HTMLElement;
-        const label = normalize(node.getAttribute("aria-label") || node.textContent);
-        const value = normalize(node.getAttribute("data-value") || node.getAttribute("value") || label);
-        if (!value && !label) return undefined;
-        return { value: value || label || "", label: label || undefined };
-      };
+    .evaluate(
+      (el) => {
+        const normalize = (value: string | null | undefined) =>
+          (value ?? "").replace(/\s+/g, " ").trim();
+        const isNoisy = (value: string) =>
+          value.length > 120 || (value.match(/[|/]/g) ?? []).length >= 4;
+        const isVisible = (option: HTMLElement) => {
+          const style = window.getComputedStyle(option);
+          if (style.display === "none" || style.visibility === "hidden")
+            return false;
+          if (option.offsetParent === null && style.position !== "fixed")
+            return false;
+          return true;
+        };
+        const resolveOption = (option: Element | null) => {
+          if (!option) return undefined;
+          const node = option as HTMLElement;
+          const label = normalize(
+            node.getAttribute("aria-label") || node.textContent,
+          );
+          const value = normalize(
+            node.getAttribute("data-value") ||
+              node.getAttribute("value") ||
+              label,
+          );
+          if (!value && !label) return undefined;
+          return { value: value || label || "", label: label || undefined };
+        };
 
-      const controls = el.getAttribute("aria-controls") || "";
-      const owns = el.getAttribute("aria-owns") || "";
-      const ids = [...controls.split(/\s+/), ...owns.split(/\s+/)].map((id) => id.trim()).filter(Boolean);
-      const lists = ids
-        .map((id) => document.getElementById(id))
-        .filter((node): node is HTMLElement => Boolean(node));
+        const controls = el.getAttribute("aria-controls") || "";
+        const owns = el.getAttribute("aria-owns") || "";
+        const ids = [...controls.split(/\s+/), ...owns.split(/\s+/)]
+          .map((id) => id.trim())
+          .filter(Boolean);
+        const lists = ids
+          .map((id) => document.getElementById(id))
+          .filter((node): node is HTMLElement => Boolean(node));
 
-      const activeDescendantId = el.getAttribute("aria-activedescendant");
-      const activeDescendant = activeDescendantId ? document.getElementById(activeDescendantId) : null;
-      const activeOption = resolveOption(activeDescendant);
+        const activeDescendantId = el.getAttribute("aria-activedescendant");
+        const activeDescendant = activeDescendantId
+          ? document.getElementById(activeDescendantId)
+          : null;
+        const activeOption = resolveOption(activeDescendant);
 
-      const expanded = (el.getAttribute("aria-expanded") || "").toLowerCase() === "true";
-      let selectedOption: { value: string; label?: string } | undefined;
-      const options: Array<{ value: string; label?: string }> = [];
-      const selectedSelectors =
-        '[role="option"][aria-selected="true"], [role="option"][aria-current="true"], [role="option"][aria-checked="true"], [role="option"][data-selected="true"], option[selected], .selected, .current, .active';
+        const expanded =
+          (el.getAttribute("aria-expanded") || "").toLowerCase() === "true";
+        let selectedOption: { value: string; label?: string } | undefined;
+        const options: Array<{ value: string; label?: string }> = [];
+        const selectedSelectors =
+          '[role="option"][aria-selected="true"], [role="option"][aria-current="true"], [role="option"][aria-checked="true"], [role="option"][data-selected="true"], option[selected], .selected, .current, .active';
 
-      const selectedFromContainer = (container: ParentNode): { value: string; label?: string } | undefined => {
-        const selectedNode = container.querySelector(selectedSelectors);
-        return resolveOption(selectedNode);
-      };
+        const selectedFromContainer = (
+          container: ParentNode,
+        ): { value: string; label?: string } | undefined => {
+          const selectedNode = container.querySelector(selectedSelectors);
+          return resolveOption(selectedNode);
+        };
 
-      if (expanded && lists.length > 0) {
-        for (const list of lists) {
-          const listOptions = Array.from(list.querySelectorAll<HTMLElement>('[role="option"]')).filter(isVisible);
-          for (const option of listOptions) {
-            const resolved = resolveOption(option);
-            if (!resolved) continue;
-            options.push(resolved);
-            const selected =
-              option.getAttribute("aria-selected") === "true" ||
-              option.getAttribute("aria-current") === "true" ||
-              option.getAttribute("aria-checked") === "true" ||
-              option.getAttribute("data-selected") === "true" ||
-              option.classList.contains("selected");
-            if (selected && !selectedOption) {
-              selectedOption = resolved;
+        if (expanded && lists.length > 0) {
+          for (const list of lists) {
+            const listOptions = Array.from(
+              list.querySelectorAll<HTMLElement>('[role="option"]'),
+            ).filter(isVisible);
+            for (const option of listOptions) {
+              const resolved = resolveOption(option);
+              if (!resolved) continue;
+              options.push(resolved);
+              const selected =
+                option.getAttribute("aria-selected") === "true" ||
+                option.getAttribute("aria-current") === "true" ||
+                option.getAttribute("aria-checked") === "true" ||
+                option.getAttribute("data-selected") === "true" ||
+                option.classList.contains("selected");
+              if (selected && !selectedOption) {
+                selectedOption = resolved;
+              }
+            }
+            if (!selectedOption) {
+              selectedOption = selectedFromContainer(list);
             }
           }
-          if (!selectedOption) {
-            selectedOption = selectedFromContainer(list);
+        }
+        if (!selectedOption) {
+          for (const list of lists) {
+            const selected = selectedFromContainer(list);
+            if (selected) {
+              selectedOption = selected;
+              break;
+            }
           }
         }
-      }
-      if (!selectedOption) {
-        for (const list of lists) {
-          const selected = selectedFromContainer(list);
-          if (selected) {
-            selectedOption = selected;
-            break;
-          }
+        if (!selectedOption) {
+          selectedOption = selectedFromContainer(el);
         }
-      }
-      if (!selectedOption) {
-        selectedOption = selectedFromContainer(el);
-      }
 
-      const inputValue =
-        "value" in el && typeof (el as HTMLInputElement).value === "string"
-          ? normalize((el as HTMLInputElement).value)
+        const inputValue =
+          "value" in el && typeof (el as HTMLInputElement).value === "string"
+            ? normalize((el as HTMLInputElement).value)
+            : "";
+        const attrValue = normalize(
+          el.getAttribute("aria-valuetext") ||
+            el.getAttribute("data-value") ||
+            el.getAttribute("value") ||
+            el.getAttribute("title"),
+        );
+        const nestedControl = el.querySelector("input, select, textarea");
+        const nestedValue = nestedControl
+          ? normalize(
+              (nestedControl as HTMLInputElement).value ||
+                nestedControl.getAttribute("aria-valuetext") ||
+                nestedControl.getAttribute("value"),
+            )
           : "";
-      const attrValue = normalize(
-        el.getAttribute("aria-valuetext") ||
-          el.getAttribute("data-value") ||
-          el.getAttribute("value") ||
-          el.getAttribute("title")
-      );
-      const nestedControl = el.querySelector("input, select, textarea");
-      const nestedValue = nestedControl
-        ? normalize(
-            (nestedControl as HTMLInputElement).value ||
-              nestedControl.getAttribute("aria-valuetext") ||
-              nestedControl.getAttribute("value")
-          )
-        : "";
-      const controlText = normalize((el as HTMLElement).innerText || el.textContent || "");
-      const compactText = !isNoisy(controlText) ? controlText : "";
+        const controlText = normalize(
+          (el as HTMLElement).innerText || el.textContent || "",
+        );
+        const compactText = !isNoisy(controlText) ? controlText : "";
 
-      return {
-        activeOption,
-        selectedOption,
-        expanded,
-        controlText: inputValue || attrValue || nestedValue || compactText || "",
-        options
-      };
-    }, { timeout: LOCATOR_READ_TIMEOUT_MS })
+        return {
+          activeOption,
+          selectedOption,
+          expanded,
+          controlText:
+            inputValue || attrValue || nestedValue || compactText || "",
+          options,
+        };
+      },
+      { timeout: LOCATOR_READ_TIMEOUT_MS },
+    )
     .catch(() => undefined);
 
   const options = normalizeOptions(snapshot?.options ?? []);
@@ -376,13 +441,21 @@ async function readCustomComboboxState(
   let displayValue: string | null = null;
 
   if (snapshot?.activeOption) {
-    displayValue = normalizeCurrentString(snapshot.activeOption.label ?? snapshot.activeOption.value);
-    currentValue = normalizeCurrentString(snapshot.activeOption.value || snapshot.activeOption.label);
+    displayValue = normalizeCurrentString(
+      snapshot.activeOption.label ?? snapshot.activeOption.value,
+    );
+    currentValue = normalizeCurrentString(
+      snapshot.activeOption.value || snapshot.activeOption.label,
+    );
   }
 
   if (currentValue === null && snapshot?.selectedOption) {
-    displayValue = normalizeCurrentString(snapshot.selectedOption.label ?? snapshot.selectedOption.value);
-    currentValue = normalizeCurrentString(snapshot.selectedOption.value || snapshot.selectedOption.label);
+    displayValue = normalizeCurrentString(
+      snapshot.selectedOption.label ?? snapshot.selectedOption.value,
+    );
+    currentValue = normalizeCurrentString(
+      snapshot.selectedOption.value || snapshot.selectedOption.label,
+    );
   }
 
   if (currentValue === null) {
@@ -398,28 +471,32 @@ async function readCustomComboboxState(
     currentValue,
     currentLabel: displayValue,
     valueQuality: currentValue ? "trigger-text" : "missing",
-    valueQualityReason: currentValue ? undefined : "combobox did not expose active/selected/value text",
+    valueQualityReason: currentValue
+      ? undefined
+      : "combobox did not expose active/selected/value text",
     displayValue,
-    options: options.length ? options : undefined
+    options: options.length ? options : undefined,
   };
 }
 
 async function readOpenedDropdownState(
   page: Page,
   root: ReturnType<Page["locator"]>,
-  trigger?: ReturnType<Page["locator"]>
+  trigger?: ReturnType<Page["locator"]>,
 ): Promise<ControlStateRead | undefined> {
   const resolvedTrigger = trigger ?? root.locator('a[role="combobox"]').first();
   if ((await resolvedTrigger.count().catch(() => 0)) === 0) return undefined;
 
-  await resolvedTrigger.click({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined);
+  await resolvedTrigger
+    .click({ timeout: LOCATOR_READ_TIMEOUT_MS })
+    .catch(() => undefined);
   const menu = page.locator(".xux-dropdownMenu-container.xux-open");
   const selectedText = normalizeCurrentString(
     await menu
       .locator('li[role="option"][aria-selected="true"] .xux-sel-desc-list')
       .first()
       .innerText({ timeout: LOCATOR_READ_TIMEOUT_MS })
-      .catch(() => "")
+      .catch(() => ""),
   );
   const options = normalizeOptions(
     await menu
@@ -428,9 +505,9 @@ async function readOpenedDropdownState(
         items
           .map((item) => (item.textContent ?? "").replace(/\s+/g, " ").trim())
           .filter(Boolean)
-          .map((label) => ({ value: label, label }))
+          .map((label) => ({ value: label, label })),
       )
-      .catch(() => [])
+      .catch(() => []),
   );
   await page.keyboard.press("Escape").catch(() => undefined);
 
@@ -441,29 +518,33 @@ async function readOpenedDropdownState(
     currentLabel: selectedText,
     valueQuality: "opened-options",
     displayValue: selectedText,
-    options: options.length ? options : undefined
+    options: options.length ? options : undefined,
   };
 }
 
 async function readDropdownStateFromRoot(
   page: Page,
   root: ReturnType<Page["locator"]>,
-  trigger?: ReturnType<Page["locator"]>
+  trigger?: ReturnType<Page["locator"]>,
 ): Promise<ControlStateRead> {
-  const select = root.locator("select.xux-dropdown-select, select.xux-formControl, select").first();
+  const select = root
+    .locator("select.xux-dropdown-select, select.xux-formControl, select")
+    .first();
   if ((await select.count().catch(() => 0)) > 0) {
     return readNativeSelectState(select);
   }
 
   const desc = root.locator('a[role="combobox"] .xux-sel-desc').first();
-  const descText = normalizeCurrentString(await desc.innerText({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => ""));
+  const descText = normalizeCurrentString(
+    await desc.innerText({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => ""),
+  );
   if (descText) {
     return {
       valueType: "enum",
       currentValue: descText,
       currentLabel: descText,
       valueQuality: "trigger-text",
-      displayValue: descText
+      displayValue: descText,
     };
   }
 
@@ -477,8 +558,9 @@ async function readDropdownStateFromRoot(
     currentValue: null,
     currentLabel: null,
     valueQuality: "unknown",
-    valueQualityReason: "dropdown options could not be enumerated and trigger text was empty",
-    displayValue: null
+    valueQualityReason:
+      "dropdown options could not be enumerated and trigger text was empty",
+    displayValue: null,
   };
 }
 
@@ -489,17 +571,26 @@ export async function readControlState(
     page?: Page;
     dropdownRoot?: ReturnType<Page["locator"]>;
     dropdownTrigger?: ReturnType<Page["locator"]>;
-  }
+  },
 ): Promise<ControlStateRead> {
   try {
     if (meta.fieldType === "checkbox" || meta.roleAttr === "switch") {
-      const checked = await handle.isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined);
-      return { valueType: "boolean", currentValue: typeof checked === "boolean" ? checked : null };
+      const checked = await handle
+        .isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS })
+        .catch(() => undefined);
+      return {
+        valueType: "boolean",
+        currentValue: typeof checked === "boolean" ? checked : null,
+      };
     }
 
     if (meta.fieldType === "select") {
       if (context?.page && context?.dropdownRoot) {
-        return readDropdownStateFromRoot(context.page, context.dropdownRoot, context.dropdownTrigger);
+        return readDropdownStateFromRoot(
+          context.page,
+          context.dropdownRoot,
+          context.dropdownTrigger,
+        );
       }
       if ((meta.tagName ?? "").toLowerCase() === "select") {
         return readNativeSelectState(handle);
@@ -508,13 +599,19 @@ export async function readControlState(
     }
 
     if (meta.fieldType === "radio") {
-      const checked = await handle.isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => false);
+      const checked = await handle
+        .isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS })
+        .catch(() => false);
       if (!checked) {
         return { valueType: "enum", currentValue: null };
       }
-      const value = normalizeCurrentString(await safeGetAttribute(handle, "value"));
+      const value = normalizeCurrentString(
+        await safeGetAttribute(handle, "value"),
+      );
       if (value) return { valueType: "enum", currentValue: value };
-      const label = normalizeCurrentString(await safeGetAttribute(handle, "aria-label"));
+      const label = normalizeCurrentString(
+        await safeGetAttribute(handle, "aria-label"),
+      );
       return { valueType: "enum", currentValue: label };
     }
 
@@ -524,7 +621,7 @@ export async function readControlState(
       const numeric = Number(value);
       return {
         valueType: "number",
-        currentValue: Number.isFinite(numeric) ? numeric : null
+        currentValue: Number.isFinite(numeric) ? numeric : null,
       };
     }
 
@@ -541,13 +638,19 @@ export async function readControlState(
 
 export async function readControlValue(
   handle: ReturnType<Page["locator"]>,
-  type: FieldEntry["type"]
-): Promise<{ valueType: NonNullable<FieldEntry["valueType"]>; value: FieldEntry["currentValue"] }> {
+  type: FieldEntry["type"],
+): Promise<{
+  valueType: NonNullable<FieldEntry["valueType"]>;
+  value: FieldEntry["currentValue"];
+}> {
   const state = await readControlState(handle, { fieldType: type });
   return { valueType: state.valueType, value: state.currentValue };
 }
 
-async function readOptionLabel(page: Page, radio: ReturnType<Page["locator"]>): Promise<string | undefined> {
+async function readOptionLabel(
+  page: Page,
+  radio: ReturnType<Page["locator"]>,
+): Promise<string | undefined> {
   const id = await safeGetAttribute(radio, "id");
   if (id) {
     const label = page.locator(`label[for="${id}"]`).first();
@@ -566,72 +669,62 @@ async function readOptionLabel(page: Page, radio: ReturnType<Page["locator"]>): 
     if (text) return text;
   }
 
-  const siblingText = await radio.evaluate((el) => {
-    const sib = el.nextSibling;
-    if (!sib) return "";
-    return (sib.textContent ?? "").trim();
-  }, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => "");
+  const siblingText = await radio
+    .evaluate(
+      (el) => {
+        const sib = el.nextSibling;
+        if (!sib) return "";
+        return (sib.textContent ?? "").trim();
+      },
+      { timeout: LOCATOR_READ_TIMEOUT_MS },
+    )
+    .catch(() => "");
   return normalizeLabel(siblingText);
 }
 
-async function readGroupContext(element: ReturnType<Page["locator"]>): Promise<GroupContext> {
-  const context =
-    (await element.evaluate((el) => {
-      const fromFieldset = el.closest("fieldset");
-      const legendText = (fromFieldset?.querySelector("legend")?.textContent || "")
-        .replace(/\s+/g, " ")
-        .trim();
-      if (legendText) {
-        return {
-          groupKey: `group:${
-            legendText
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/^-+|-+$/g, "") || "fieldset"
-          }`,
-          groupTitle: legendText
-        };
-      }
-
-      const containerSelectors = [
-        "section",
-        "[role='group']",
-        "[role='region']",
-        ".xux-panel",
-        ".xux-group",
-        ".panel",
-        ".group",
-        ".section",
-        ".accordion-item"
-      ];
-      const container = el.closest(containerSelectors.join(","));
-      if (container) {
-        const heading = container.querySelector(
-          ":scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6, :scope > [role='heading'], :scope > .title, :scope > .header"
-        );
-        const headingText = (heading?.textContent || "").replace(/\s+/g, " ").trim();
-        if (headingText) {
+async function readGroupContext(
+  element: ReturnType<Page["locator"]>,
+): Promise<GroupContext> {
+  const context = (await element
+    .evaluate(
+      (el) => {
+        const fromFieldset = el.closest("fieldset");
+        const legendText = (
+          fromFieldset?.querySelector("legend")?.textContent || ""
+        )
+          .replace(/\s+/g, " ")
+          .trim();
+        if (legendText) {
           return {
             groupKey: `group:${
-              headingText
+              legendText
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "") || "section"
+                .replace(/^-+|-+$/g, "") || "fieldset"
             }`,
-            groupTitle: headingText
+            groupTitle: legendText,
           };
         }
-      }
 
-      let walker: Element | null = el;
-      while (walker) {
-        let sibling = walker.previousElementSibling;
-        while (sibling) {
-          const heading =
-            sibling.matches("h1,h2,h3,h4,h5,h6,[role='heading'],.title,.header")
-              ? sibling
-              : sibling.querySelector("h1,h2,h3,h4,h5,h6,[role='heading'],.title,.header");
-          const headingText = (heading?.textContent || "").replace(/\s+/g, " ").trim();
+        const containerSelectors = [
+          "section",
+          "[role='group']",
+          "[role='region']",
+          ".xux-panel",
+          ".xux-group",
+          ".panel",
+          ".group",
+          ".section",
+          ".accordion-item",
+        ];
+        const container = el.closest(containerSelectors.join(","));
+        if (container) {
+          const heading = container.querySelector(
+            ":scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6, :scope > [role='heading'], :scope > .title, :scope > .header",
+          );
+          const headingText = (heading?.textContent || "")
+            .replace(/\s+/g, " ")
+            .trim();
           if (headingText) {
             return {
               groupKey: `group:${
@@ -640,27 +733,66 @@ async function readGroupContext(element: ReturnType<Page["locator"]>): Promise<G
                   .replace(/[^a-z0-9]+/g, "-")
                   .replace(/^-+|-+$/g, "") || "section"
               }`,
-              groupTitle: headingText
+              groupTitle: headingText,
             };
           }
-          sibling = sibling.previousElementSibling;
         }
-        walker = walker.parentElement;
-      }
 
-      return { groupKey: "group:general", groupTitle: "General" };
-    }, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => undefined)) ??
-    { groupKey: "group:general", groupTitle: "General" };
+        let walker: Element | null = el;
+        while (walker) {
+          let sibling = walker.previousElementSibling;
+          while (sibling) {
+            const heading = sibling.matches(
+              "h1,h2,h3,h4,h5,h6,[role='heading'],.title,.header",
+            )
+              ? sibling
+              : sibling.querySelector(
+                  "h1,h2,h3,h4,h5,h6,[role='heading'],.title,.header",
+                );
+            const headingText = (heading?.textContent || "")
+              .replace(/\s+/g, " ")
+              .trim();
+            if (headingText) {
+              return {
+                groupKey: `group:${
+                  headingText
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "") || "section"
+                }`,
+                groupTitle: headingText,
+              };
+            }
+            sibling = sibling.previousElementSibling;
+          }
+          walker = walker.parentElement;
+        }
+
+        return { groupKey: "group:general", groupTitle: "General" };
+      },
+      { timeout: LOCATOR_READ_TIMEOUT_MS },
+    )
+    .catch(() => undefined)) ?? {
+    groupKey: "group:general",
+    groupTitle: "General",
+  };
 
   return {
     groupKey: context.groupKey || "group:general",
-    groupTitle: normalizeGroupTitle(context.groupKey || "group:general", context.groupTitle)
+    groupTitle: normalizeGroupTitle(
+      context.groupKey || "group:general",
+      context.groupTitle,
+    ),
   };
 }
 
-async function readRangeHint(element: ReturnType<Page["locator"]>): Promise<string | undefined> {
+async function readRangeHint(
+  element: ReturnType<Page["locator"]>,
+): Promise<string | undefined> {
   const rowText = await safeEvaluate(element, (el) => {
-    const row = el.closest("tr,[role='row'],.row,.form-row,.xux-row,.setting-row,.setting-item,.xux-form-row,li");
+    const row = el.closest(
+      "tr,[role='row'],.row,.form-row,.xux-row,.setting-row,.setting-item,.xux-form-row,li",
+    );
     const text = (row?.textContent || "").replace(/\s+/g, " ").trim();
     return text;
   });
@@ -682,41 +814,64 @@ function escapePlaywrightText(value: string): string {
 async function resolveDropdownContext(
   page: Page,
   element: ReturnType<Page["locator"]>,
-  scopeRoot: ReturnType<Page["locator"]>
+  scopeRoot: ReturnType<Page["locator"]>,
 ): Promise<DropdownContext> {
   const preferredRoot = element
     .locator(
-      "xpath=ancestor-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' xux-dropdownBox ') or contains(concat(' ', normalize-space(@class), ' '), ' xux-labelableBox ')][1]"
+      "xpath=ancestor-or-self::*[contains(concat(' ', normalize-space(@class), ' '), ' xux-dropdownBox ') or contains(concat(' ', normalize-space(@class), ' '), ' xux-labelableBox ')][1]",
     )
     .first();
-  const fallbackRoot = element.locator("xpath=ancestor-or-self::*[.//select and .//a[@role='combobox']][1]").first();
+  const fallbackRoot = element
+    .locator(
+      "xpath=ancestor-or-self::*[.//select and .//a[@role='combobox']][1]",
+    )
+    .first();
   const root =
     (await preferredRoot.count().catch(() => 0)) > 0
       ? preferredRoot
       : (await fallbackRoot.count().catch(() => 0)) > 0
-      ? fallbackRoot
-      : element;
-  const select = root.locator("select.xux-dropdown-select, select.xux-formControl, select").first();
+        ? fallbackRoot
+        : element;
+  const select = root
+    .locator("select.xux-dropdown-select, select.xux-formControl, select")
+    .first();
   const trigger = root.locator('a[role="combobox"]').first();
   const selectCount = await select.count().catch(() => 0);
   const triggerCount = await trigger.count().catch(() => 0);
 
   const selectId = normalizeLabel(await safeGetAttribute(select, "id"));
-  const labelId = normalizeLabel(await safeGetAttribute(root.locator("label.xux-labelableBox-label").first(), "id"));
-  const labelFor = selectId ? page.locator(`label[for="${escapeCssValue(selectId)}"]`).first() : undefined;
+  const labelId = normalizeLabel(
+    await safeGetAttribute(
+      root.locator("label.xux-labelableBox-label").first(),
+      "id",
+    ),
+  );
+  const labelFor = selectId
+    ? page.locator(`label[for="${escapeCssValue(selectId)}"]`).first()
+    : undefined;
   const rootLabelNode = root.locator("label.xux-labelableBox-label").first();
   const rootLabel = normalizeLabel(await safeInnerText(rootLabelNode));
-  const forLabel = labelFor ? normalizeLabel(await safeInnerText(labelFor)) : undefined;
-  const derived = await deriveFieldLabel(page, selectCount > 0 ? select : element, scopeRoot);
+  const forLabel = labelFor
+    ? normalizeLabel(await safeInnerText(labelFor))
+    : undefined;
+  const derived = await deriveFieldLabel(
+    page,
+    selectCount > 0 ? select : element,
+    scopeRoot,
+  );
   const label = rootLabel ?? forLabel ?? derived.label;
-  const labelQuality = rootLabel || forLabel ? "explicit" : derived.labelQuality;
+  const labelQuality =
+    rootLabel || forLabel ? "explicit" : derived.labelQuality;
   const selectors: Selector[] = [];
 
   if (selectId) {
     selectors.push({ kind: "css", value: `#${escapeCssValue(selectId)}` });
   }
   if (triggerCount > 0 && labelId) {
-    selectors.push({ kind: "css", value: `a[role="combobox"][aria-labelledby="${escapeCssValue(labelId)}"]` });
+    selectors.push({
+      kind: "css",
+      value: `a[role="combobox"][aria-labelledby="${escapeCssValue(labelId)}"]`,
+    });
   }
   if (label) {
     selectors.push({ kind: "label", value: label });
@@ -730,7 +885,7 @@ async function resolveDropdownContext(
     fieldId: selectId,
     label,
     labelQuality,
-    selectors
+    selectors,
   };
 }
 
@@ -741,13 +896,16 @@ async function logDropdownMissingValue(
     label?: string;
     selectors?: Selector[];
     reason: string;
-  }
+  },
 ): Promise<void> {
   const rootSnippet =
     (await root
-      .evaluate((el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200), {
-        timeout: LOCATOR_READ_TIMEOUT_MS
-      })
+      .evaluate(
+        (el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200),
+        {
+          timeout: LOCATOR_READ_TIMEOUT_MS,
+        },
+      )
       .catch(() => "")) || "";
   const selectorAttempted =
     detail.selectors?.find((selector) => selector.kind === "css")?.value ??
@@ -760,12 +918,15 @@ async function logDropdownMissingValue(
       label: detail.label,
       selectorAttempted,
       rootSnippet,
-      reason: detail.reason
-    })
+      reason: detail.reason,
+    }),
   );
 }
 
-function parseRangeHint(rangeHint: string | undefined): { min?: number; max?: number } {
+function parseRangeHint(rangeHint: string | undefined): {
+  min?: number;
+  max?: number;
+} {
   if (!rangeHint) return {};
   const match = rangeHint.match(RANGE_HINT_RE);
   if (!match) return {};
@@ -773,37 +934,52 @@ function parseRangeHint(rangeHint: string | undefined): { min?: number; max?: nu
   const max = Number(match[2]);
   return {
     min: Number.isFinite(min) ? min : undefined,
-    max: Number.isFinite(max) ? max : undefined
+    max: Number.isFinite(max) ? max : undefined,
   };
 }
 
-async function radioGroupingKey(radio: ReturnType<Page["locator"]>): Promise<{ key: string; name?: string; label?: string }> {
+async function radioGroupingKey(
+  radio: ReturnType<Page["locator"]>,
+): Promise<{ key: string; name?: string; label?: string }> {
   const name = normalizeLabel(await safeGetAttribute(radio, "name"));
-  const fromDom = await radio.evaluate((el) => {
-    const fieldset = el.closest("fieldset");
-    const legend = (fieldset?.querySelector("legend")?.textContent || "").replace(/\s+/g, " ").trim();
-    if (fieldset?.id) {
-      return { key: `fieldset:${fieldset.id}`, label: legend || undefined };
-    }
+  const fromDom = await radio
+    .evaluate(
+      (el) => {
+        const fieldset = el.closest("fieldset");
+        const legend = (fieldset?.querySelector("legend")?.textContent || "")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (fieldset?.id) {
+          return { key: `fieldset:${fieldset.id}`, label: legend || undefined };
+        }
 
-    const radioGroup = el.closest('[role="radiogroup"]');
-    const groupLabel = (
-      radioGroup?.getAttribute("aria-label") ||
-      radioGroup?.querySelector("legend")?.textContent ||
-      ""
+        const radioGroup = el.closest('[role="radiogroup"]');
+        const groupLabel = (
+          radioGroup?.getAttribute("aria-label") ||
+          radioGroup?.querySelector("legend")?.textContent ||
+          ""
+        )
+          .replace(/\s+/g, " ")
+          .trim();
+        if (radioGroup?.id) {
+          return {
+            key: `radiogroup:${radioGroup.id}`,
+            label: groupLabel || undefined,
+          };
+        }
+
+        const parent = el.parentElement;
+        const parentHint = parent
+          ? `${parent.tagName.toLowerCase()}.${Array.from(parent.classList).slice(0, 2).join(".")}`
+          : "radio";
+        return {
+          key: `parent:${parentHint}`,
+          label: groupLabel || legend || undefined,
+        };
+      },
+      { timeout: LOCATOR_READ_TIMEOUT_MS },
     )
-      .replace(/\s+/g, " ")
-      .trim();
-    if (radioGroup?.id) {
-      return { key: `radiogroup:${radioGroup.id}`, label: groupLabel || undefined };
-    }
-
-    const parent = el.parentElement;
-    const parentHint = parent
-      ? `${parent.tagName.toLowerCase()}.${Array.from(parent.classList).slice(0, 2).join(".")}`
-      : "radio";
-    return { key: `parent:${parentHint}`, label: groupLabel || legend || undefined };
-  }, { timeout: LOCATOR_READ_TIMEOUT_MS }).catch((): { key: string; label?: string } => ({ key: "radio" }));
+    .catch((): { key: string; label?: string } => ({ key: "radio" }));
 
   if (name) {
     return { key: `name:${name}`, name, label: fromDom.label };
@@ -811,7 +987,10 @@ async function radioGroupingKey(radio: ReturnType<Page["locator"]>): Promise<{ k
   return { key: fromDom.key, label: fromDom.label };
 }
 
-async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>): Promise<FieldCandidate[]> {
+async function discoverRadioGroups(
+  page: Page,
+  root: ReturnType<Page["locator"]>,
+): Promise<FieldCandidate[]> {
   const radios = root.locator("input[type='radio']");
   const radioCount = await radios.count();
   if (radioCount === 0) return [];
@@ -834,7 +1013,7 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
         name: grouping.name,
         label: grouping.label,
         groupTitle: groupContext.groupTitle,
-        members: []
+        members: [],
       };
 
       const { label, selectors } = await buildSelectorCandidates(page, radio);
@@ -844,13 +1023,15 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
         normalizeLabel(optionLabel) ??
         `option-${group.members.length + 1}`;
 
-      const checked = await radio.isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS }).catch(() => false);
+      const checked = await radio
+        .isChecked({ timeout: LOCATOR_READ_TIMEOUT_MS })
+        .catch(() => false);
       group.members.push({
         locator: radio,
         value: optionValue,
         label: optionLabel,
         selectors,
-        checked
+        checked,
       });
 
       if (!group.label && grouping.label) {
@@ -868,11 +1049,18 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
   for (const group of groups.values()) {
     if (group.members.length === 0) continue;
 
-    const groupLabel = group.label ?? group.name ?? group.members[0].label ?? `radio-${slugify(group.groupKey)}`;
+    const groupLabel =
+      group.label ??
+      group.name ??
+      group.members[0].label ??
+      `radio-${slugify(group.groupKey)}`;
     const selectors: Selector[] = [];
 
     if (group.name) {
-      selectors.push({ kind: "css", value: `input[type="radio"][name="${group.name}"]` });
+      selectors.push({
+        kind: "css",
+        value: `input[type="radio"][name="${group.name}"]`,
+      });
     }
     if (groupLabel) {
       selectors.push({ kind: "label", value: groupLabel });
@@ -880,15 +1068,23 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
 
     const firstSelectors = group.members[0].selectors;
     for (const selector of firstSelectors) {
-      if (!selectors.find((existing) => JSON.stringify(existing) === JSON.stringify(selector))) {
+      if (
+        !selectors.find(
+          (existing) => JSON.stringify(existing) === JSON.stringify(selector),
+        )
+      ) {
         selectors.push(selector);
       }
     }
 
     const options = normalizeOptions(
-      group.members.map((member) => ({ value: member.value, label: member.label }))
+      group.members.map((member) => ({
+        value: member.value,
+        label: member.label,
+      })),
     );
-    const selected = group.members.find((member) => member.checked)?.value ?? null;
+    const selected =
+      group.members.find((member) => member.checked)?.value ?? null;
     const selectorKey = fieldFingerprint("radio", selectors, groupLabel);
 
     candidates.push({
@@ -914,9 +1110,9 @@ async function discoverRadioGroups(page: Page, root: ReturnType<Page["locator"]>
       valueType: "enum",
       constraints: options.length
         ? {
-            enum: options.map((option) => option.value)
+            enum: options.map((option) => option.value),
           }
-        : undefined
+        : undefined,
     });
   }
 
@@ -928,13 +1124,16 @@ async function logStaticTextValueMissing(
   detail: {
     label?: string;
     selectors: Selector[];
-  }
+  },
 ): Promise<void> {
   const rootSnippet =
     (await root
-      .evaluate((el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200), {
-        timeout: LOCATOR_READ_TIMEOUT_MS
-      })
+      .evaluate(
+        (el) => (el.outerHTML || "").replace(/\s+/g, " ").trim().slice(0, 200),
+        {
+          timeout: LOCATOR_READ_TIMEOUT_MS,
+        },
+      )
       .catch(() => "")) || "";
   const selectorUsed =
     detail.selectors.find((selector) => selector.kind === "css")?.value ??
@@ -945,8 +1144,8 @@ async function logStaticTextValueMissing(
       event: "static-text-current-value-missing",
       label: detail.label,
       selectorUsed,
-      rootSnippet
-    })
+      rootSnippet,
+    }),
   );
 }
 
@@ -954,7 +1153,7 @@ async function discoverStaticTextButtonCandidates(
   page: Page,
   root: ReturnType<Page["locator"]>,
   groupOrderByKey: Map<string, number>,
-  groupOrderCounterRef: { value: number }
+  groupOrderCounterRef: { value: number },
 ): Promise<FieldCandidate[]> {
   const staticRoots = root.locator(".xux-staticTextBox[role='button']");
   const count = await staticRoots.count();
@@ -964,15 +1163,25 @@ async function discoverStaticTextButtonCandidates(
     try {
       if (!(await staticRoot.isVisible().catch(() => false))) continue;
 
-      const labelNode = staticRoot.locator("label.xux-labelableBox-label").first();
-      const valueNode = staticRoot.locator(".xux-labelableBox-content span.xux-staticText").first();
-      if ((await labelNode.count().catch(() => 0)) === 0 || (await valueNode.count().catch(() => 0)) === 0) {
+      const labelNode = staticRoot
+        .locator("label.xux-labelableBox-label")
+        .first();
+      const valueNode = staticRoot
+        .locator(".xux-labelableBox-content span.xux-staticText")
+        .first();
+      if (
+        (await labelNode.count().catch(() => 0)) === 0 ||
+        (await valueNode.count().catch(() => 0)) === 0
+      ) {
         continue;
       }
 
-      const label = normalizeLabel(await safeInnerText(labelNode)) ?? "(Unknown Setting)";
+      const label =
+        normalizeLabel(await safeInnerText(labelNode)) ?? "(Unknown Setting)";
       const fieldId = normalizeLabel(await safeGetAttribute(staticRoot, "id"));
-      const currentValue = normalizeCurrentString(await safeInnerText(valueNode));
+      const currentValue = normalizeCurrentString(
+        await safeInnerText(valueNode),
+      );
 
       const selectors: Selector[] = [];
       if (fieldId) {
@@ -980,7 +1189,7 @@ async function discoverStaticTextButtonCandidates(
       } else {
         selectors.push({
           kind: "css",
-          value: `.xux-staticTextBox[role="button"]:has(label.xux-labelableBox-label:has-text("${escapePlaywrightText(label)}"))`
+          value: `.xux-staticTextBox[role="button"]:has(label.xux-labelableBox-label:has-text("${escapePlaywrightText(label)}"))`,
         });
       }
       selectors.push({ kind: "role", role: "button", name: label });
@@ -1020,7 +1229,7 @@ async function discoverStaticTextButtonCandidates(
         currentLabel: currentValue ?? undefined,
         valueQuality: "static-text",
         opensModal: true,
-        interaction: "opensModal"
+        interaction: "opensModal",
       });
     } catch {
       continue;
@@ -1031,7 +1240,7 @@ async function discoverStaticTextButtonCandidates(
 
 export async function discoverFieldCandidates(
   page: Page,
-  scope?: ReturnType<Page["locator"]>
+  scope?: ReturnType<Page["locator"]>,
 ): Promise<{ candidates: FieldCandidate[]; actions: FieldEntry["actions"] }> {
   const candidates: FieldCandidate[] = [];
   const groupOrderByKey = new Map<string, number>();
@@ -1041,11 +1250,11 @@ export async function discoverFieldCandidates(
     page,
     root,
     groupOrderByKey,
-    groupOrderCounterRef
+    groupOrderCounterRef,
   );
   candidates.push(...staticTextCandidates);
   const controls = root.locator(
-    "input:not([type='radio']), textarea, select, [role='textbox'], [role='combobox'], [role='checkbox'], [role='spinbutton'], [role='radio']"
+    "input:not([type='radio']), textarea, select, [role='textbox'], [role='combobox'], [role='checkbox'], [role='spinbutton'], [role='radio']",
   );
   const count = await controls.count();
 
@@ -1056,12 +1265,17 @@ export async function discoverFieldCandidates(
         continue;
       }
 
-      const tag = (await safeEvaluate(element, (el) => el.tagName.toLowerCase())) ?? "";
+      const tag =
+        (await safeEvaluate(element, (el) => el.tagName.toLowerCase())) ?? "";
       if (!tag) {
         continue;
       }
-      const roleAttr = normalizeLabel(await safeGetAttribute(element, "role"))?.toLowerCase();
-      const typeAttr = normalizeLabel(await safeGetAttribute(element, "type"))?.toLowerCase();
+      const roleAttr = normalizeLabel(
+        await safeGetAttribute(element, "role"),
+      )?.toLowerCase();
+      const typeAttr = normalizeLabel(
+        await safeGetAttribute(element, "type"),
+      )?.toLowerCase();
 
       if (tag === "input" && (typeAttr === "hidden" || typeAttr === "submit")) {
         continue;
@@ -1079,21 +1293,43 @@ export async function discoverFieldCandidates(
       else if (roleAttr === "spinbutton") fieldType = "number";
       else if (roleAttr === "button") fieldType = "button";
 
-      const dropdownContext = fieldType === "select" ? await resolveDropdownContext(page, element, root) : undefined;
+      const dropdownContext =
+        fieldType === "select"
+          ? await resolveDropdownContext(page, element, root)
+          : undefined;
       const baseLabelInfo = dropdownContext
-        ? { label: dropdownContext.label, labelQuality: dropdownContext.labelQuality }
+        ? {
+            label: dropdownContext.label,
+            labelQuality: dropdownContext.labelQuality,
+          }
         : await deriveFieldLabel(page, element, root);
       const label = baseLabelInfo.label;
       const labelQuality = baseLabelInfo.labelQuality;
       const selectors = dropdownContext?.selectors?.length
         ? [...dropdownContext.selectors]
         : (await buildSelectorCandidates(page, element)).selectors;
-      if (label && !selectors.some((selector) => selector.kind === "label" && normalizeLabel(selector.value) === label)) {
+      if (
+        label &&
+        !selectors.some(
+          (selector) =>
+            selector.kind === "label" &&
+            normalizeLabel(selector.value) === label,
+        )
+      ) {
         selectors.unshift({ kind: "label", value: label });
       }
 
       const role = roleForType(fieldType);
-      if (role && label && !selectors.some((selector) => selector.kind === "role" && selector.role === role && selector.name === label)) {
+      if (
+        role &&
+        label &&
+        !selectors.some(
+          (selector) =>
+            selector.kind === "role" &&
+            selector.role === role &&
+            selector.name === label,
+        )
+      ) {
         selectors.unshift({ kind: "role", role, name: label });
       }
 
@@ -1105,9 +1341,15 @@ export async function discoverFieldCandidates(
       const min = asNumber(await safeGetAttribute(element, "min"));
       const max = asNumber(await safeGetAttribute(element, "max"));
       const step = asNumber(await safeGetAttribute(element, "step"));
-      const maxLength = asPositiveInteger(await safeGetAttribute(element, "maxlength"));
-      const pattern = normalizeLabel(await safeGetAttribute(element, "pattern"));
-      const inputMode = normalizeLabel(await safeGetAttribute(element, "inputmode"));
+      const maxLength = asPositiveInteger(
+        await safeGetAttribute(element, "maxlength"),
+      );
+      const pattern = normalizeLabel(
+        await safeGetAttribute(element, "pattern"),
+      );
+      const inputMode = normalizeLabel(
+        await safeGetAttribute(element, "inputmode"),
+      );
       const readOnly =
         (await safeGetAttribute(element, "readonly")) !== null ||
         (await safeGetAttribute(element, "disabled")) !== null;
@@ -1122,10 +1364,16 @@ export async function discoverFieldCandidates(
       if (pattern) constraints.pattern = pattern;
       if (inputMode) constraints.inputMode = inputMode;
       if (readOnly) constraints.readOnly = true;
-      if (constraints.min === undefined && typeof rangeFromHint.min === "number") {
+      if (
+        constraints.min === undefined &&
+        typeof rangeFromHint.min === "number"
+      ) {
         constraints.min = rangeFromHint.min;
       }
-      if (constraints.max === undefined && typeof rangeFromHint.max === "number") {
+      if (
+        constraints.max === undefined &&
+        typeof rangeFromHint.max === "number"
+      ) {
         constraints.max = rangeFromHint.max;
       }
 
@@ -1135,18 +1383,22 @@ export async function discoverFieldCandidates(
           fieldType,
           tagName: tag,
           roleAttr,
-          inputType: typeAttr
+          inputType: typeAttr,
         },
         dropdownContext
           ? {
               page,
               dropdownRoot: dropdownContext.root,
-              dropdownTrigger: dropdownContext.trigger
+              dropdownTrigger: dropdownContext.trigger,
             }
-          : undefined
+          : undefined,
       );
       let options: OptionEntry[] | undefined = state.options;
-      if (fieldType === "select" && state.displayValue && state.currentValue === null) {
+      if (
+        fieldType === "select" &&
+        state.displayValue &&
+        state.currentValue === null
+      ) {
         state.currentValue = state.displayValue;
       }
       if (fieldType === "select") {
@@ -1156,7 +1408,7 @@ export async function discoverFieldCandidates(
             fieldId: dropdownContext?.fieldId,
             label,
             selectors,
-            reason: state.valueQuality ?? "missing"
+            reason: state.valueQuality ?? "missing",
           });
         }
       }
@@ -1201,7 +1453,7 @@ export async function discoverFieldCandidates(
         valueQualityReason: state.valueQualityReason,
         valueType: state.valueType,
         hints,
-        rangeHint
+        rangeHint,
       });
     } catch {
       // Dynamic UIs can detach controls between discovery and reads.
@@ -1223,11 +1475,14 @@ export async function discoverFieldCandidates(
     const key = label.toLowerCase();
     if (seenActions.has(key)) continue;
     seenActions.add(key);
-    actions.push({ selector: { kind: "role", role: "button", name: label }, label });
+    actions.push({
+      selector: { kind: "role", role: "button", name: label },
+      label,
+    });
   }
 
   return {
     candidates,
-    actions: actions.length ? actions : undefined
+    actions: actions.length ? actions : undefined,
   };
 }

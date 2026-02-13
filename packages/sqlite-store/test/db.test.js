@@ -64,7 +64,7 @@ test("import is idempotent and normalizes checkbox to switch options", async () 
       meta: {
         generatedAt: "2026-02-10T00:00:00.000Z",
         printerUrl: "http://192.168.0.10",
-        schemaVersion: "1.1"
+        schemaVersion: "1.1",
       },
       pages: [
         {
@@ -75,10 +75,10 @@ test("import is idempotent and normalizes checkbox to switch options", async () 
             { action: "goto", url: "http://192.168.0.10/#/network" },
             {
               action: "click",
-              selector: { kind: "role", role: "link", name: "Network" }
-            }
-          ]
-        }
+              selector: { kind: "role", role: "link", name: "Network" },
+            },
+          ],
+        },
       ],
       fields: [
         {
@@ -86,14 +86,14 @@ test("import is idempotent and normalizes checkbox to switch options", async () 
           label: "Host Name",
           type: "text",
           selectors: [{ kind: "css", value: "#hostName" }],
-          pageId: "network"
+          pageId: "network",
         },
         {
           id: "network.ipv6-enable",
           label: "Enable IPv6",
           type: "checkbox",
           selectors: [{ kind: "label", value: "Enable IPv6" }],
-          pageId: "network"
+          pageId: "network",
         },
         {
           id: "network.mode",
@@ -101,9 +101,9 @@ test("import is idempotent and normalizes checkbox to switch options", async () 
           type: "select",
           selectors: [{ kind: "css", value: "#addressMode" }],
           pageId: "network",
-          constraints: { enum: ["DHCP", "Static"] }
-        }
-      ]
+          constraints: { enum: ["DHCP", "Static"] },
+        },
+      ],
     };
 
     await importUiMapToDatabase(dbPath, sampleMap);
@@ -122,7 +122,9 @@ test("import is idempotent and normalizes checkbox to switch options", async () 
     assert.equal(switchSetting.control_type, "switch");
 
     const switchOptions = db
-      .prepare("SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order")
+      .prepare(
+        "SELECT option_key FROM ui_setting_option WHERE setting_id = ? ORDER BY sort_order",
+      )
       .all("network.ipv6-enable")
       .map((row) => row.option_key);
     assert.deepEqual(switchOptions, ["On", "Off"]);
@@ -138,7 +140,7 @@ test("profiles allow account variations and enforce identity uniqueness", async 
     await migrateDatabase(dbPath);
     const db = new DatabaseSync(dbPath);
     const insertProfile = db.prepare(
-      "INSERT INTO config_profile (account_number, variation, display_name) VALUES (?, ?, ?)"
+      "INSERT INTO config_profile (account_number, variation, display_name) VALUES (?, ?, ?)",
     );
 
     insertProfile.run("10001", "base", "Base");
@@ -163,4 +165,3 @@ test("import rejects invalid payload with clear context", async () => {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

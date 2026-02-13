@@ -20,7 +20,12 @@ export type CapturedClick = {
   timestamp: string;
   target: string;
   kind?: CapturedClickKind;
-  selectors: Array<{ kind: "role" | "label" | "css"; role?: string; name?: string; value?: string }>;
+  selectors: Array<{
+    kind: "role" | "label" | "css";
+    role?: string;
+    name?: string;
+    value?: string;
+  }>;
   urlBefore: string;
   frameUrl?: string;
   frameName?: string;
@@ -200,17 +205,27 @@ export class ClickCaptureQueue {
   }
 }
 
-export async function installClickCapture(page: Page, onClick: ClickBinding): Promise<void> {
-  const installInFrame = async (frame: import("playwright").Frame): Promise<void> => {
-    await frame.evaluate((script: string) => {
-      // eslint-disable-next-line no-eval
-      eval(script);
-    }, CAPTURE_SCRIPT).catch(() => null);
+export async function installClickCapture(
+  page: Page,
+  onClick: ClickBinding,
+): Promise<void> {
+  const installInFrame = async (
+    frame: import("playwright").Frame,
+  ): Promise<void> => {
+    await frame
+      .evaluate((script: string) => {
+        // eslint-disable-next-line no-eval
+        eval(script);
+      }, CAPTURE_SCRIPT)
+      .catch(() => null);
   };
 
-  await page.exposeFunction("__isMapperRecordClick", (payload: CapturedClick) => {
-    onClick(payload);
-  });
+  await page.exposeFunction(
+    "__isMapperRecordClick",
+    (payload: CapturedClick) => {
+      onClick(payload);
+    },
+  );
   await page.addInitScript({ content: CAPTURE_SCRIPT });
   await page.evaluate((script: string) => {
     // eslint-disable-next-line no-eval
@@ -251,12 +266,28 @@ export type ClickLogEntry = {
   frameName?: string;
   inFrame?: boolean;
   elementId?: string;
-  transitionType?: "navigate" | "open_modal" | "close_modal" | "tab_switch" | "dismiss_alert" | "expand_section";
+  transitionType?:
+    | "navigate"
+    | "open_modal"
+    | "close_modal"
+    | "tab_switch"
+    | "dismiss_alert"
+    | "expand_section";
   nodeIdBefore?: string;
   nodeIdAfter?: string;
   modalId?: string;
-  modalOpenTrigger?: { kind: "role" | "label" | "css"; role?: string; name?: string; value?: string };
-  modalCloseTrigger?: { kind: "role" | "label" | "css"; role?: string; name?: string; value?: string };
+  modalOpenTrigger?: {
+    kind: "role" | "label" | "css";
+    role?: string;
+    name?: string;
+    value?: string;
+  };
+  modalCloseTrigger?: {
+    kind: "role" | "label" | "css";
+    role?: string;
+    name?: string;
+    value?: string;
+  };
   newFieldIds: string[];
   newlyVisibleFieldIds?: string[];
   newlyDiscoveredFieldIds?: string[];

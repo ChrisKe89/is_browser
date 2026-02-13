@@ -1,5 +1,9 @@
 import { NAV_TIMEOUT_MS } from "@is-browser/env";
-import { type FieldEntry, type PageEntry, type Selector } from "@is-browser/contract";
+import {
+  type FieldEntry,
+  type PageEntry,
+  type Selector,
+} from "@is-browser/contract";
 
 type PageLike = import("playwright").Page;
 type LocatorLike = import("playwright").Locator;
@@ -23,9 +27,13 @@ export function rankSelectors(selectors: Selector[]): RankedSelector[] {
     .map((selector, index) => ({
       selector,
       priority: selector.priority ?? index + 1,
-      originalIndex: index
+      originalIndex: index,
     }))
-    .sort((left, right) => left.priority - right.priority || left.originalIndex - right.originalIndex);
+    .sort(
+      (left, right) =>
+        left.priority - right.priority ||
+        left.originalIndex - right.originalIndex,
+    );
 }
 
 function commitLabelPriority(label?: string): number {
@@ -37,7 +45,9 @@ function commitLabelPriority(label?: string): number {
   return 5;
 }
 
-export function buildPageCommitActionMap(fields: FieldEntry[]): Map<string, PageCommitAction> {
+export function buildPageCommitActionMap(
+  fields: FieldEntry[],
+): Map<string, PageCommitAction> {
   const candidatesByPage = new Map<string, PageCommitAction[]>();
 
   for (const field of fields) {
@@ -49,7 +59,7 @@ export function buildPageCommitActionMap(fields: FieldEntry[]): Map<string, Page
         pageId: field.pageId,
         selector: action.selector,
         label: action.label,
-        sourceFieldId: field.id
+        sourceFieldId: field.id,
       };
       const list = candidatesByPage.get(field.pageId) ?? [];
       list.push(item);
@@ -90,7 +100,10 @@ function describeSelector(selector: Selector): string {
   return `role(${selector.role ?? "missing"}:${selector.name ?? "*"})`;
 }
 
-function selectorToLocator(page: PageLike, selector: Selector): LocatorLike | null {
+function selectorToLocator(
+  page: PageLike,
+  selector: Selector,
+): LocatorLike | null {
   if (selector.kind === "label") {
     if (!selector.value) return null;
     return page.getByLabel(selector.value).first();
@@ -98,11 +111,15 @@ function selectorToLocator(page: PageLike, selector: Selector): LocatorLike | nu
   if (selector.kind === "role") {
     if (!selector.role) return null;
     if (selector.name) {
-      return page.getByRole(selector.role as Parameters<PageLike["getByRole"]>[0], {
-        name: selector.name
-      }).first();
+      return page
+        .getByRole(selector.role as Parameters<PageLike["getByRole"]>[0], {
+          name: selector.name,
+        })
+        .first();
     }
-    return page.getByRole(selector.role as Parameters<PageLike["getByRole"]>[0]).first();
+    return page
+      .getByRole(selector.role as Parameters<PageLike["getByRole"]>[0])
+      .first();
   }
   if (selector.kind === "text") {
     if (!selector.value) return null;
@@ -122,12 +139,16 @@ function urlWithoutTrailingSlash(url: URL): string {
   return url.pathname || "/";
 }
 
-export function isNavigationTargetReached(expectedUrl: string, actualUrl: string): boolean {
+export function isNavigationTargetReached(
+  expectedUrl: string,
+  actualUrl: string,
+): boolean {
   try {
     const expected = new URL(expectedUrl);
     const actual = new URL(actualUrl);
     if (expected.origin !== actual.origin) return false;
-    if (urlWithoutTrailingSlash(expected) !== urlWithoutTrailingSlash(actual)) return false;
+    if (urlWithoutTrailingSlash(expected) !== urlWithoutTrailingSlash(actual))
+      return false;
     if (expected.search !== actual.search) return false;
     if (expected.hash && expected.hash !== actual.hash) return false;
     return true;
@@ -139,7 +160,7 @@ export function isNavigationTargetReached(expectedUrl: string, actualUrl: string
 export async function resolveLocatorByPriority(
   page: PageLike,
   selectors: Selector[],
-  context: string
+  context: string,
 ): Promise<{ locator: LocatorLike; selector: Selector; priority: number }> {
   const ranked = rankSelectors(selectors);
   const attempts: string[] = [];
@@ -158,25 +179,29 @@ export async function resolveLocatorByPriority(
     attempts.push(`${descriptor}:0-match`);
   }
 
-  throw new Error(`Selector resolution failed for ${context}. Tried ${attempts.join(", ")}.`);
+  throw new Error(
+    `Selector resolution failed for ${context}. Tried ${attempts.join(", ")}.`,
+  );
 }
 
 export async function executePageNavigation(
   page: PageLike,
   pageEntry: PageEntry,
-  baseUrl: string
+  baseUrl: string,
 ): Promise<void> {
   async function dismissBlockingModal(): Promise<void> {
     for (let attempt = 0; attempt < 3; attempt += 1) {
       const modalRoot = page
         .locator(
-          "#openAppPositionModalWindow:visible, #deviceDetailsModalRoot:visible, .xux-modalWindow-in:visible, .ui-dialog-content:visible, .xux-modalWindow-content:visible"
+          "#openAppPositionModalWindow:visible, #deviceDetailsModalRoot:visible, .xux-modalWindow-in:visible, .ui-dialog-content:visible, .xux-modalWindow-content:visible",
         )
         .first();
       if (!(await modalRoot.count().catch(() => 0))) break;
       if (!(await modalRoot.isVisible().catch(() => false))) break;
 
-      const closeButton = modalRoot.getByRole("button", { name: MODAL_CLOSE_RE }).first();
+      const closeButton = modalRoot
+        .getByRole("button", { name: MODAL_CLOSE_RE })
+        .first();
       if (await closeButton.count().catch(() => 0)) {
         await closeButton.click().catch(() => null);
       } else {
@@ -195,7 +220,7 @@ export async function executePageNavigation(
       const message = error instanceof Error ? error.message : String(error);
       const blocked =
         /intercepts pointer events|another element|element is obscured|not receiving pointer events/i.test(
-          message
+          message,
         );
       if (!blocked) {
         throw error;
@@ -209,40 +234,57 @@ export async function executePageNavigation(
   const requiresClickPath = navSteps.some((step) => step.action === "click");
 
   if (pageEntry.url && !requiresClickPath) {
-    await page.goto(pageEntry.url, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
-    await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => null);
+    await page.goto(pageEntry.url, {
+      waitUntil: "domcontentloaded",
+      timeout: NAV_TIMEOUT_MS,
+    });
+    await page
+      .waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS })
+      .catch(() => null);
     await dismissBlockingModal();
   } else if (navSteps.length > 0) {
     for (let index = 0; index < navSteps.length; index += 1) {
       const step = navSteps[index];
       if (step.action === "goto") {
         if (!step.url) {
-          throw new Error(`Navigation step ${index + 1} for page "${pageEntry.id}" is missing url.`);
+          throw new Error(
+            `Navigation step ${index + 1} for page "${pageEntry.id}" is missing url.`,
+          );
         }
-        await page.goto(step.url, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+        await page.goto(step.url, {
+          waitUntil: "networkidle",
+          timeout: NAV_TIMEOUT_MS,
+        });
         continue;
       }
 
       if (!step.selector) {
-        throw new Error(`Navigation step ${index + 1} for page "${pageEntry.id}" is missing selector.`);
+        throw new Error(
+          `Navigation step ${index + 1} for page "${pageEntry.id}" is missing selector.`,
+        );
       }
       const resolved = await resolveLocatorByPriority(
         page,
         [step.selector],
-        `navigation step ${index + 1} on page "${pageEntry.id}"`
+        `navigation step ${index + 1} on page "${pageEntry.id}"`,
       );
       await clickWithRecovery(resolved.locator);
-      await page.waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS }).catch(() => null);
+      await page
+        .waitForLoadState("networkidle", { timeout: NAV_TIMEOUT_MS })
+        .catch(() => null);
     }
   } else {
-    await page.goto(pageEntry.url ?? baseUrl, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+    await page.goto(pageEntry.url ?? baseUrl, {
+      waitUntil: "networkidle",
+      timeout: NAV_TIMEOUT_MS,
+    });
   }
 
   if (pageEntry.url) {
     const currentUrl = page.url();
     if (!isNavigationTargetReached(pageEntry.url, currentUrl)) {
       throw new Error(
-        `Navigation target mismatch for page "${pageEntry.id}". Expected "${pageEntry.url}" but reached "${currentUrl}".`
+        `Navigation target mismatch for page "${pageEntry.id}". Expected "${pageEntry.url}" but reached "${currentUrl}".`,
       );
     }
   }
@@ -274,7 +316,9 @@ export function parseSwitchTarget(value: unknown, fieldId: string): boolean {
   ) {
     return false;
   }
-  throw new Error(`Invalid switch value "${value}" for "${fieldId}". Use On/Off.`);
+  throw new Error(
+    `Invalid switch value "${value}" for "${fieldId}". Use On/Off.`,
+  );
 }
 
 async function readCheckedState(locator: LocatorLike): Promise<boolean | null> {
@@ -291,7 +335,7 @@ async function readCheckedState(locator: LocatorLike): Promise<boolean | null> {
 export async function applySwitchValue(
   locator: LocatorLike,
   value: unknown,
-  fieldId: string
+  fieldId: string,
 ): Promise<void> {
   const target = parseSwitchTarget(value, fieldId);
   let current = await readCheckedState(locator);
@@ -318,7 +362,7 @@ export async function applySwitchValue(
   }
   if (current !== target) {
     throw new Error(
-      `Switch "${fieldId}" did not reach requested state "${target ? "On" : "Off"}".`
+      `Switch "${fieldId}" did not reach requested state "${target ? "On" : "Off"}".`,
     );
   }
 }
@@ -327,7 +371,7 @@ export async function applySelectValue(
   page: PageLike,
   locator: LocatorLike,
   value: unknown,
-  fieldId: string
+  fieldId: string,
 ): Promise<void> {
   const target = String(value);
   const byValue = await locator.selectOption({ value: target }).catch(() => []);
@@ -372,14 +416,14 @@ export async function applyRadioValue(
   page: PageLike,
   locator: LocatorLike,
   value: unknown,
-  fieldId: string
+  fieldId: string,
 ): Promise<void> {
   const target = String(value).trim();
   if (target) {
     const candidates = [
       page.getByRole("radio", { name: target }).first(),
       page.getByLabel(target).first(),
-      page.getByText(target, { exact: true }).first()
+      page.getByText(target, { exact: true }).first(),
     ];
     for (const candidate of candidates) {
       if ((await candidate.count().catch(() => 0)) > 0) {
@@ -394,7 +438,9 @@ export async function applyRadioValue(
   });
   const checked = await readCheckedState(locator);
   if (checked === false) {
-    throw new Error(`Unable to select radio option "${target}" for "${fieldId}".`);
+    throw new Error(
+      `Unable to select radio option "${target}" for "${fieldId}".`,
+    );
   }
 }
 
@@ -402,7 +448,7 @@ export async function applyFieldValue(
   page: PageLike,
   locator: LocatorLike,
   field: Pick<FieldEntry, "id" | "type">,
-  value: unknown
+  value: unknown,
 ): Promise<void> {
   switch (field.type) {
     case "text":
@@ -426,4 +472,3 @@ export async function applyFieldValue(
       await locator.fill(String(value));
   }
 }
-

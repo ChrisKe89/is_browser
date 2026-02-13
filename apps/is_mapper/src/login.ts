@@ -6,6 +6,41 @@ const PASS_LABEL_RE = /pass|password|pin/i;
 const LOGIN_TRIGGER_RE = /log in|login|sign in/i;
 const LOGOUT_RE = /log out|logout/i;
 const CLOSE_RE = /close/i;
+const LOGIN_CONTAINER_SELECTOR = "#loginRoot, #loginModal, form";
+
+async function hasVisibleCredentialInputs(page: Page): Promise<boolean> {
+  const visiblePassword = await page
+    .locator('input[type="password"]:visible')
+    .count()
+    .catch(() => 0);
+  if (visiblePassword > 0) return true;
+
+  const visibleUserLike = await page
+    .locator('input:visible, textarea:visible')
+    .evaluateAll((els, pattern) => {
+      const re = new RegExp(pattern, "i");
+      return els.some((el) => {
+        const attrs = [
+          el.getAttribute("aria-label"),
+          el.getAttribute("name"),
+          el.getAttribute("id"),
+          el.getAttribute("placeholder"),
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return re.test(attrs);
+      });
+    }, USER_LABEL_RE.source)
+    .catch(() => false);
+  return Boolean(visibleUserLike);
+}
+
+async function hasLoginContainerWithInputs(page: Page): Promise<boolean> {
+  const container = page.locator(LOGIN_CONTAINER_SELECTOR).filter({
+    has: page.locator('input[type="password"], input, textarea'),
+  });
+  return container.first().isVisible().catch(() => false);
+}
 
 async function openLoginModal(page: Page): Promise<boolean> {
   const trigger = page.getByRole("button", { name: LOGIN_TRIGGER_RE }).first();
@@ -27,38 +62,39 @@ async function openLoginModal(page: Page): Promise<boolean> {
 }
 
 export async function isLoginPage(page: Page): Promise<boolean> {
-  const loginTrigger = page.getByRole("button", { name: LOGIN_TRIGGER_RE }).first();
-  if ((await loginTrigger.count()) > 0 && (await loginTrigger.isVisible().catch(() => false))) {
+  if (await hasVisibleCredentialInputs(page)) {
     return true;
   }
 
-  const passwordInputs = page.locator('input[type="password"]');
-  if ((await passwordInputs.count()) > 0) {
+  if (await hasLoginContainerWithInputs(page)) {
     return true;
   }
-  const userLike = await page
-    .locator("input, textarea")
-    .evaluateAll((els, pattern) => {
-      const re = new RegExp(pattern, "i");
-      return els.some((el) => {
-        const attrs = [
-          el.getAttribute("aria-label"),
-          el.getAttribute("name"),
-          el.getAttribute("id"),
-          el.getAttribute("placeholder")
-        ]
-          .filter(Boolean)
-          .join(" ");
-        return re.test(attrs);
-      });
-    }, USER_LABEL_RE.source);
-  if (userLike) return true;
+
+  const loginTrigger = page
+    .getByRole("button", { name: LOGIN_TRIGGER_RE })
+    .first();
+  const hasVisibleLoginTrigger =
+    (await loginTrigger.count()) > 0 &&
+    (await loginTrigger.isVisible().catch(() => false));
+  if (hasVisibleLoginTrigger) {
+    const hasVisibleLogout = await page
+      .getByRole("button", { name: LOGOUT_RE })
+      .first()
+      .isVisible()
+      .catch(() => false);
+    return !hasVisibleLogout;
+  }
+
   return false;
 }
 
 export async function login(page: Page): Promise<void> {
   console.log("[login] start");
   await openLoginModal(page);
+  if (!(await hasVisibleCredentialInputs(page))) {
+    console.log("[login] no visible credential fields; skipping login");
+    return;
+  }
 
   const userField = page.getByLabel(USER_LABEL_RE).first();
   const passField = page.getByLabel(PASS_LABEL_RE).first();
@@ -130,7 +166,10 @@ export async function login(page: Page): Promise<void> {
     }
   }
 
-  const scopedLogin = page.getByLabel(/log in|login|sign in/i).getByRole("button", { name: LOGIN_TRIGGER_RE }).first();
+  const scopedLogin = page
+    .getByLabel(/log in|login|sign in/i)
+    .getByRole("button", { name: LOGIN_TRIGGER_RE })
+    .first();
   if (await scopedLogin.count()) {
     console.log("[login] submitting scoped login button");
     await scopedLogin.click();
@@ -141,7 +180,10 @@ export async function login(page: Page): Promise<void> {
   const formSubmit = page
     .locator('form >> input[type="submit"], form >> button[type="submit"]')
     .first();
-  if ((await formSubmit.count()) && (await formSubmit.isVisible().catch(() => false))) {
+  if (
+    (await formSubmit.count()) &&
+    (await formSubmit.isVisible().catch(() => false))
+  ) {
     console.log("[login] submitting form button");
     await formSubmit.click();
     await finalizeLogin(page);
@@ -154,7 +196,10 @@ export async function login(page: Page): Promise<void> {
       const formButton = form
         .getByRole("button", { name: /login|log in|sign in|submit|ok|apply/i })
         .first();
-      if ((await formButton.count()) && (await formButton.isVisible().catch(() => false))) {
+      if (
+        (await formButton.count()) &&
+        (await formButton.isVisible().catch(() => false))
+      ) {
         console.log("[login] submitting form ancestor button");
         await formButton.click();
         await finalizeLogin(page);
@@ -162,9 +207,11 @@ export async function login(page: Page): Promise<void> {
       }
     }
 
-    const container = passwordInputs.first().locator(
-      "xpath=ancestor::*[self::div or self::section or self::main][1]"
-    );
+    const container = passwordInputs
+      .first()
+      .locator(
+        "xpath=ancestor::*[self::div or self::section or self::main][1]",
+      );
     if (await container.count()) {
       const containerButton = container
         .getByRole("button", { name: /login|log in|sign in|submit|ok|apply/i })
@@ -204,4 +251,3 @@ async function dismissPostLoginDialogs(page: Page): Promise<void> {
     await page.waitForTimeout(200);
   }
 }
-

@@ -10,15 +10,15 @@ function sampleMap() {
     meta: {
       generatedAt: "2026-02-11T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
     pages: [
       {
         id: "system",
         title: "System",
         url: "http://192.168.0.10/#/system",
-        navPath: [{ action: "goto", url: "http://192.168.0.10/#/system" }]
-      }
+        navPath: [{ action: "goto", url: "http://192.168.0.10/#/system" }],
+      },
     ],
     fields: [
       {
@@ -26,7 +26,7 @@ function sampleMap() {
         label: "Device Name",
         type: "text",
         selectors: [{ kind: "css", value: "#deviceName" }],
-        pageId: "system"
+        pageId: "system",
       },
       {
         id: "system.mode",
@@ -34,9 +34,9 @@ function sampleMap() {
         type: "select",
         selectors: [{ kind: "css", value: "#mode" }],
         pageId: "system",
-        constraints: { enum: ["Office", "Warehouse"] }
-      }
-    ]
+        constraints: { enum: ["Office", "Warehouse"] },
+      },
+    ],
   };
 }
 
@@ -96,9 +96,9 @@ test("is_form smoke: form bootstraps from map and saves profile", async () => {
         variation: "base",
         values: [
           { settingId: "system.device-name", value: "Front Desk" },
-          { settingId: "system.mode", value: "Office" }
-        ]
-      })
+          { settingId: "system.mode", value: "Office" },
+        ],
+      }),
     });
     assert.equal(saveResponse.status, 200);
     const savePayload = await saveResponse.json();

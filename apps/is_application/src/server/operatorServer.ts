@@ -5,28 +5,45 @@ import {
   DEVICE_LOG_MODE,
   FORM_PUBLIC_URL,
   OPERATOR_PORT,
-  PROFILE_DB_PATH
+  PROFILE_DB_PATH,
 } from "@is-browser/env";
 import { migrateDatabase } from "@is-browser/sqlite-store";
 import { applySettings } from "../runner/applySettings.js";
 import { type SettingsFile } from "../runner/settings.js";
-import { buildSettingsFromProfile, ProfileValidationFailure } from "@is-browser/sqlite-store";
+import {
+  buildSettingsFromProfile,
+  ProfileValidationFailure,
+} from "@is-browser/sqlite-store";
 import {
   ensureDeviceResolutionSeededFromCsv,
   listVariationsForAccount,
   searchAccounts,
-  variationMatchesModelRequirement
+  variationMatchesModelRequirement,
 } from "@is-browser/sqlite-store";
-import { getOperatorDiscoveryConfig, saveOperatorDiscoveryConfig } from "@is-browser/sqlite-store";
+import {
+  getOperatorDiscoveryConfig,
+  saveOperatorDiscoveryConfig,
+} from "@is-browser/sqlite-store";
 import {
   addManualDevice,
   discoverDevicesFromSubnets,
   type DiscoveredDevice,
-  isValidIpv4
+  isValidIpv4,
 } from "../discovery/service.js";
-import { parseBody, json, text, resolveMapPath, serveFile } from "./httpUtils.js";
+import {
+  parseBody,
+  json,
+  text,
+  resolveMapPath,
+  serveFile,
+} from "./httpUtils.js";
 
-type JobState = "IDLE" | "WORKING" | "COMPLETED" | "FAILED" | "USER INTERVENTION REQUIRED";
+type JobState =
+  | "IDLE"
+  | "WORKING"
+  | "COMPLETED"
+  | "FAILED"
+  | "USER INTERVENTION REQUIRED";
 
 type ApplyContext = {
   ip: string;
@@ -47,7 +64,10 @@ type OperatorServerOptions = {
   port?: number;
 };
 
-function mergeDevices(existing: DiscoveredDevice[], incoming: DiscoveredDevice[]): DiscoveredDevice[] {
+function mergeDevices(
+  existing: DiscoveredDevice[],
+  incoming: DiscoveredDevice[],
+): DiscoveredDevice[] {
   const merged = new Map<string, DiscoveredDevice>();
   for (const item of existing) {
     merged.set(item.ip, item);
@@ -56,12 +76,21 @@ function mergeDevices(existing: DiscoveredDevice[], incoming: DiscoveredDevice[]
     const previous = merged.get(item.ip);
     merged.set(item.ip, previous ? { ...previous, ...item } : item);
   }
-  return Array.from(merged.values()).sort((left, right) => left.ip.localeCompare(right.ip));
+  return Array.from(merged.values()).sort((left, right) =>
+    left.ip.localeCompare(right.ip),
+  );
 }
 
-function ensureDeviceResolvableStatus(device: DiscoveredDevice): DiscoveredDevice {
+function ensureDeviceResolvableStatus(
+  device: DiscoveredDevice,
+): DiscoveredDevice {
   if (!device.reachable) {
-    return { ...device, status: "UNREACHABLE", requiresIntervention: false, resolved: false };
+    return {
+      ...device,
+      status: "UNREACHABLE",
+      requiresIntervention: false,
+      resolved: false,
+    };
   }
   if (!device.webUiReachable) {
     return { ...device, status: "WEBUI_UNREACHABLE" };
@@ -72,7 +101,9 @@ function ensureDeviceResolvableStatus(device: DiscoveredDevice): DiscoveredDevic
   return { ...device, status: "READY", resolved: true };
 }
 
-export function createOperatorServer(options?: OperatorServerOptions): http.Server {
+export function createOperatorServer(
+  options?: OperatorServerOptions,
+): http.Server {
   const profileDbPath = options?.profileDbPath ?? PROFILE_DB_PATH;
   const customerMapCsvPath = options?.customerMapCsvPath ?? CUSTOMER_MAP_CSV;
   const defaultDeviceLogMode = options?.deviceLogMode ?? DEVICE_LOG_MODE;
@@ -83,8 +114,8 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
     job: {
       state: "IDLE" as JobState,
       console: [] as string[],
-      retryResolver: null as null | ((value: boolean) => void)
-    }
+      retryResolver: null as null | ((value: boolean) => void),
+    },
   };
 
   function pushConsole(message: string): void {
@@ -127,10 +158,11 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         return new Promise((resolve) => {
           state.job.retryResolver = resolve;
         });
-      }
+      },
     })
       .then((result) => {
-        state.job.state = result.status === "COMPLETED" ? "COMPLETED" : "FAILED";
+        state.job.state =
+          result.status === "COMPLETED" ? "COMPLETED" : "FAILED";
         pushConsole(`Job finished: ${result.status}`);
       })
       .catch((error) => {
@@ -141,7 +173,10 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
 
   async function bootstrapState(): Promise<void> {
     await migrateDatabase(profileDbPath);
-    await ensureDeviceResolutionSeededFromCsv(profileDbPath, customerMapCsvPath);
+    await ensureDeviceResolutionSeededFromCsv(
+      profileDbPath,
+      customerMapCsvPath,
+    );
   }
 
   const startupPromise = bootstrapState();
@@ -176,11 +211,14 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         const manualIps = Array.isArray(body.manualIps)
           ? body.manualIps.map((value) => String(value))
           : undefined;
-        const csvMode = body.csvMode === "daily" || body.csvMode === "all-time" ? body.csvMode : undefined;
+        const csvMode =
+          body.csvMode === "daily" || body.csvMode === "all-time"
+            ? body.csvMode
+            : undefined;
         const config = await saveOperatorDiscoveryConfig(profileDbPath, {
           subnetRanges,
           manualIps,
-          csvMode
+          csvMode,
         });
         json(res, 200, { config });
         return;
@@ -190,13 +228,18 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         const body = await parseBody(req);
         const config = await getOperatorDiscoveryConfig(profileDbPath);
         const subnetRanges = Array.isArray(body.subnetRanges)
-          ? body.subnetRanges.map((value) => String(value).trim()).filter(Boolean)
+          ? body.subnetRanges
+              .map((value) => String(value).trim())
+              .filter(Boolean)
           : config.subnetRanges;
 
         state.job.state = "WORKING";
         pushConsole(`Starting discovery across ${subnetRanges.join(", ")}`);
 
-        const scanned = await discoverDevicesFromSubnets(profileDbPath, subnetRanges);
+        const scanned = await discoverDevicesFromSubnets(
+          profileDbPath,
+          subnetRanges,
+        );
         const manualSeed: DiscoveredDevice[] = [];
         for (const ip of config.manualIps) {
           if (!isValidIpv4(ip)) {
@@ -206,16 +249,27 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
           try {
             manualSeed.push(await addManualDevice(profileDbPath, ip));
           } catch (error) {
-            pushConsole(`Skipping unreachable saved manual IP ${ip}: ${String(error)}`);
+            pushConsole(
+              `Skipping unreachable saved manual IP ${ip}: ${String(error)}`,
+            );
           }
         }
 
-        state.devices = mergeDevices([], mergeDevices(scanned, manualSeed).map(ensureDeviceResolvableStatus));
+        state.devices = mergeDevices(
+          [],
+          mergeDevices(scanned, manualSeed).map(ensureDeviceResolvableStatus),
+        );
         state.job.state = "IDLE";
-        pushConsole(`Discovery completed. ${state.devices.length} reachable devices.`);
-        const interventionCount = state.devices.filter((device) => device.requiresIntervention).length;
+        pushConsole(
+          `Discovery completed. ${state.devices.length} reachable devices.`,
+        );
+        const interventionCount = state.devices.filter(
+          (device) => device.requiresIntervention,
+        ).length;
         if (interventionCount > 0) {
-          pushConsole(`USER INTERVENTION REQUIRED: ${interventionCount} unmatched device(s).`);
+          pushConsole(
+            `USER INTERVENTION REQUIRED: ${interventionCount} unmatched device(s).`,
+          );
         }
         json(res, 200, { devices: state.devices, subnetRanges });
         return;
@@ -230,19 +284,25 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         const body = await parseBody(req);
         const ip = String(body.ip ?? "").trim();
         if (!isValidIpv4(ip)) {
-          json(res, 400, { error: "Manual device input must be a valid IPv4 address." });
+          json(res, 400, {
+            error: "Manual device input must be a valid IPv4 address.",
+          });
           return;
         }
 
-        const manual = ensureDeviceResolvableStatus(await addManualDevice(profileDbPath, ip));
+        const manual = ensureDeviceResolvableStatus(
+          await addManualDevice(profileDbPath, ip),
+        );
         state.devices = mergeDevices(state.devices, [manual]);
         if (manual.requiresIntervention) {
-          pushConsole(`USER INTERVENTION REQUIRED: manual device ${ip} is unmatched.`);
+          pushConsole(
+            `USER INTERVENTION REQUIRED: manual device ${ip} is unmatched.`,
+          );
         }
 
         const config = await getOperatorDiscoveryConfig(profileDbPath);
-        const manualIps = Array.from(new Set([...config.manualIps, ip])).sort((left, right) =>
-          left.localeCompare(right)
+        const manualIps = Array.from(new Set([...config.manualIps, ip])).sort(
+          (left, right) => left.localeCompare(right),
         );
         await saveOperatorDiscoveryConfig(profileDbPath, { manualIps });
         json(res, 200, { device: manual, devices: state.devices });
@@ -253,14 +313,18 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         const body = await parseBody(req);
         const ip = String(body.ip ?? "").trim();
         if (!isValidIpv4(ip)) {
-          json(res, 400, { error: "Manual device input must be a valid IPv4 address." });
+          json(res, 400, {
+            error: "Manual device input must be a valid IPv4 address.",
+          });
           return;
         }
 
         const config = await getOperatorDiscoveryConfig(profileDbPath);
         const manualIps = config.manualIps.filter((item) => item !== ip);
         await saveOperatorDiscoveryConfig(profileDbPath, { manualIps });
-        state.devices = state.devices.filter((device) => device.ip !== ip || device.source !== "manual");
+        state.devices = state.devices.filter(
+          (device) => device.ip !== ip || device.source !== "manual",
+        );
         json(res, 200, { removed: true, devices: state.devices });
         return;
       }
@@ -273,12 +337,17 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
       }
 
       if (pathname === "/api/accounts/variations" && req.method === "GET") {
-        const accountNumber = String(url.searchParams.get("accountNumber") ?? "").trim();
+        const accountNumber = String(
+          url.searchParams.get("accountNumber") ?? "",
+        ).trim();
         if (!accountNumber) {
           json(res, 400, { error: "Missing accountNumber query value." });
           return;
         }
-        const variations = await listVariationsForAccount(profileDbPath, accountNumber);
+        const variations = await listVariationsForAccount(
+          profileDbPath,
+          accountNumber,
+        );
         json(res, 200, { accountNumber, variations });
         return;
       }
@@ -301,14 +370,17 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         }
 
         if (current.model) {
-          const allowed = await variationMatchesModelRequirement(profileDbPath, {
-            accountNumber,
-            variation,
-            modelName: current.model
-          });
+          const allowed = await variationMatchesModelRequirement(
+            profileDbPath,
+            {
+              accountNumber,
+              variation,
+              modelName: current.model,
+            },
+          );
           if (!allowed) {
             json(res, 400, {
-              error: `Variation ${variation} does not satisfy model requirement for "${current.model}".`
+              error: `Variation ${variation} does not satisfy model requirement for "${current.model}".`,
             });
             return;
           }
@@ -320,7 +392,7 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
           variation,
           customerName: customerName || current.customerName || "unknown",
           resolved: true,
-          requiresIntervention: false
+          requiresIntervention: false,
         });
         state.devices = mergeDevices(state.devices, [updated]);
         pushConsole(`Device ${ip} resolved to ${accountNumber}/${variation}.`);
@@ -331,7 +403,7 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
       if (pathname === "/api/start" && req.method === "POST") {
         json(res, 410, {
           error:
-            "File-based settings apply is disabled. Use /api/start/profile and a DB-backed profile from the form product."
+            "File-based settings apply is disabled. Use /api/start/profile and a DB-backed profile from the form product.",
         });
         return;
       }
@@ -342,20 +414,25 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         const accountNumber = String(body.accountNumber ?? "").trim();
         const variation = String(body.variation ?? "").trim();
         if (!isValidIpv4(ip) || !accountNumber || !variation) {
-          json(res, 400, { error: "Missing or invalid ip, accountNumber, or variation." });
+          json(res, 400, {
+            error: "Missing or invalid ip, accountNumber, or variation.",
+          });
           return;
         }
 
         const device = getDeviceByIp(ip);
         if (device?.model) {
-          const allowed = await variationMatchesModelRequirement(profileDbPath, {
-            accountNumber,
-            variation,
-            modelName: device.model
-          });
+          const allowed = await variationMatchesModelRequirement(
+            profileDbPath,
+            {
+              accountNumber,
+              variation,
+              modelName: device.model,
+            },
+          );
           if (!allowed) {
             json(res, 400, {
-              error: `Variation ${variation} does not satisfy model requirement for "${device.model}".`
+              error: `Variation ${variation} does not satisfy model requirement for "${device.model}".`,
             });
             return;
           }
@@ -364,22 +441,24 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
         try {
           const mapPath = body.mapPath
             ? String(body.mapPath)
-            : (await resolveMapPath()) ?? "state/printer-ui-map.json";
-          const profileSettings = await buildSettingsFromProfile(profileDbPath, {
-            accountNumber,
-            variation
-          });
+            : ((await resolveMapPath()) ?? "state/printer-ui-map.json");
+          const profileSettings = await buildSettingsFromProfile(
+            profileDbPath,
+            {
+              accountNumber,
+              variation,
+            },
+          );
           const config = await getOperatorDiscoveryConfig(profileDbPath);
           const deviceLogMode =
             body.deviceLogMode === "daily" || body.deviceLogMode === "all-time"
               ? body.deviceLogMode
               : config.csvMode || defaultDeviceLogMode;
-          const customerName =
-            body.customerName
-              ? String(body.customerName)
-              : device?.customerName
-                ? String(device.customerName)
-                : "unknown";
+          const customerName = body.customerName
+            ? String(body.customerName)
+            : device?.customerName
+              ? String(device.customerName)
+              : "unknown";
 
           const settings: SettingsFile = {
             meta: {
@@ -390,14 +469,18 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
               model: device?.model,
               serial: device?.serial,
               productCode: device?.productCode,
-              rawSerialCombined: device?.rawSerialCombined
+              rawSerialCombined: device?.rawSerialCombined,
             },
             options: {
-              consoleVisible: body.consoleVisible === undefined ? true : Boolean(body.consoleVisible),
-              headless: body.headless === undefined ? false : Boolean(body.headless),
-              deviceLogMode
+              consoleVisible:
+                body.consoleVisible === undefined
+                  ? true
+                  : Boolean(body.consoleVisible),
+              headless:
+                body.headless === undefined ? false : Boolean(body.headless),
+              deviceLogMode,
             },
-            settings: profileSettings
+            settings: profileSettings,
           };
 
           startApplyJob({
@@ -409,11 +492,11 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
               model: device?.model,
               serial: device?.serial,
               productCode: device?.productCode,
-              rawSerialCombined: device?.rawSerialCombined
+              rawSerialCombined: device?.rawSerialCombined,
             },
             mapPath,
             settings,
-            deviceLogMode
+            deviceLogMode,
           });
           json(res, 200, { status: "started" });
           return;
@@ -456,7 +539,9 @@ export function createOperatorServer(options?: OperatorServerOptions): http.Serv
   });
 }
 
-export function startOperatorServer(options?: OperatorServerOptions): http.Server {
+export function startOperatorServer(
+  options?: OperatorServerOptions,
+): http.Server {
   const port = options?.port ?? OPERATOR_PORT;
   const server = createOperatorServer(options);
   server.listen(port, () => {
@@ -464,4 +549,3 @@ export function startOperatorServer(options?: OperatorServerOptions): http.Serve
   });
   return server;
 }
-

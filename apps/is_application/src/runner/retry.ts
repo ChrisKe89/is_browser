@@ -27,7 +27,11 @@ export function classifyApplyError(error: unknown): ClassifiedFailure {
     normalized.includes("above max") ||
     normalized.includes("read-only")
   ) {
-    return { classification: "terminal", reason: "invalid-setting-state", message };
+    return {
+      classification: "terminal",
+      reason: "invalid-setting-state",
+      message,
+    };
   }
 
   if (
@@ -36,7 +40,11 @@ export function classifyApplyError(error: unknown): ClassifiedFailure {
     normalized.includes("navigation step") ||
     normalized.includes("missing selector")
   ) {
-    return { classification: "terminal", reason: "navigation-configuration", message };
+    return {
+      classification: "terminal",
+      reason: "navigation-configuration",
+      message,
+    };
   }
 
   if (normalized.includes("timeout")) {
@@ -51,7 +59,11 @@ export function classifyApplyError(error: unknown): ClassifiedFailure {
     normalized.includes("econnreset") ||
     normalized.includes("temporarily unavailable")
   ) {
-    return { classification: "transient", reason: "runtime-instability", message };
+    return {
+      classification: "transient",
+      reason: "runtime-instability",
+      message,
+    };
   }
 
   return { classification: "terminal", reason: "unknown-terminal", message };
@@ -60,8 +72,7 @@ export function classifyApplyError(error: unknown): ClassifiedFailure {
 export function shouldRetryFailure(
   classified: ClassifiedFailure,
   attempt: number,
-  maxAttempts: number
+  maxAttempts: number,
 ): boolean {
   return classified.classification === "transient" && attempt < maxAttempts;
 }
-

@@ -15,7 +15,12 @@ function sampleMap() {
         title: "Authentication and Accounting",
         url: "http://192.168.0.107/permissions/index.html#hash",
         breadcrumbs: ["Permissions", "Authentication and Accounting"],
-        navPath: [{ action: "goto", url: "http://192.168.0.107/permissions/index.html#hash" }],
+        navPath: [
+          {
+            action: "goto",
+            url: "http://192.168.0.107/permissions/index.html#hash",
+          },
+        ],
       },
     ],
     fields: [
@@ -41,7 +46,9 @@ function sampleMap() {
         id: "field-radio",
         label: "Login Type",
         type: "radio",
-        selectors: [{ kind: "css", value: 'input[type=\"radio\"][name=\"loginType\"]' }],
+        selectors: [
+          { kind: "css", value: 'input[type=\"radio\"][name=\"loginType\"]' },
+        ],
         pageId: "permissions",
         groupTitle: "Authentication Settings",
         groupOrder: 2,
@@ -69,7 +76,9 @@ test("field ids are deterministic across runs", () => {
 
 test("dropdown options are captured when present", () => {
   const schema = buildCaptureSchema(sampleMap());
-  const dropdown = schema.fieldRecords.find((item) => item.type.startsWith("dropdown"));
+  const dropdown = schema.fieldRecords.find((item) =>
+    item.type.startsWith("dropdown"),
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.options.length > 0, true);
   assert.equal(dropdown.value.value_quality, "high");
@@ -81,7 +90,9 @@ test("empty dropdown options are marked unknown with reason", () => {
   map.fields[0].constraints = {};
   map.fields[0].valueQuality = "missing";
   const schema = buildCaptureSchema(map);
-  const dropdown = schema.fieldRecords.find((item) => item.type.startsWith("dropdown"));
+  const dropdown = schema.fieldRecords.find((item) =>
+    item.type.startsWith("dropdown"),
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.options.length, 0);
   assert.equal(dropdown.value.value_quality, "unknown");
@@ -92,9 +103,14 @@ test("snapshot overlay fills null current_value", () => {
   const map = sampleMap();
   map.fields[0].currentValue = null;
   const overlay = new Map();
-  overlay.set("field-1", { current_value: "Local", current_label: "Local Label" });
+  overlay.set("field-1", {
+    current_value: "Local",
+    current_label: "Local Label",
+  });
   const schema = buildCaptureSchema(map, overlay);
-  const dropdown = schema.fieldRecords.find((item) => item.source_field_id === "field-1");
+  const dropdown = schema.fieldRecords.find(
+    (item) => item.source_field_id === "field-1",
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.value.current_value, "Local");
   assert.equal(dropdown.value.current_label, "Local Label");
@@ -106,7 +122,9 @@ test("snapshot overlay fills null default_value", () => {
   const overlay = new Map();
   overlay.set("field-1", { current_value: "Off", default_value: "Off" });
   const schema = buildCaptureSchema(map, overlay);
-  const dropdown = schema.fieldRecords.find((item) => item.source_field_id === "field-1");
+  const dropdown = schema.fieldRecords.find(
+    (item) => item.source_field_id === "field-1",
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.value.default_value, "Off");
 });
@@ -117,7 +135,9 @@ test("snapshot overlay never overwrites non-null current_value with null", () =>
   const overlay = new Map();
   overlay.set("field-1", { current_value: null });
   const schema = buildCaptureSchema(map, overlay);
-  const dropdown = schema.fieldRecords.find((item) => item.source_field_id === "field-1");
+  const dropdown = schema.fieldRecords.find(
+    (item) => item.source_field_id === "field-1",
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.value.current_value, "Local");
 });
@@ -128,7 +148,9 @@ test("snapshot overlay updates non-null current_value with newer non-null value 
   const overlay = new Map();
   overlay.set("field-1", { current_value: "Local" });
   const schema = buildCaptureSchema(map, overlay);
-  const dropdown = schema.fieldRecords.find((item) => item.source_field_id === "field-1");
+  const dropdown = schema.fieldRecords.find(
+    (item) => item.source_field_id === "field-1",
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.value.current_value, "Local");
 });
@@ -139,7 +161,9 @@ test("snapshot overlay never overwrites non-null default_value", () => {
   const overlay = new Map();
   overlay.set("field-1", { current_value: "Local", default_value: "Local" });
   const schema = buildCaptureSchema(map, overlay);
-  const dropdown = schema.fieldRecords.find((item) => item.source_field_id === "field-1");
+  const dropdown = schema.fieldRecords.find(
+    (item) => item.source_field_id === "field-1",
+  );
   assert.ok(dropdown);
   assert.equal(dropdown.value.default_value, "Off");
 });
@@ -152,7 +176,9 @@ test("schema without overlay is unchanged", () => {
   const idsWith = withEmptyOverlay.fieldRecords.map((r) => r.field_id).sort();
   assert.deepEqual(idsWith, idsWithout);
   for (const record of withoutOverlay.fieldRecords) {
-    const matching = withEmptyOverlay.fieldRecords.find((r) => r.field_id === record.field_id);
+    const matching = withEmptyOverlay.fieldRecords.find(
+      (r) => r.field_id === record.field_id,
+    );
     assert.ok(matching);
     assert.deepEqual(matching.value, record.value);
   }

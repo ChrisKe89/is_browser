@@ -1,4 +1,8 @@
-import { assertUiMapCompatible, type FieldEntry, type UiMap } from "@is-browser/contract";
+import {
+  assertUiMapCompatible,
+  type FieldEntry,
+  type UiMap,
+} from "@is-browser/contract";
 import { type SettingsFile } from "./settings.js";
 
 export type ApplyPlanItem = {
@@ -30,7 +34,7 @@ export type ResolvedApplyPlan = ApplyPlan & {
 
 function resolveField(
   map: UiMap,
-  setting: { id?: string; label?: string }
+  setting: { id?: string; label?: string },
 ): FieldEntry | undefined {
   if (setting.id) {
     const exact = map.fields.find((field) => field.id === setting.id);
@@ -38,7 +42,9 @@ function resolveField(
   }
   if (setting.label) {
     const normalized = setting.label.toLowerCase();
-    return map.fields.find((field) => (field.label ?? "").toLowerCase() === normalized);
+    return map.fields.find(
+      (field) => (field.label ?? "").toLowerCase() === normalized,
+    );
   }
   return undefined;
 }
@@ -49,7 +55,10 @@ function comparePlanItems(left: ApplyPlanItem, right: ApplyPlanItem): number {
   return left.settingId.localeCompare(right.settingId);
 }
 
-export function buildResolvedApplyPlan(map: UiMap, settings: SettingsFile): ResolvedApplyPlan {
+export function buildResolvedApplyPlan(
+  map: UiMap,
+  settings: SettingsFile,
+): ResolvedApplyPlan {
   assertUiMapCompatible(map);
 
   const skipped: ApplyPlanSkipped[] = [];
@@ -61,7 +70,7 @@ export function buildResolvedApplyPlan(map: UiMap, settings: SettingsFile): Reso
       skipped.push({
         settingId: setting.id,
         label: setting.label,
-        reason: "field-not-found"
+        reason: "field-not-found",
       });
       continue;
     }
@@ -69,7 +78,7 @@ export function buildResolvedApplyPlan(map: UiMap, settings: SettingsFile): Reso
       skipped.push({
         settingId: field.id,
         label: field.label,
-        reason: "read-only"
+        reason: "read-only",
       });
       continue;
     }
@@ -78,7 +87,7 @@ export function buildResolvedApplyPlan(map: UiMap, settings: SettingsFile): Reso
       pageId: field.pageId,
       fieldType: field.type,
       value: setting.value,
-      field
+      field,
     });
   }
 
@@ -87,7 +96,7 @@ export function buildResolvedApplyPlan(map: UiMap, settings: SettingsFile): Reso
   return {
     schemaVersion: map.meta.schemaVersion,
     items: resolvedItems,
-    skipped
+    skipped,
   };
 }
 
@@ -100,7 +109,7 @@ export function buildApplyPlan(map: UiMap, settings: SettingsFile): ApplyPlan {
       settingId: item.settingId,
       pageId: item.pageId,
       fieldType: item.fieldType,
-      value: item.value
-    }))
+      value: item.value,
+    })),
   };
 }

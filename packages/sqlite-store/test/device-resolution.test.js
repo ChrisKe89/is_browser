@@ -9,13 +9,15 @@ import {
   resolveDeviceByModelAndSerial,
   searchAccounts,
   upsertDeviceResolutionRecords,
-  variationMatchesModelRequirement
+  variationMatchesModelRequirement,
 } from "@is-browser/sqlite-store";
 import { saveProfile } from "@is-browser/sqlite-store";
 import { importUiMapToDatabase } from "@is-browser/sqlite-store";
 
 async function makeTempDbPath() {
-  const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-resolution-"));
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "printer-ui-resolution-"),
+  );
   return { tempDir, dbPath: path.join(tempDir, "test.sqlite") };
 }
 
@@ -24,18 +26,25 @@ function mapWithOneSetting() {
     meta: {
       generatedAt: "2026-02-10T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
-    pages: [{ id: "system", title: "System", url: "http://192.168.0.10/#/system", navPath: [] }],
+    pages: [
+      {
+        id: "system",
+        title: "System",
+        url: "http://192.168.0.10/#/system",
+        navPath: [],
+      },
+    ],
     fields: [
       {
         id: "system.device-name",
         label: "Device Name",
         type: "text",
         selectors: [{ kind: "css", value: "#deviceName" }],
-        pageId: "system"
-      }
-    ]
+        pageId: "system",
+      },
+    ],
   };
 }
 
@@ -46,7 +55,7 @@ test("resolution lookup matches exact model+serial and enforces model requiremen
     await saveProfile(dbPath, {
       accountNumber: "10001",
       variation: "base",
-      values: [{ settingId: "system.device-name", value: "One" }]
+      values: [{ settingId: "system.device-name", value: "One" }],
     });
 
     await upsertDeviceResolutionRecords(dbPath, [
@@ -56,13 +65,13 @@ test("resolution lookup matches exact model+serial and enforces model requiremen
         customerName: "Test MFD",
         accountNumber: "10001",
         variation: "base",
-        modelMatch: "Apeos*"
-      }
+        modelMatch: "Apeos*",
+      },
     ]);
 
     const resolved = await resolveDeviceByModelAndSerial(dbPath, {
       modelName: "Apeos C3530",
-      serial: "043240"
+      serial: "043240",
     });
     assert.ok(resolved);
     assert.equal(resolved?.accountNumber, "10001");
@@ -77,7 +86,7 @@ test("resolution lookup matches exact model+serial and enforces model requiremen
     const accountMatches = await variationMatchesModelRequirement(dbPath, {
       accountNumber: "10001",
       variation: "base",
-      modelName: "Apeos C3530"
+      modelName: "Apeos C3530",
     });
     assert.equal(accountMatches, true);
   } finally {
@@ -92,7 +101,7 @@ test("account search includes profile and resolution account numbers", async () 
     await saveProfile(dbPath, {
       accountNumber: "10077",
       variation: "default",
-      values: [{ settingId: "system.device-name", value: "Two" }]
+      values: [{ settingId: "system.device-name", value: "Two" }],
     });
     await upsertDeviceResolutionRecords(dbPath, [
       {
@@ -100,8 +109,8 @@ test("account search includes profile and resolution account numbers", async () 
         serial: "043240",
         customerName: "Test MFD",
         accountNumber: "10001",
-        variation: "default"
-      }
+        variation: "default",
+      },
     ]);
 
     const all = await searchAccounts(dbPath);
@@ -114,4 +123,3 @@ test("account search includes profile and resolution account numbers", async () 
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

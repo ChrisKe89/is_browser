@@ -24,11 +24,13 @@ type RemotePanelConfig = {
 export async function runRemotePanel(
   page: import("playwright").Page,
   panelUrl: string,
-  settings: { profileId?: string; steps?: RemotePanelAction[] }
+  settings: { profileId?: string; steps?: RemotePanelAction[] },
 ): Promise<void> {
   await page.goto(panelUrl, { waitUntil: "networkidle" });
   const profile = await loadProfile(settings.profileId ?? REMOTE_PANEL_PROFILE);
-  const steps = settings.steps?.length ? settings.steps : profile?.steps ?? [];
+  const steps = settings.steps?.length
+    ? settings.steps
+    : (profile?.steps ?? []);
   if (profile?.viewport) {
     await page.setViewportSize(profile.viewport);
   }
@@ -37,7 +39,11 @@ export async function runRemotePanel(
     if (step.delayMs) {
       await page.waitForTimeout(step.delayMs);
     }
-    if (step.action === "click" && step.x !== undefined && step.y !== undefined) {
+    if (
+      step.action === "click" &&
+      step.x !== undefined &&
+      step.y !== undefined
+    ) {
       await page.mouse.click(step.x, step.y);
     } else if (step.action === "type" && step.text) {
       await page.keyboard.type(step.text);
@@ -49,7 +55,9 @@ export async function runRemotePanel(
   }
 }
 
-async function loadProfile(id: string): Promise<RemotePanelProfile | undefined> {
+async function loadProfile(
+  id: string,
+): Promise<RemotePanelProfile | undefined> {
   try {
     const raw = await readFile("config/remote-panel-profiles.json", "utf8");
     const data = JSON.parse(raw) as RemotePanelConfig;
@@ -58,4 +66,3 @@ async function loadProfile(id: string): Promise<RemotePanelProfile | undefined> 
     return undefined;
   }
 }
-

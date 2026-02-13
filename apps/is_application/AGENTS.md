@@ -1,11 +1,14 @@
 # AGENTS.md (apps/is_application)
 
 ## Purpose
+
 Operator product + apply runner.
+
 - Serves the operator UI and API for discovery + running DB-backed profile applies.
 - Includes CLIs for applying settings and printing discovery results.
 
 ## Canonical Commands (Makefile-first)
+
 - Dev server (operator UI/API): `make apply-dev`
 - Apply settings (DB-backed profile): `make apply-settings`
 - Discovery scan CLI (prints JSON): `make discovery-scan`
@@ -13,15 +16,18 @@ Operator product + apply runner.
 - Tests (this workspace only): `npm -w apps/is_application test`
 
 ## Entrypoints
+
 - Operator server: `apps/is_application/src/server/operator.ts`
 - Operator server implementation: `apps/is_application/src/server/operatorServer.ts`
 - Apply CLI: `apps/is_application/src/runner/apply.ts`
 - Discovery CLI: `apps/is_application/src/discovery/cli.ts`
 
 ## Config & Environment
+
 Shared defaults live in `packages/env/src/env.ts` (ports, DB path, discovery ranges, etc).
 
 Common env vars used here:
+
 - Operator server:
   - `OPERATOR_PORT` (default `5050`)
   - `FORM_PUBLIC_URL` (default `http://localhost:5051`)
@@ -36,6 +42,7 @@ Common env vars used here:
   - `APPLY_HEADLESS`, `APPLY_CONSOLE_VISIBLE`, `APPLY_DEVICE_LOG_MODE`
 
 ## Notes
+
 - File-based apply via `/api/start` is intentionally disabled (returns `410`); use DB-backed profile apply (`/api/start/profile`) or `make apply-settings`.
 - Operator UI links to the form product; keep `FORM_PUBLIC_URL` aligned with the form server.
 

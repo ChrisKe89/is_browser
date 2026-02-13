@@ -8,7 +8,7 @@ import {
   type ApplyRunItemInput as ContractRunAuditItemInput,
   type ApplyRunStartInput as ContractRunAuditStartInput,
   type ApplyRunStatus as ContractApplyRunStatus,
-  type ApplyRunItemStatus as ContractApplyRunItemStatus
+  type ApplyRunItemStatus as ContractApplyRunItemStatus,
 } from "@is-browser/contract";
 import { migrateDatabase } from "./migrations.js";
 
@@ -33,12 +33,12 @@ export class RunAuditSession {
     this.db = db;
     this.insertItemStatement = db.prepare(
       `INSERT INTO apply_run_item (run_id, setting_id, attempt, status, message, attempted_at)
-       VALUES (?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?)`,
     );
     this.finishStatement = db.prepare(
       `UPDATE apply_run
        SET status = ?, message = ?, finished_at = ?
-       WHERE id = ?`
+       WHERE id = ?`,
     );
   }
 
@@ -50,7 +50,7 @@ export class RunAuditSession {
       parsed.attempt,
       parsed.status,
       parsed.message,
-      parsed.attemptedAt ?? new Date().toISOString()
+      parsed.attemptedAt ?? new Date().toISOString(),
     );
   }
 
@@ -60,7 +60,7 @@ export class RunAuditSession {
       parsed.status,
       parsed.message ?? null,
       new Date().toISOString(),
-      this.runId
+      this.runId,
     );
   }
 
@@ -71,7 +71,7 @@ export class RunAuditSession {
 
 export async function startRunAudit(
   dbPath: string,
-  input: RunAuditStartInput
+  input: RunAuditStartInput,
 ): Promise<RunAuditSession> {
   const parsedInput = ApplyRunStartInputSchema.parse(input);
   await migrateDatabase(dbPath);
@@ -87,7 +87,7 @@ export async function startRunAudit(
        status,
        message,
        started_at
-     ) VALUES (?, ?, ?, ?, 'started', ?, ?)`
+     ) VALUES (?, ?, ?, ?, 'started', ?, ?)`,
   );
 
   const normalizedAccount = parsedInput.accountNumber.trim();
@@ -100,7 +100,7 @@ export async function startRunAudit(
     parsedInput.deviceIp,
     parsedInput.mapPath,
     "Run started",
-    startedAt
+    startedAt,
   );
 
   const runId = Number(result.lastInsertRowid);
@@ -111,4 +111,3 @@ export async function startRunAudit(
 
   return new RunAuditSession(runId, db);
 }
-

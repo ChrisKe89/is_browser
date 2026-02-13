@@ -1,6 +1,9 @@
 import { type Page, type Locator } from "playwright";
 import { type FieldEntry, type Selector } from "@is-browser/contract";
-import { readControlState, type ReadControlStateMeta } from "./fieldDiscovery.js";
+import {
+  readControlState,
+  type ReadControlStateMeta,
+} from "./fieldDiscovery.js";
 import { type FieldStateSnapshotEntry } from "../clickCapture.js";
 
 const SNAPSHOT_TIMEOUT_MS = 750;
@@ -19,16 +22,21 @@ export type VisibleFieldDescriptor = {
 function resolveLocator(
   page: Page,
   selectors: Selector[],
-  scope?: Locator
+  scope?: Locator,
 ): Locator | undefined {
   const root = scope ?? page;
 
-  const roleSelector = selectors.find((s) => s.kind === "role" && s.role && s.name);
+  const roleSelector = selectors.find(
+    (s) => s.kind === "role" && s.role && s.name,
+  );
   if (roleSelector) {
-    return root.getByRole(roleSelector.role as Parameters<typeof root.getByRole>[0], {
-      name: roleSelector.name,
-      exact: false
-    });
+    return root.getByRole(
+      roleSelector.role as Parameters<typeof root.getByRole>[0],
+      {
+        name: roleSelector.name,
+        exact: false,
+      },
+    );
   }
 
   const labelSelector = selectors.find((s) => s.kind === "label" && s.value);
@@ -48,12 +56,26 @@ function resolveLocator(
   return undefined;
 }
 
-function valueSourceForControlType(controlType: string, fieldType: string): string {
-  if (controlType === "switch" || controlType === "checkbox" || fieldType === "checkbox") return "checked";
+function valueSourceForControlType(
+  controlType: string,
+  fieldType: string,
+): string {
+  if (
+    controlType === "switch" ||
+    controlType === "checkbox" ||
+    fieldType === "checkbox"
+  )
+    return "checked";
   if (controlType === "radio_group" || fieldType === "radio") return "checked";
-  if (controlType === "dropdown" || fieldType === "select") return "selectedOption";
+  if (controlType === "dropdown" || fieldType === "select")
+    return "selectedOption";
   if (controlType === "number" || fieldType === "number") return "inputValue";
-  if (controlType === "textbox" || fieldType === "text" || fieldType === "textarea") return "inputValue";
+  if (
+    controlType === "textbox" ||
+    fieldType === "text" ||
+    fieldType === "textarea"
+  )
+    return "inputValue";
   if (controlType === "staticTextButton") return "textContent";
   return "inputValue";
 }
@@ -63,42 +85,53 @@ function buildMeta(descriptor: VisibleFieldDescriptor): ReadControlStateMeta {
     fieldType: descriptor.type,
     tagName: descriptor.tagName,
     roleAttr: descriptor.roleAttr,
-    inputType: descriptor.inputType
+    inputType: descriptor.inputType,
   };
 }
 
 function timedEvaluate<T>(
   locator: Locator,
-  fn: (el: Element) => T
+  fn: (el: Element) => T,
 ): Promise<T | undefined> {
   return Promise.race([
     locator.evaluate(fn as (el: Element) => T),
-    new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), SNAPSHOT_TIMEOUT_MS))
+    new Promise<undefined>((resolve) =>
+      setTimeout(() => resolve(undefined), SNAPSHOT_TIMEOUT_MS),
+    ),
   ]).catch(() => undefined);
 }
 
 async function readDefaultValue(
   locator: Locator,
-  descriptor: VisibleFieldDescriptor
+  descriptor: VisibleFieldDescriptor,
 ): Promise<string | number | boolean | null> {
   try {
     const controlType = descriptor.controlType;
     const fieldType = descriptor.type;
 
-    if (controlType === "switch" || controlType === "checkbox" || fieldType === "checkbox") {
+    if (
+      controlType === "switch" ||
+      controlType === "checkbox" ||
+      fieldType === "checkbox"
+    ) {
       const defaultChecked = await timedEvaluate(
         locator,
-        (el) => (el as HTMLInputElement).defaultChecked
+        (el) => (el as HTMLInputElement).defaultChecked,
       );
       return typeof defaultChecked === "boolean" ? defaultChecked : null;
     }
 
-    if (fieldType === "text" || fieldType === "textarea" || fieldType === "number") {
+    if (
+      fieldType === "text" ||
+      fieldType === "textarea" ||
+      fieldType === "number"
+    ) {
       const defaultVal = await timedEvaluate(
         locator,
-        (el) => (el as HTMLInputElement).defaultValue
+        (el) => (el as HTMLInputElement).defaultValue,
       );
-      if (defaultVal === null || defaultVal === undefined || defaultVal === "") return null;
+      if (defaultVal === null || defaultVal === undefined || defaultVal === "")
+        return null;
       if (fieldType === "number") {
         const num = Number(defaultVal);
         return Number.isFinite(num) ? num : null;
@@ -106,15 +139,17 @@ async function readDefaultValue(
       return String(defaultVal);
     }
 
-    if (fieldType === "select" && (descriptor.tagName ?? "").toLowerCase() === "select") {
-      const defaultVal = await timedEvaluate(
-        locator,
-        (el) => {
-          const selectEl = el as HTMLSelectElement;
-          const defaultOpt = Array.from(selectEl.options).find((o) => o.defaultSelected);
-          return defaultOpt?.value ?? null;
-        }
-      );
+    if (
+      fieldType === "select" &&
+      (descriptor.tagName ?? "").toLowerCase() === "select"
+    ) {
+      const defaultVal = await timedEvaluate(locator, (el) => {
+        const selectEl = el as HTMLSelectElement;
+        const defaultOpt = Array.from(selectEl.options).find(
+          (o) => o.defaultSelected,
+        );
+        return defaultOpt?.value ?? null;
+      });
       return defaultVal ?? null;
     }
 
@@ -127,7 +162,7 @@ async function readDefaultValue(
 export function buildVisibleFieldDescriptors(
   visibleFieldIds: string[],
   fieldsByFingerprint: Map<string, FieldEntry>,
-  fieldIdToFingerprint: Map<string, string>
+  fieldIdToFingerprint: Map<string, string>,
 ): VisibleFieldDescriptor[] {
   const descriptors: VisibleFieldDescriptor[] = [];
 
@@ -145,7 +180,7 @@ export function buildVisibleFieldDescriptors(
       defaultValue: field.defaultValue,
       tagName: undefined,
       roleAttr: undefined,
-      inputType: undefined
+      inputType: undefined,
     });
   }
 
@@ -155,7 +190,7 @@ export function buildVisibleFieldDescriptors(
 export async function captureFieldStateSnapshot(
   page: Page,
   descriptors: VisibleFieldDescriptor[],
-  scopeLocator?: Locator
+  scopeLocator?: Locator,
 ): Promise<FieldStateSnapshotEntry[]> {
   const results: FieldStateSnapshotEntry[] = [];
 
@@ -171,7 +206,7 @@ export async function captureFieldStateSnapshot(
           default_value: null,
           value_source: "none",
           capture_ok: false,
-          capture_error: "no_selector"
+          capture_error: "no_selector",
         });
         continue;
       }
@@ -186,7 +221,7 @@ export async function captureFieldStateSnapshot(
           default_value: null,
           value_source: "none",
           capture_ok: false,
-          capture_error: "not_found"
+          capture_error: "not_found",
         });
         continue;
       }
@@ -199,7 +234,7 @@ export async function captureFieldStateSnapshot(
           default_value: null,
           value_source: "none",
           capture_ok: false,
-          capture_error: "ambiguous"
+          capture_error: "ambiguous",
         });
         continue;
       }
@@ -209,7 +244,8 @@ export async function captureFieldStateSnapshot(
         return {
           tagName: tag,
           roleAttr: el.getAttribute("role") ?? "",
-          inputType: tag === "input" ? (el as HTMLInputElement).type ?? "" : ""
+          inputType:
+            tag === "input" ? ((el as HTMLInputElement).type ?? "") : "",
         };
       });
 
@@ -217,7 +253,7 @@ export async function captureFieldStateSnapshot(
         ...descriptor,
         tagName: domMeta?.tagName || descriptor.tagName,
         roleAttr: domMeta?.roleAttr || descriptor.roleAttr,
-        inputType: domMeta?.inputType || descriptor.inputType
+        inputType: domMeta?.inputType || descriptor.inputType,
       };
 
       const meta = buildMeta(enrichedDescriptor);
@@ -226,7 +262,10 @@ export async function captureFieldStateSnapshot(
       const currentValue = state.currentValue ?? null;
       const currentLabel = state.currentLabel ?? null;
       const defaultValue = await readDefaultValue(locator, enrichedDescriptor);
-      const valueSource = valueSourceForControlType(descriptor.controlType, descriptor.type);
+      const valueSource = valueSourceForControlType(
+        descriptor.controlType,
+        descriptor.type,
+      );
 
       results.push({
         fieldId: descriptor.fieldId,
@@ -235,7 +274,7 @@ export async function captureFieldStateSnapshot(
         current_label: currentLabel,
         default_value: defaultValue,
         value_source: valueSource,
-        capture_ok: true
+        capture_ok: true,
       });
     } catch (error) {
       results.push({
@@ -246,7 +285,7 @@ export async function captureFieldStateSnapshot(
         default_value: null,
         value_source: "none",
         capture_ok: false,
-        capture_error: error instanceof Error ? error.message : String(error)
+        capture_error: error instanceof Error ? error.message : String(error),
       });
     }
   }

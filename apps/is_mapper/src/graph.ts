@@ -7,14 +7,19 @@ import {
   type NodeEntry,
   type PageEntry,
   type Selector,
-  type UiMap
+  type UiMap,
 } from "@is-browser/contract";
 import { slugify } from "./utils.js";
 
 type ClickLogLike = {
   clicks: Array<{
     target: string;
-    selectors: Array<{ kind: "role" | "label" | "css"; role?: string; name?: string; value?: string }>;
+    selectors: Array<{
+      kind: "role" | "label" | "css";
+      role?: string;
+      name?: string;
+      value?: string;
+    }>;
     urlBefore: string;
     urlAfter: string;
     frameUrl?: string;
@@ -39,10 +44,17 @@ function hashValue(input: string): string {
   return createHash("sha1").update(input).digest("hex");
 }
 
-function stableNodeId(kind: NodeEntry["kind"], title: string, breadcrumbs: string[] | undefined, url: string): string {
+function stableNodeId(
+  kind: NodeEntry["kind"],
+  title: string,
+  breadcrumbs: string[] | undefined,
+  url: string,
+): string {
   const crumbPart = slugify((breadcrumbs ?? []).join("-") || title);
   const titlePart = slugify(title);
-  const pathPart = slugify(normalizeUrl(url).split("/").filter(Boolean).join("-") || "root");
+  const pathPart = slugify(
+    normalizeUrl(url).split("/").filter(Boolean).join("-") || "root",
+  );
   return `node.${kind}.${crumbPart}.${titlePart}.${pathPart}`;
 }
 
@@ -81,12 +93,19 @@ function actionKindFromLabel(label: string | undefined): ActionEntry["kind"] {
   if (normalized.includes("save")) return "save";
   if (normalized.includes("cancel")) return "cancel";
   if (normalized.includes("apply")) return "apply";
-  if (normalized.includes("close") || normalized === "ok" || normalized === "done") return "close";
+  if (
+    normalized.includes("close") ||
+    normalized === "ok" ||
+    normalized === "done"
+  )
+    return "close";
   if (normalized.includes("reset")) return "reset";
   return "unknown";
 }
 
-function controlTypeFromField(field: FieldEntry): NonNullable<FieldEntry["controlType"]> {
+function controlTypeFromField(
+  field: FieldEntry,
+): NonNullable<FieldEntry["controlType"]> {
   if (field.controlType) return field.controlType;
   if (field.type === "checkbox") return "checkbox";
   if (field.type === "number") return "number";
@@ -97,12 +116,15 @@ function controlTypeFromField(field: FieldEntry): NonNullable<FieldEntry["contro
   return "unknown";
 }
 
-function valueTypeFromField(field: FieldEntry): NonNullable<FieldEntry["valueType"]> {
+function valueTypeFromField(
+  field: FieldEntry,
+): NonNullable<FieldEntry["valueType"]> {
   if (field.valueType) return field.valueType;
   const controlType = controlTypeFromField(field);
   if (controlType === "checkbox" || controlType === "switch") return "boolean";
   if (controlType === "number") return "number";
-  if (controlType === "dropdown" || controlType === "radio_group") return "enum";
+  if (controlType === "dropdown" || controlType === "radio_group")
+    return "enum";
   if (controlType === "staticTextButton") return "string";
   if (controlType === "textbox") return "string";
   return "unknown";
@@ -134,7 +156,8 @@ function isOptionBlobLabel(label: string): boolean {
   const words = label.split(/\s+/).filter(Boolean);
   if (words.length > 10) return true;
   if (words.length >= 6) {
-    const uniqueWordCount = new Set(words.map((word) => word.toLowerCase())).size;
+    const uniqueWordCount = new Set(words.map((word) => word.toLowerCase()))
+      .size;
     if (uniqueWordCount / words.length < 0.6) return true;
   }
   return false;
@@ -148,7 +171,8 @@ export function shouldContributeToBreadcrumb(step: NavStep): boolean {
   const label = navStepLabel(step);
   if (!label) return false;
   if (isOptionBlobLabel(label)) return false;
-  if (/^(save|apply|cancel|close|ok|submit|done|reset)$/i.test(label)) return false;
+  if (/^(save|apply|cancel|close|ok|submit|done|reset)$/i.test(label))
+    return false;
   return true;
 }
 
@@ -192,7 +216,7 @@ function inferNodeKind(page: PageEntry): NodeEntry["kind"] {
 
 function inferTriggerKind(
   selector: Selector | undefined,
-  fallback: NavStep["kind"] | undefined
+  fallback: NavStep["kind"] | undefined,
 ): NavStep["kind"] {
   if (fallback) return fallback;
   if (!selector || selector.kind !== "role") return "unknown";
@@ -211,7 +235,7 @@ function classifyEdgeType(
   trigger: NavStep,
   transitionType: EdgeEntry["edgeType"] | undefined,
   urlBefore?: string,
-  urlAfter?: string
+  urlAfter?: string,
 ): EdgeEntry["edgeType"] {
   if (transitionType === "dismiss_alert") return "dismiss_alert";
   if (transitionType === "open_modal") return "open_modal";
@@ -222,9 +246,12 @@ function classifyEdgeType(
   const fromUrl = normalizeUrl(urlBefore ?? fromNode?.url);
   const toUrl = normalizeUrl(urlAfter ?? toNode?.url);
   if (fromUrl && toUrl && fromUrl !== toUrl) return "navigate";
-  if (fromNode?.kind !== "modal" && toNode?.kind === "modal") return "open_modal";
-  if (fromNode?.kind === "modal" && toNode?.kind !== "modal") return "close_modal";
-  if (trigger.kind === "tab" || trigger.selector?.role === "tab") return "tab_switch";
+  if (fromNode?.kind !== "modal" && toNode?.kind === "modal")
+    return "open_modal";
+  if (fromNode?.kind === "modal" && toNode?.kind !== "modal")
+    return "close_modal";
+  if (trigger.kind === "tab" || trigger.selector?.role === "tab")
+    return "tab_switch";
   return "expand_section";
 }
 
@@ -238,11 +265,14 @@ function dedupeActions(fields: FieldEntry[]): ActionEntry[] {
     for (const action of field.actions ?? []) {
       const selectorKey = selectorSignature(action.selector);
       if (bySelector.has(selectorKey)) continue;
-      const label = normalizeSpace(action.label ?? action.selector.name ?? action.selector.value) || "Action";
+      const label =
+        normalizeSpace(
+          action.label ?? action.selector.name ?? action.selector.value,
+        ) || "Action";
       bySelector.set(selectorKey, {
         label,
         kind: actionKindFromLabel(label),
-        selector: action.selector
+        selector: action.selector,
       });
     }
   }
@@ -251,7 +281,7 @@ function dedupeActions(fields: FieldEntry[]): ActionEntry[] {
 
 function mergePageActions(
   pageActions: NonNullable<PageEntry["actions"]> | undefined,
-  dedupedFieldActions: ActionEntry[]
+  dedupedFieldActions: ActionEntry[],
 ): ActionEntry[] {
   if (!pageActions || pageActions.length === 0) {
     return dedupedFieldActions;
@@ -261,30 +291,32 @@ function mergePageActions(
     bySelector.set(selectorSignature(action.selector), action);
   }
   for (const action of pageActions) {
-    const label = normalizeSpace(action.label ?? action.selector.name ?? action.selector.value) || "Action";
+    const label =
+      normalizeSpace(
+        action.label ?? action.selector.name ?? action.selector.value,
+      ) || "Action";
     const key = selectorSignature(action.selector);
     if (bySelector.has(key)) continue;
     bySelector.set(key, {
       label,
       kind: actionKindFromLabel(label),
-      selector: action.selector
+      selector: action.selector,
     });
   }
   return Array.from(bySelector.values());
 }
 
-function addEdge(
-  edges: EdgeEntry[],
-  seen: Set<string>,
-  edge: EdgeEntry
-): void {
+function addEdge(edges: EdgeEntry[], seen: Set<string>, edge: EdgeEntry): void {
   const key = `${edge.fromNodeId}|${edge.toNodeId}|${edge.edgeType}|${navStepLabel(edge.trigger) ?? ""}`;
   if (seen.has(key)) return;
   seen.add(key);
   edges.push(edge);
 }
 
-function pageIdForUrl(pages: PageEntry[], url: string | undefined): string | undefined {
+function pageIdForUrl(
+  pages: PageEntry[],
+  url: string | undefined,
+): string | undefined {
   if (!url) return undefined;
   const normalized = normalizeUrl(url);
   const match = pages
@@ -297,7 +329,7 @@ function pageIdForUrl(pages: PageEntry[], url: string | undefined): string | und
 function resolveNodeId(
   pageToNode: Map<string, string>,
   nodeById: Map<string, NodeEntry>,
-  ref: string | undefined
+  ref: string | undefined,
 ): string | undefined {
   if (!ref) return undefined;
   if (pageToNode.has(ref)) return pageToNode.get(ref);
@@ -305,7 +337,10 @@ function resolveNodeId(
   return undefined;
 }
 
-export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions): UiMap {
+export function attachCanonicalGraph(
+  map: UiMap,
+  options: CanonicalGraphOptions,
+): UiMap {
   const capturedAt = options.capturedAt ?? new Date().toISOString();
   map.meta.capturedAt = map.meta.capturedAt ?? capturedAt;
   map.meta.runId = options.runId;
@@ -319,15 +354,25 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
     field.controlType = controlTypeFromField(field);
     field.valueType = valueTypeFromField(field);
     field.readonly = field.readonly ?? field.constraints?.readOnly ?? false;
-    field.visibility = field.visibility ?? { visible: true, enabled: !field.readonly };
+    field.visibility = field.visibility ?? {
+      visible: true,
+      enabled: !field.readonly,
+    };
     field.groupTitle = groupTitleFromField(field);
-    field.groupKey = field.groupKey ?? `group:${field.groupTitle.toLowerCase().replace(/\s+/g, "-")}`;
+    field.groupKey =
+      field.groupKey ??
+      `group:${field.groupTitle.toLowerCase().replace(/\s+/g, "-")}`;
     field.groupOrder = field.groupOrder ?? 1;
-    field.source = field.source ?? { discoveredFrom: "scan", runId: options.runId };
+    field.source = field.source ?? {
+      discoveredFrom: "scan",
+      runId: options.runId,
+    };
   }
 
   const fieldsByPage = new Map<string, FieldEntry[]>();
-  for (const field of map.fields.sort((a, b) => fieldSortKey(a).localeCompare(fieldSortKey(b)))) {
+  for (const field of map.fields.sort((a, b) =>
+    fieldSortKey(a).localeCompare(fieldSortKey(b)),
+  )) {
     const bucket = fieldsByPage.get(field.pageId) ?? [];
     bucket.push(field);
     fieldsByPage.set(field.pageId, bucket);
@@ -359,7 +404,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         groupId: key,
         title,
         order,
-        fields: [field]
+        fields: [field],
       });
       nextGroupOrder = Math.max(nextGroupOrder, order + 1);
     }
@@ -370,7 +415,9 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         groupId: group.groupId,
         title: group.title,
         order: group.order,
-        fields: group.fields.sort((a, b) => fieldSortKey(a).localeCompare(fieldSortKey(b)))
+        fields: group.fields.sort((a, b) =>
+          fieldSortKey(a).localeCompare(fieldSortKey(b)),
+        ),
       }));
 
     const breadcrumbs = breadcrumbsFromPage(page);
@@ -382,11 +429,19 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         normalizeSpace(page.title),
         (breadcrumbs ?? []).join(">"),
         groups.map((group) => group.title).join("|"),
-        pageFields.map((field) => normalizeSpace(field.label)).slice(0, 10).join("|")
-      ].join("|")
+        pageFields
+          .map((field) => normalizeSpace(field.label))
+          .slice(0, 10)
+          .join("|"),
+      ].join("|"),
     );
 
-    let nodeId = stableNodeId(kind, normalizeSpace(page.title) || page.id, breadcrumbs, page.url);
+    let nodeId = stableNodeId(
+      kind,
+      normalizeSpace(page.title) || page.id,
+      breadcrumbs,
+      page.url,
+    );
     let suffix = 2;
     while (usedNodeIds.has(nodeId)) {
       nodeId = `${stableNodeId(kind, normalizeSpace(page.title) || page.id, breadcrumbs, page.url)}.${suffix}`;
@@ -394,7 +449,10 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
     }
     usedNodeIds.add(nodeId);
 
-    const mergedActions = mergePageActions(page.actions, dedupeActions(pageFields));
+    const mergedActions = mergePageActions(
+      page.actions,
+      dedupeActions(pageFields),
+    );
     const node: NodeEntry = {
       nodeId,
       kind,
@@ -405,7 +463,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
       navPath: page.navPath,
       groups,
       actions: mergedActions,
-      fingerprint
+      fingerprint,
     };
 
     const screenshotPath = options.snapshotsByPageId?.get(page.id);
@@ -432,7 +490,10 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         continue;
       }
 
-      const inferredFrom = click.nodeIdBefore ?? currentPageId ?? pageIdForUrl(map.pages, click.urlBefore);
+      const inferredFrom =
+        click.nodeIdBefore ??
+        currentPageId ??
+        pageIdForUrl(map.pages, click.urlBefore);
       let inferredTo = click.newFieldIds
         .map((fieldId) => pageIdByFieldId.get(fieldId))
         .find((pageId): pageId is string => Boolean(pageId));
@@ -452,7 +513,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
             kind: selector.kind,
             role: selector.role,
             name: selector.name,
-            value: selector.value
+            value: selector.value,
           }
         : undefined;
       const trigger: NavStep = {
@@ -463,7 +524,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         urlBefore: click.urlBefore,
         urlAfter: click.urlAfter,
         frameUrl: click.frameUrl,
-        timestamp: click.timestamp
+        timestamp: click.timestamp,
       };
 
       const fromNodeId = resolveNodeId(pageToNode, nodeById, inferredFrom);
@@ -483,8 +544,8 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
           trigger,
           click.transitionType,
           click.urlBefore,
-          click.urlAfter
-        )
+          click.urlAfter,
+        ),
       });
       currentPageId = inferredTo;
     }
@@ -505,7 +566,7 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
         trigger: {
           ...trigger,
           label: navStepLabel(trigger),
-          kind: inferTriggerKind(trigger.selector, trigger.kind)
+          kind: inferTriggerKind(trigger.selector, trigger.kind),
         },
         edgeType: classifyEdgeType(
           nodeById.get(fromNodeId),
@@ -513,8 +574,8 @@ export function attachCanonicalGraph(map: UiMap, options: CanonicalGraphOptions)
           trigger,
           undefined,
           previous.url,
-          page.url
-        )
+          page.url,
+        ),
       });
     }
   }

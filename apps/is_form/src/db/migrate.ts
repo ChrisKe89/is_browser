@@ -8,7 +8,8 @@ async function run(): Promise<void> {
 }
 
 run().catch((error) => {
-  console.error(`Failed to apply migrations: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(
+    `Failed to apply migrations: ${error instanceof Error ? error.message : String(error)}`,
+  );
   process.exit(1);
 });
-

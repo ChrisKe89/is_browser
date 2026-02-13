@@ -9,7 +9,7 @@ import {
   type ProfileIdentity as ContractProfileIdentity,
   type ProfileRecord as ContractProfileRecord,
   type ProfileSaveInput as ContractProfileSaveInput,
-  type ProfileValueInput as ContractProfileValueInput
+  type ProfileValueInput as ContractProfileValueInput,
 } from "@is-browser/contract";
 import { migrateDatabase } from "./migrations.js";
 
@@ -56,7 +56,7 @@ export class ProfileValidationFailure extends Error {
 function normalizeIdentity(identity: ProfileIdentity): ProfileIdentity {
   return {
     accountNumber: String(identity.accountNumber ?? "").trim(),
-    variation: String(identity.variation ?? "").trim()
+    variation: String(identity.variation ?? "").trim(),
   };
 }
 
@@ -65,19 +65,19 @@ function uniqueValues(values: ProfileValueInput[]): ProfileValueInput[] {
   for (const item of values) {
     map.set(String(item.settingId ?? "").trim(), {
       value: String(item.value ?? ""),
-      enabled: item.enabled !== false
+      enabled: item.enabled !== false,
     });
   }
   return Array.from(map.entries()).map(([settingId, entry]) => ({
     settingId,
     value: entry.value,
-    enabled: entry.enabled
+    enabled: entry.enabled,
   }));
 }
 
 export async function validateProfileDraft(
   dbPath: string,
-  draft: ProfileSaveInput
+  draft: ProfileSaveInput,
 ): Promise<ProfileValidationError[]> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -88,7 +88,10 @@ export async function validateProfileDraft(
     const identity = normalizeIdentity(draft);
 
     if (!identity.accountNumber) {
-      errors.push({ field: "accountNumber", message: "AccountNumber is required." });
+      errors.push({
+        field: "accountNumber",
+        message: "AccountNumber is required.",
+      });
     }
     if (!identity.variation) {
       errors.push({ field: "variation", message: "Variation is required." });
@@ -97,7 +100,10 @@ export async function validateProfileDraft(
     const values = uniqueValues(draft.values);
     for (const value of values) {
       if (!value.settingId.trim()) {
-        errors.push({ field: "values.settingId", message: "Setting id is required." });
+        errors.push({
+          field: "values.settingId",
+          message: "Setting id is required.",
+        });
         continue;
       }
 
@@ -105,7 +111,7 @@ export async function validateProfileDraft(
         .prepare(
           `SELECT id, control_type, min_value, max_value, read_only
            FROM ui_setting
-           WHERE id = ?`
+           WHERE id = ?`,
         )
         .get(value.settingId) as
         | {
@@ -120,7 +126,7 @@ export async function validateProfileDraft(
       if (!setting) {
         errors.push({
           field: `values.${value.settingId}`,
-          message: `Setting "${value.settingId}" does not exist in UI map data.`
+          message: `Setting "${value.settingId}" does not exist in UI map data.`,
         });
         continue;
       }
@@ -128,7 +134,7 @@ export async function validateProfileDraft(
       if (setting.read_only === 1) {
         errors.push({
           field: `values.${value.settingId}`,
-          message: `Setting "${value.settingId}" is read-only and cannot be saved.`
+          message: `Setting "${value.settingId}" is read-only and cannot be saved.`,
         });
         continue;
       }
@@ -141,20 +147,24 @@ export async function validateProfileDraft(
         continue;
       }
 
-      if (setting.control_type === "select" || setting.control_type === "radio" || setting.control_type === "switch") {
+      if (
+        setting.control_type === "select" ||
+        setting.control_type === "radio" ||
+        setting.control_type === "switch"
+      ) {
         const allowed = db
           .prepare(
             `SELECT option_key
              FROM ui_setting_option
              WHERE setting_id = ?
-             ORDER BY sort_order`
+             ORDER BY sort_order`,
           )
           .all(value.settingId)
           .map((row) => String((row as { option_key: string }).option_key));
         if (!allowed.includes(value.value)) {
           errors.push({
             field: `values.${value.settingId}`,
-            message: `Value "${value.value}" is invalid for "${value.settingId}". Allowed values: ${allowed.join(", ")}.`
+            message: `Value "${value.value}" is invalid for "${value.settingId}". Allowed values: ${allowed.join(", ")}.`,
           });
         }
         continue;
@@ -165,30 +175,33 @@ export async function validateProfileDraft(
         if (Number.isNaN(numeric)) {
           errors.push({
             field: `values.${value.settingId}`,
-            message: `Value "${value.value}" must be numeric for "${value.settingId}".`
+            message: `Value "${value.value}" must be numeric for "${value.settingId}".`,
           });
           continue;
         }
         if (setting.min_value !== null && numeric < setting.min_value) {
           errors.push({
             field: `values.${value.settingId}`,
-            message: `Value "${numeric}" is below min "${setting.min_value}" for "${value.settingId}".`
+            message: `Value "${numeric}" is below min "${setting.min_value}" for "${value.settingId}".`,
           });
         }
         if (setting.max_value !== null && numeric > setting.max_value) {
           errors.push({
             field: `values.${value.settingId}`,
-            message: `Value "${numeric}" is above max "${setting.max_value}" for "${value.settingId}".`
+            message: `Value "${numeric}" is above max "${setting.max_value}" for "${value.settingId}".`,
           });
         }
         continue;
       }
 
-      if (setting.control_type === "text" || setting.control_type === "textarea") {
+      if (
+        setting.control_type === "text" ||
+        setting.control_type === "textarea"
+      ) {
         if (typeof value.value !== "string") {
           errors.push({
             field: `values.${value.settingId}`,
-            message: `Value for "${value.settingId}" must be a string.`
+            message: `Value for "${value.settingId}" must be a string.`,
           });
         }
         continue;
@@ -197,7 +210,7 @@ export async function validateProfileDraft(
       if (setting.control_type === "button") {
         errors.push({
           field: `values.${value.settingId}`,
-          message: `Setting "${value.settingId}" is an action control and cannot be saved as a profile value.`
+          message: `Setting "${value.settingId}" is an action control and cannot be saved as a profile value.`,
         });
       }
     }
@@ -208,7 +221,10 @@ export async function validateProfileDraft(
   }
 }
 
-export async function saveProfile(dbPath: string, draft: ProfileSaveInput): Promise<ProfileRecord> {
+export async function saveProfile(
+  dbPath: string,
+  draft: ProfileSaveInput,
+): Promise<ProfileRecord> {
   const errors = await validateProfileDraft(dbPath, draft);
   if (errors.length > 0) {
     throw new ProfileValidationFailure(errors);
@@ -228,19 +244,21 @@ export async function saveProfile(dbPath: string, draft: ProfileSaveInput): Prom
      VALUES (?, ?, ?, ?)
      ON CONFLICT(account_number, variation) DO UPDATE SET
        display_name = excluded.display_name,
-       updated_at = excluded.updated_at`
+       updated_at = excluded.updated_at`,
   );
 
   const selectProfile = db.prepare(
     `SELECT id, account_number, variation, display_name
      FROM config_profile
-     WHERE account_number = ? AND variation = ?`
+     WHERE account_number = ? AND variation = ?`,
   );
 
-  const clearValues = db.prepare("DELETE FROM config_profile_value WHERE profile_id = ?");
+  const clearValues = db.prepare(
+    "DELETE FROM config_profile_value WHERE profile_id = ?",
+  );
   const insertValue = db.prepare(
     `INSERT INTO config_profile_value (profile_id, setting_id, value_text, enabled, updated_at)
-     VALUES (?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?)`,
   );
 
   let transactionOpen = false;
@@ -248,17 +266,29 @@ export async function saveProfile(dbPath: string, draft: ProfileSaveInput): Prom
     db.exec("BEGIN");
     transactionOpen = true;
 
-    upsertProfile.run(identity.accountNumber, identity.variation, normalizedDraft.displayName ?? null, now);
-    const profile = selectProfile.get(identity.accountNumber, identity.variation) as
-      | { id: number }
-      | undefined;
+    upsertProfile.run(
+      identity.accountNumber,
+      identity.variation,
+      normalizedDraft.displayName ?? null,
+      now,
+    );
+    const profile = selectProfile.get(
+      identity.accountNumber,
+      identity.variation,
+    ) as { id: number } | undefined;
     if (!profile) {
       throw new Error("Failed to read profile row after upsert.");
     }
 
     clearValues.run(profile.id);
     for (const value of values) {
-      insertValue.run(profile.id, value.settingId, value.value, value.enabled === false ? 0 : 1, now);
+      insertValue.run(
+        profile.id,
+        value.settingId,
+        value.value,
+        value.enabled === false ? 0 : 1,
+        now,
+      );
     }
 
     db.exec("COMMIT");
@@ -281,7 +311,7 @@ export async function saveProfile(dbPath: string, draft: ProfileSaveInput): Prom
 
 export async function getProfile(
   dbPath: string,
-  identityInput: ProfileIdentity
+  identityInput: ProfileIdentity,
 ): Promise<ProfileRecord | null> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -293,10 +323,15 @@ export async function getProfile(
       .prepare(
         `SELECT id, account_number, variation, display_name
          FROM config_profile
-         WHERE account_number = ? AND variation = ?`
+         WHERE account_number = ? AND variation = ?`,
       )
       .get(identity.accountNumber, identity.variation) as
-      | { id: number; account_number: string; variation: string; display_name: string | null }
+      | {
+          id: number;
+          account_number: string;
+          variation: string;
+          display_name: string | null;
+        }
       | undefined;
 
     if (!profile) {
@@ -308,15 +343,19 @@ export async function getProfile(
         `SELECT setting_id, value_text, enabled
          FROM config_profile_value
          WHERE profile_id = ?
-         ORDER BY setting_id`
+         ORDER BY setting_id`,
       )
       .all(profile.id)
       .map((row) => {
-        const typed = row as { setting_id: string; value_text: string; enabled: number };
+        const typed = row as {
+          setting_id: string;
+          value_text: string;
+          enabled: number;
+        };
         return {
           settingId: typed.setting_id,
           value: typed.value_text,
-          enabled: typed.enabled !== 0
+          enabled: typed.enabled !== 0,
         };
       });
 
@@ -324,7 +363,7 @@ export async function getProfile(
       accountNumber: profile.account_number,
       variation: profile.variation,
       displayName: profile.display_name,
-      values
+      values,
     });
   } finally {
     db.close();
@@ -333,8 +372,14 @@ export async function getProfile(
 
 export async function listProfiles(
   dbPath: string,
-  accountNumber?: string
-): Promise<Array<{ accountNumber: string; variation: string; displayName: string | null }>> {
+  accountNumber?: string,
+): Promise<
+  Array<{
+    accountNumber: string;
+    variation: string;
+    displayName: string | null;
+  }>
+> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
   db.exec("PRAGMA foreign_keys = ON;");
@@ -345,14 +390,14 @@ export async function listProfiles(
             `SELECT account_number, variation, display_name
              FROM config_profile
              WHERE account_number = ?
-             ORDER BY variation`
+             ORDER BY variation`,
           )
           .all(accountNumber)
       : db
           .prepare(
             `SELECT account_number, variation, display_name
              FROM config_profile
-             ORDER BY account_number, variation`
+             ORDER BY account_number, variation`,
           )
           .all();
 
@@ -365,7 +410,7 @@ export async function listProfiles(
       return {
         accountNumber: typed.account_number,
         variation: typed.variation,
-        displayName: typed.display_name
+        displayName: typed.display_name,
       };
     });
   } finally {
@@ -373,7 +418,10 @@ export async function listProfiles(
   }
 }
 
-export async function deleteProfile(dbPath: string, identityInput: ProfileIdentity): Promise<boolean> {
+export async function deleteProfile(
+  dbPath: string,
+  identityInput: ProfileIdentity,
+): Promise<boolean> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
   db.exec("PRAGMA foreign_keys = ON;");
@@ -382,7 +430,7 @@ export async function deleteProfile(dbPath: string, identityInput: ProfileIdenti
     const result = db
       .prepare(
         `DELETE FROM config_profile
-         WHERE account_number = ? AND variation = ?`
+         WHERE account_number = ? AND variation = ?`,
       )
       .run(identity.accountNumber, identity.variation);
     return result.changes > 0;
@@ -391,7 +439,9 @@ export async function deleteProfile(dbPath: string, identityInput: ProfileIdenti
   }
 }
 
-export async function getProfileEditorPages(dbPath: string): Promise<ProfileEditorPage[]> {
+export async function getProfileEditorPages(
+  dbPath: string,
+): Promise<ProfileEditorPage[]> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
   db.exec("PRAGMA foreign_keys = ON;");
@@ -411,7 +461,7 @@ export async function getProfileEditorPages(dbPath: string): Promise<ProfileEdit
          FROM ui_page p
          JOIN ui_setting s ON s.page_id = p.id
          WHERE s.control_type IN ('text', 'number', 'textarea', 'select', 'radio', 'switch')
-         ORDER BY p.id, s.control_type, s.id`
+         ORDER BY p.id, s.control_type, s.id`,
       )
       .all();
 
@@ -419,7 +469,7 @@ export async function getProfileEditorPages(dbPath: string): Promise<ProfileEdit
       .prepare(
         `SELECT setting_id, option_key
          FROM ui_setting_option
-         ORDER BY setting_id, sort_order`
+         ORDER BY setting_id, sort_order`,
       )
       .all();
 
@@ -449,10 +499,12 @@ export async function getProfileEditorPages(dbPath: string): Promise<ProfileEdit
         id: typed.page_id,
         title: typed.page_title,
         url: typed.page_url,
-        groups: []
+        groups: [],
       };
 
-      let group = page.groups.find((item) => item.controlType === typed.control_type);
+      let group = page.groups.find(
+        (item) => item.controlType === typed.control_type,
+      );
       if (!group) {
         group = { controlType: typed.control_type, settings: [] };
         page.groups.push(group);
@@ -465,7 +517,7 @@ export async function getProfileEditorPages(dbPath: string): Promise<ProfileEdit
         options: optionsBySetting.get(typed.setting_id) ?? [],
         min: typed.min_value ?? undefined,
         max: typed.max_value ?? undefined,
-        pattern: typed.pattern ?? undefined
+        pattern: typed.pattern ?? undefined,
       });
 
       pages.set(typed.page_id, page);
@@ -479,26 +531,30 @@ export async function getProfileEditorPages(dbPath: string): Promise<ProfileEdit
 
 export async function buildSettingsFromProfile(
   dbPath: string,
-  identity: ProfileIdentity
+  identity: ProfileIdentity,
 ): Promise<Array<{ id: string; value: string }>> {
   const profile = await getProfile(dbPath, identity);
   if (!profile) {
-    throw new Error(`Profile ${identity.accountNumber}/${identity.variation} not found.`);
+    throw new Error(
+      `Profile ${identity.accountNumber}/${identity.variation} not found.`,
+    );
   }
 
   const enabledValues = profile.values.filter((item) => item.enabled !== false);
   const valuesMap = profileValuesToMap(enabledValues);
-  const eligibleValues = Object.entries(valuesMap).map(([settingId, value]) => ({
-    settingId,
-    value,
-    enabled: true
-  }));
+  const eligibleValues = Object.entries(valuesMap).map(
+    ([settingId, value]) => ({
+      settingId,
+      value,
+      enabled: true,
+    }),
+  );
 
   const errors = await validateProfileDraft(dbPath, {
     accountNumber: profile.accountNumber,
     variation: profile.variation,
     displayName: profile.displayName ?? undefined,
-    values: eligibleValues
+    values: eligibleValues,
   });
   if (errors.length > 0) {
     throw new ProfileValidationFailure(errors);
@@ -506,4 +562,3 @@ export async function buildSettingsFromProfile(
 
   return profileMapToApplySettings(valuesMap);
 }
-

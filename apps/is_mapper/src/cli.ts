@@ -76,7 +76,10 @@ export function parseMapperCliArgs(argv: string[]): MapperCliOptions {
       continue;
     }
     if (arg.startsWith("--max-clicks=")) {
-      maxClicks = readNumberArg("--max-clicks", arg.slice("--max-clicks=".length));
+      maxClicks = readNumberArg(
+        "--max-clicks",
+        arg.slice("--max-clicks=".length),
+      );
       continue;
     }
     if (arg === "--timeout-ms") {
@@ -85,7 +88,10 @@ export function parseMapperCliArgs(argv: string[]): MapperCliOptions {
       continue;
     }
     if (arg.startsWith("--timeout-ms=")) {
-      timeoutMs = readNumberArg("--timeout-ms", arg.slice("--timeout-ms=".length));
+      timeoutMs = readNumberArg(
+        "--timeout-ms",
+        arg.slice("--timeout-ms=".length),
+      );
       continue;
     }
 

@@ -389,7 +389,9 @@
     <header class="app-header">
       <div class="app-header-inner">
         <img src="/assets/logo.svg" alt="Fujifilm logo" />
-        <div class="app-header-title">FUJIFILM Business Innovation | Australia</div>
+        <div class="app-header-title">
+          FUJIFILM Business Innovation | Australia
+        </div>
       </div>
       <div class="header-accent" aria-hidden="true"></div>
     </header>
@@ -398,13 +400,17 @@
       <section class="card profile-card">
         <div class="profile-grid">
           <div class="field-wrap" data-meta-field="accountNumber">
-            <label for="accountNumber">Account <span class="required-mark">*</span></label>
+            <label for="accountNumber"
+              >Account <span class="required-mark">*</span></label
+            >
             <input id="accountNumber" type="text" autocomplete="off" />
             <div id="error-accountNumber" class="field-error"></div>
           </div>
 
           <div class="field-wrap" data-meta-field="variation">
-            <label for="variation">Variation <span class="required-mark">*</span></label>
+            <label for="variation"
+              >Variation <span class="required-mark">*</span></label
+            >
             <input id="variation" type="text" autocomplete="off" />
             <div id="error-variation" class="field-error"></div>
           </div>
@@ -419,13 +425,21 @@
         <div class="profile-actions">
           <button id="loadBtn" type="button">Load</button>
           <button id="clearBtn" type="button">New/Clear</button>
-          <button id="saveBtn" type="button" class="btn-primary" disabled>Save</button>
+          <button id="saveBtn" type="button" class="btn-primary" disabled>
+            Save
+          </button>
         </div>
 
-        <div id="status" class="status" aria-live="polite">Loading schema...</div>
+        <div id="status" class="status" aria-live="polite">
+          Loading schema...
+        </div>
       </section>
 
-      <section id="sectionsContainer" class="section-stack" aria-live="polite"></section>
+      <section
+        id="sectionsContainer"
+        class="section-stack"
+        aria-live="polite"
+      ></section>
     </main>
 
     <div id="stickySave" class="sticky-save" aria-live="polite">
@@ -433,7 +447,9 @@
         <div class="sticky-text">Unsaved changes</div>
         <div class="sticky-actions">
           <button id="stickyDiscardBtn" type="button">Discard</button>
-          <button id="stickySaveBtn" type="button" class="btn-primary">Save changes</button>
+          <button id="stickySaveBtn" type="button" class="btn-primary">
+            Save changes
+          </button>
         </div>
       </div>
     </div>
@@ -452,7 +468,7 @@
         sectionsContainer: document.getElementById("sectionsContainer"),
         stickySave: document.getElementById("stickySave"),
         stickyDiscardBtn: document.getElementById("stickyDiscardBtn"),
-        stickySaveBtn: document.getElementById("stickySaveBtn")
+        stickySaveBtn: document.getElementById("stickySaveBtn"),
       };
 
       let schema = null;
@@ -502,7 +518,9 @@
         sections.forEach((section) => {
           const groups = Array.isArray(section.groups) ? section.groups : [];
           groups.forEach((group) => {
-            const subgroups = Array.isArray(group.subgroups) ? group.subgroups : [];
+            const subgroups = Array.isArray(group.subgroups)
+              ? group.subgroups
+              : [];
             subgroups.forEach((subgroup) => {
               all.push({ section, group, subgroup });
             });
@@ -533,7 +551,10 @@
         getAllSubgroups().forEach(({ section, group, subgroup }) => {
           const fields = Array.isArray(subgroup.fields) ? subgroup.fields : [];
           if (!subgroupCollapsed.has(subgroup.id)) {
-            subgroupCollapsed.set(subgroup.id, subgroup.defaultCollapsed === true);
+            subgroupCollapsed.set(
+              subgroup.id,
+              subgroup.defaultCollapsed === true,
+            );
           }
 
           fields.forEach((field) => {
@@ -542,7 +563,7 @@
               sectionId: section.id,
               groupId: group.id,
               subgroupId: subgroup.id,
-              field
+              field,
             });
 
             if (field.visibleIf?.fieldId) {
@@ -579,7 +600,9 @@
 
       function clearMetaErrors() {
         ["accountNumber", "variation", "displayName"].forEach((id) => {
-          const wrap = document.querySelector(`.field-wrap[data-meta-field="${id}"]`);
+          const wrap = document.querySelector(
+            `.field-wrap[data-meta-field="${id}"]`,
+          );
           const error = document.getElementById(`error-${id}`);
           if (wrap) wrap.classList.remove("has-error");
           if (error) error.textContent = "";
@@ -596,15 +619,23 @@
         });
 
         Object.entries(validationErrors).forEach(([key, message]) => {
-          if (key === "accountNumber" || key === "variation" || key === "displayName") {
-            const wrap = document.querySelector(`.field-wrap[data-meta-field="${key}"]`);
+          if (
+            key === "accountNumber" ||
+            key === "variation" ||
+            key === "displayName"
+          ) {
+            const wrap = document.querySelector(
+              `.field-wrap[data-meta-field="${key}"]`,
+            );
             const error = document.getElementById(`error-${key}`);
             if (wrap) wrap.classList.add("has-error");
             if (error) error.textContent = message;
             return;
           }
 
-          const wrap = document.querySelector(`.field-wrap[data-field-id="${CSS.escape(key)}"]`);
+          const wrap = document.querySelector(
+            `.field-wrap[data-field-id="${CSS.escape(key)}"]`,
+          );
           const error = document.getElementById(`error-field-${key}`);
           if (wrap) wrap.classList.add("has-error");
           if (error) error.textContent = message;
@@ -616,13 +647,16 @@
         fieldOrder.forEach((fieldId) => {
           const meta = fieldIndex.get(fieldId);
           if (!meta) return;
-          values[fieldId] = normalizeValueForField(meta.field, formState[fieldId]);
+          values[fieldId] = normalizeValueForField(
+            meta.field,
+            formState[fieldId],
+          );
         });
         return {
           accountNumber: elements.account.value.trim(),
           variation: elements.variation.value.trim(),
           displayName: elements.displayName.value.trim(),
-          values
+          values,
         };
       }
 
@@ -798,7 +832,9 @@
           body.hidden = isCollapsed;
 
           header.addEventListener("click", () => {
-            const nextCollapsed = !(subgroupCollapsed.get(subgroup.id) === true);
+            const nextCollapsed = !(
+              subgroupCollapsed.get(subgroup.id) === true
+            );
             subgroupCollapsed.set(subgroup.id, nextCollapsed);
             persistCollapseStateToSession();
             renderSections();
@@ -913,7 +949,9 @@
 
           if (field.control === "select") {
             const normalized = String(value ?? "");
-            const options = Array.isArray(field.options) ? field.options.map(String) : [];
+            const options = Array.isArray(field.options)
+              ? field.options.map(String)
+              : [];
             if (normalized && !options.includes(normalized)) {
               nextErrors[fieldId] = `${field.label} has an invalid option.`;
             }
@@ -937,8 +975,13 @@
           const rawValue = formState[fieldId];
           values.push({
             settingId: field.id,
-            value: field.control === "checkbox" ? (rawValue ? "true" : "false") : String(rawValue ?? ""),
-            enabled: true
+            value:
+              field.control === "checkbox"
+                ? rawValue
+                  ? "true"
+                  : "false"
+                : String(rawValue ?? ""),
+            enabled: true,
           });
         });
         return values;
@@ -959,7 +1002,7 @@
           accountNumber: elements.account.value.trim(),
           variation: elements.variation.value.trim(),
           displayName: elements.displayName.value.trim(),
-          values: buildSaveValues()
+          values: buildSaveValues(),
         };
 
         try {
@@ -967,7 +1010,7 @@
           const response = await fetch("/api/profiles/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
           });
           const data = await response.json();
 
@@ -978,7 +1021,10 @@
 
           snapshot = readSnapshot();
           updateDirtyState();
-          setStatus(`Saved profile ${data.profile.accountNumber}/${data.profile.variation}.`, "success");
+          setStatus(
+            `Saved profile ${data.profile.accountNumber}/${data.profile.variation}.`,
+            "success",
+          );
         } catch (error) {
           setStatus(`Failed to save profile: ${String(error)}`, "error");
         }
@@ -986,7 +1032,12 @@
       function parseProfileValue(field, rawValue) {
         if (field.control === "checkbox") {
           const normalized = String(rawValue ?? "").toLowerCase();
-          return normalized === "true" || normalized === "1" || normalized === "yes" || normalized === "on";
+          return (
+            normalized === "true" ||
+            normalized === "1" ||
+            normalized === "yes" ||
+            normalized === "on"
+          );
         }
         return String(rawValue ?? "");
       }
@@ -1006,14 +1057,18 @@
         const values = Array.isArray(profile?.values) ? profile.values : [];
         values.forEach((item) => {
           const incoming = String(item.settingId ?? "");
-          const fieldId = fieldIndex.has(incoming) ? incoming : sourceSettingMap.get(incoming);
+          const fieldId = fieldIndex.has(incoming)
+            ? incoming
+            : sourceSettingMap.get(incoming);
           if (!fieldId) return;
           const meta = fieldIndex.get(fieldId);
           if (!meta) return;
           formState[fieldId] = parseProfileValue(meta.field, item.value);
         });
 
-        elements.displayName.value = profile?.displayName ? String(profile.displayName) : "";
+        elements.displayName.value = profile?.displayName
+          ? String(profile.displayName)
+          : "";
       }
 
       async function handleLoad() {
@@ -1023,7 +1078,8 @@
         const accountNumber = elements.account.value.trim();
         const variation = elements.variation.value.trim();
         if (!accountNumber || !variation) {
-          if (!accountNumber) validationErrors.accountNumber = "Account is required.";
+          if (!accountNumber)
+            validationErrors.accountNumber = "Account is required.";
           if (!variation) validationErrors.variation = "Variation is required.";
           renderInlineErrors();
           setStatus("Account and Variation are required to load.", "error");
@@ -1035,7 +1091,7 @@
           const response = await fetch("/api/profiles/get", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ accountNumber, variation })
+            body: JSON.stringify({ accountNumber, variation }),
           });
 
           if (response.status === 404) {
@@ -1087,7 +1143,10 @@
         fieldOrder.forEach((fieldId) => {
           const meta = fieldIndex.get(fieldId);
           if (!meta) return;
-          formState[fieldId] = normalizeValueForField(meta.field, snapshot.values[fieldId]);
+          formState[fieldId] = normalizeValueForField(
+            meta.field,
+            snapshot.values[fieldId],
+          );
         });
 
         validationErrors = {};
@@ -1098,7 +1157,12 @@
 
       function handleStickyBar() {
         const hasVisibleErrors = Object.keys(validationErrors).some((key) => {
-          if (key === "accountNumber" || key === "variation" || key === "displayName") return true;
+          if (
+            key === "accountNumber" ||
+            key === "variation" ||
+            key === "displayName"
+          )
+            return true;
           return isFieldActive(key);
         });
 
@@ -1127,21 +1191,29 @@
       }
 
       function bindMetaListeners() {
-        [elements.account, elements.variation, elements.displayName].forEach((input) => {
-          input.addEventListener("input", () => {
-            if (input === elements.account && validationErrors.accountNumber) {
-              delete validationErrors.accountNumber;
-            }
-            if (input === elements.variation && validationErrors.variation) {
-              delete validationErrors.variation;
-            }
-            if (input === elements.displayName && validationErrors.displayName) {
-              delete validationErrors.displayName;
-            }
-            renderInlineErrors();
-            updateDirtyState();
-          });
-        });
+        [elements.account, elements.variation, elements.displayName].forEach(
+          (input) => {
+            input.addEventListener("input", () => {
+              if (
+                input === elements.account &&
+                validationErrors.accountNumber
+              ) {
+                delete validationErrors.accountNumber;
+              }
+              if (input === elements.variation && validationErrors.variation) {
+                delete validationErrors.variation;
+              }
+              if (
+                input === elements.displayName &&
+                validationErrors.displayName
+              ) {
+                delete validationErrors.displayName;
+              }
+              renderInlineErrors();
+              updateDirtyState();
+            });
+          },
+        );
       }
 
       async function init() {

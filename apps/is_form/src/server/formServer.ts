@@ -3,7 +3,11 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
-import { FORM_PORT, OPERATOR_PUBLIC_URL, PROFILE_DB_PATH } from "@is-browser/env";
+import {
+  FORM_PORT,
+  OPERATOR_PUBLIC_URL,
+  PROFILE_DB_PATH,
+} from "@is-browser/env";
 import { importFieldOptionsFromCsvFile } from "@is-browser/sqlite-store";
 import { importUiMapFile } from "@is-browser/sqlite-store";
 import { migrateDatabase } from "@is-browser/sqlite-store";
@@ -13,9 +17,16 @@ import {
   getProfileEditorPages,
   listProfiles,
   ProfileValidationFailure,
-  saveProfile
+  saveProfile,
 } from "@is-browser/sqlite-store";
-import { json, parseBody, resolveFieldCsvPath, resolveMapPath, serveFile, text } from "./httpUtils.js";
+import {
+  json,
+  parseBody,
+  resolveFieldCsvPath,
+  resolveMapPath,
+  serveFile,
+  text,
+} from "./httpUtils.js";
 
 type FormServerOptions = {
   profileDbPath?: string;
@@ -65,7 +76,12 @@ const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRootFromServerDir = path.resolve(serverDir, "..", "..", "..", "..");
 const SETTINGS_SCHEMA_CANDIDATES = [
   path.resolve(process.cwd(), "tools", "samples", "settings-schema.json"),
-  path.resolve(repoRootFromServerDir, "tools", "samples", "settings-schema.json")
+  path.resolve(
+    repoRootFromServerDir,
+    "tools",
+    "samples",
+    "settings-schema.json",
+  ),
 ];
 
 async function resolveSettingsSchemaPath(): Promise<string> {
@@ -77,10 +93,14 @@ async function resolveSettingsSchemaPath(): Promise<string> {
       // try next candidate
     }
   }
-  throw new Error(`Schema file not found. Tried: ${SETTINGS_SCHEMA_CANDIDATES.join(", ")}`);
+  throw new Error(
+    `Schema file not found. Tried: ${SETTINGS_SCHEMA_CANDIDATES.join(", ")}`,
+  );
 }
 
-function normalizeControlType(value: unknown): "text" | "select" | "checkbox" | "textarea" {
+function normalizeControlType(
+  value: unknown,
+): "text" | "select" | "checkbox" | "textarea" {
   const input = String(value ?? "text").toLowerCase();
   if (input === "select" || input === "checkbox" || input === "textarea") {
     return input;
@@ -88,7 +108,10 @@ function normalizeControlType(value: unknown): "text" | "select" | "checkbox" | 
   return "text";
 }
 
-function normalizeField(rawField: Record<string, unknown>, fallbackIndex: number): NormalizedField | null {
+function normalizeField(
+  rawField: Record<string, unknown>,
+  fallbackIndex: number,
+): NormalizedField | null {
   const id = String(rawField.id ?? `field_${fallbackIndex}`);
   const label = String(rawField.label ?? id);
   const control = normalizeControlType(rawField.control ?? rawField.type);
@@ -112,13 +135,17 @@ function normalizeField(rawField: Record<string, unknown>, fallbackIndex: number
     typeof rawField.visibleIf === "object" &&
     typeof (rawField.visibleIf as { fieldId?: unknown }).fieldId === "string"
   ) {
-    const visibleIf = rawField.visibleIf as { fieldId: string; equals?: unknown };
+    const visibleIf = rawField.visibleIf as {
+      fieldId: string;
+      equals?: unknown;
+    };
     normalized.visibleIf = {
       fieldId: visibleIf.fieldId,
       equals:
-        typeof visibleIf.equals === "boolean" || typeof visibleIf.equals === "number"
+        typeof visibleIf.equals === "boolean" ||
+        typeof visibleIf.equals === "number"
           ? visibleIf.equals
-          : String(visibleIf.equals ?? "")
+          : String(visibleIf.equals ?? ""),
     };
   }
   if (typeof rawField.selector === "string") {
@@ -130,7 +157,9 @@ function normalizeField(rawField: Record<string, unknown>, fallbackIndex: number
     Array.isArray((rawField.location as { path?: unknown }).path)
   ) {
     normalized.location = {
-      path: (rawField.location as { path: unknown[] }).path.map((part) => String(part))
+      path: (rawField.location as { path: unknown[] }).path.map((part) =>
+        String(part),
+      ),
     };
   }
   if (typeof rawField.settingId === "string" && rawField.settingId.length > 0) {
@@ -150,7 +179,7 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
     (section) =>
       section &&
       typeof section === "object" &&
-      Array.isArray((section as { groups?: unknown }).groups)
+      Array.isArray((section as { groups?: unknown }).groups),
   );
 
   if (hasGroups) {
@@ -162,7 +191,9 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
       const sectionObj = rawSection as Record<string, unknown>;
       const sectionId = String(sectionObj.id ?? `section_${sectionIndex}`);
       const sectionTitle = String(sectionObj.title ?? sectionId);
-      const groupsInput = Array.isArray(sectionObj.groups) ? sectionObj.groups : [];
+      const groupsInput = Array.isArray(sectionObj.groups)
+        ? sectionObj.groups
+        : [];
       const groups: NormalizedGroup[] = [];
 
       groupsInput.forEach((rawGroup, groupIndex) => {
@@ -170,9 +201,13 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
           return;
         }
         const groupObj = rawGroup as Record<string, unknown>;
-        const groupId = String(groupObj.id ?? `${sectionId}_group_${groupIndex}`);
+        const groupId = String(
+          groupObj.id ?? `${sectionId}_group_${groupIndex}`,
+        );
         const groupTitle = String(groupObj.title ?? groupId);
-        const subgroupsInput = Array.isArray(groupObj.subgroups) ? groupObj.subgroups : [];
+        const subgroupsInput = Array.isArray(groupObj.subgroups)
+          ? groupObj.subgroups
+          : [];
         const subgroups: NormalizedSubgroup[] = [];
 
         subgroupsInput.forEach((rawSubgroup, subgroupIndex) => {
@@ -180,15 +215,22 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
             return;
           }
           const subgroupObj = rawSubgroup as Record<string, unknown>;
-          const subgroupId = String(subgroupObj.id ?? `${groupId}_subgroup_${subgroupIndex}`);
+          const subgroupId = String(
+            subgroupObj.id ?? `${groupId}_subgroup_${subgroupIndex}`,
+          );
           const subgroupTitle = String(subgroupObj.title ?? subgroupId);
-          const fieldsInput = Array.isArray(subgroupObj.fields) ? subgroupObj.fields : [];
+          const fieldsInput = Array.isArray(subgroupObj.fields)
+            ? subgroupObj.fields
+            : [];
           const fields: NormalizedField[] = [];
           fieldsInput.forEach((rawField, fieldIndex) => {
             if (!rawField || typeof rawField !== "object") {
               return;
             }
-            const normalizedField = normalizeField(rawField as Record<string, unknown>, fieldIndex);
+            const normalizedField = normalizeField(
+              rawField as Record<string, unknown>,
+              fieldIndex,
+            );
             if (normalizedField) {
               fields.push(normalizedField);
             }
@@ -197,7 +239,7 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
             id: subgroupId,
             title: subgroupTitle,
             defaultCollapsed: subgroupObj.defaultCollapsed === true,
-            fields
+            fields,
           });
         });
 
@@ -209,58 +251,75 @@ function normalizeSchema(rawSchema: unknown): NormalizedSchema {
 
     return {
       version: String(source.version ?? "1"),
-      device: source.device && typeof source.device === "object" ? (source.device as Record<string, unknown>) : {},
-      sections
+      device:
+        source.device && typeof source.device === "object"
+          ? (source.device as Record<string, unknown>)
+          : {},
+      sections,
     };
   }
 
-  const sections: NormalizedSection[] = sectionsInput.map((rawSection, sectionIndex) => {
-    const sectionObj =
-      rawSection && typeof rawSection === "object" ? (rawSection as Record<string, unknown>) : ({} as Record<string, unknown>);
-    const sectionId = String(sectionObj.id ?? `section_${sectionIndex}`);
-    const sectionTitle = String(sectionObj.title ?? sectionId);
-    const fieldsInput = Array.isArray(sectionObj.fields) ? sectionObj.fields : [];
-    const fields: NormalizedField[] = [];
-    fieldsInput.forEach((rawField, fieldIndex) => {
-      if (!rawField || typeof rawField !== "object") {
-        return;
-      }
-      const normalizedField = normalizeField(rawField as Record<string, unknown>, fieldIndex);
-      if (normalizedField) {
-        fields.push(normalizedField);
-      }
-    });
-    return {
-      id: sectionId,
-      title: sectionTitle,
-      groups: [
-        {
-          id: `${sectionId}_group`,
-          title: sectionTitle,
-          subgroups: [
-            {
-              id: `${sectionId}_subgroup`,
-              title: "Settings",
-              defaultCollapsed: false,
-              fields
-            }
-          ]
+  const sections: NormalizedSection[] = sectionsInput.map(
+    (rawSection, sectionIndex) => {
+      const sectionObj =
+        rawSection && typeof rawSection === "object"
+          ? (rawSection as Record<string, unknown>)
+          : ({} as Record<string, unknown>);
+      const sectionId = String(sectionObj.id ?? `section_${sectionIndex}`);
+      const sectionTitle = String(sectionObj.title ?? sectionId);
+      const fieldsInput = Array.isArray(sectionObj.fields)
+        ? sectionObj.fields
+        : [];
+      const fields: NormalizedField[] = [];
+      fieldsInput.forEach((rawField, fieldIndex) => {
+        if (!rawField || typeof rawField !== "object") {
+          return;
         }
-      ]
-    };
-  });
+        const normalizedField = normalizeField(
+          rawField as Record<string, unknown>,
+          fieldIndex,
+        );
+        if (normalizedField) {
+          fields.push(normalizedField);
+        }
+      });
+      return {
+        id: sectionId,
+        title: sectionTitle,
+        groups: [
+          {
+            id: `${sectionId}_group`,
+            title: sectionTitle,
+            subgroups: [
+              {
+                id: `${sectionId}_subgroup`,
+                title: "Settings",
+                defaultCollapsed: false,
+                fields,
+              },
+            ],
+          },
+        ],
+      };
+    },
+  );
 
   return {
     version: String(source.version ?? "1"),
-    device: source.device && typeof source.device === "object" ? (source.device as Record<string, unknown>) : {},
-    sections
+    device:
+      source.device && typeof source.device === "object"
+        ? (source.device as Record<string, unknown>)
+        : {},
+    sections,
   };
 }
 
 function readUiSettingCount(dbPath: string): number {
   const db = new DatabaseSync(dbPath);
   try {
-    const row = db.prepare("SELECT COUNT(*) AS count FROM ui_setting").get() as { count: number };
+    const row = db
+      .prepare("SELECT COUNT(*) AS count FROM ui_setting")
+      .get() as { count: number };
     return Number(row.count ?? 0);
   } finally {
     db.close();
@@ -269,7 +328,7 @@ function readUiSettingCount(dbPath: string): number {
 
 async function ensureProfileSchemaData(
   dbPath: string,
-  options?: { forceRefresh?: boolean }
+  options?: { forceRefresh?: boolean },
 ): Promise<{
   imported: boolean;
   mapPath?: string;
@@ -300,7 +359,9 @@ async function ensureProfileSchemaData(
 export function createFormServer(options?: FormServerOptions): http.Server {
   const profileDbPath = options?.profileDbPath ?? PROFILE_DB_PATH;
   const operatorPublicUrl = options?.operatorPublicUrl ?? OPERATOR_PUBLIC_URL;
-  const startupPromise = ensureProfileSchemaData(profileDbPath).then(() => undefined);
+  const startupPromise = ensureProfileSchemaData(profileDbPath).then(
+    () => undefined,
+  );
 
   return http.createServer(async (req, res) => {
     if (!req.url || !req.method) {
@@ -328,14 +389,14 @@ export function createFormServer(options?: FormServerOptions): http.Server {
 
       if (pathname === "/api/profiles/schema" && req.method === "GET") {
         const bootstrap = await ensureProfileSchemaData(profileDbPath, {
-          forceRefresh: url.searchParams.get("refresh") === "1"
+          forceRefresh: url.searchParams.get("refresh") === "1",
         });
         const pages = await getProfileEditorPages(profileDbPath);
         if (bootstrap.reason === "map-not-found" && pages.length === 0) {
           json(res, 503, {
             error:
               "UI map is required before profiles can be authored. Set MAP_PATH or place a map file under state/.",
-            bootstrap
+            bootstrap,
           });
           return;
         }
@@ -344,7 +405,8 @@ export function createFormServer(options?: FormServerOptions): http.Server {
       }
 
       if (pathname === "/api/profiles/list" && req.method === "GET") {
-        const accountNumber = url.searchParams.get("accountNumber") ?? undefined;
+        const accountNumber =
+          url.searchParams.get("accountNumber") ?? undefined;
         const profiles = await listProfiles(profileDbPath, accountNumber);
         json(res, 200, { profiles });
         return;
@@ -358,7 +420,7 @@ export function createFormServer(options?: FormServerOptions): http.Server {
         }
         const profile = await getProfile(profileDbPath, {
           accountNumber: String(body.accountNumber),
-          variation: String(body.variation)
+          variation: String(body.variation),
         });
         if (!profile) {
           json(res, 404, { error: "Profile not found." });
@@ -378,12 +440,18 @@ export function createFormServer(options?: FormServerOptions): http.Server {
           json(res, 400, { error: "Missing values array." });
           return;
         }
-        const rawValues = body.values as Array<{ settingId?: unknown; value?: unknown; enabled?: unknown }>;
+        const rawValues = body.values as Array<{
+          settingId?: unknown;
+          value?: unknown;
+          enabled?: unknown;
+        }>;
         try {
           const profile = await saveProfile(profileDbPath, {
             accountNumber: String(body.accountNumber),
             variation: String(body.variation),
-            displayName: body.displayName ? String(body.displayName) : undefined,
+            displayName: body.displayName
+              ? String(body.displayName)
+              : undefined,
             values: rawValues.map((item) => ({
               settingId: String(item.settingId ?? ""),
               value: String(item.value ?? ""),
@@ -395,8 +463,8 @@ export function createFormServer(options?: FormServerOptions): http.Server {
                       item.enabled === 0 ||
                       item.enabled === "0" ||
                       String(item.enabled).toLowerCase() === "false"
-                    )
-            }))
+                    ),
+            })),
           });
           json(res, 200, { profile });
           return;
@@ -417,7 +485,7 @@ export function createFormServer(options?: FormServerOptions): http.Server {
         }
         const deleted = await deleteProfile(profileDbPath, {
           accountNumber: String(body.accountNumber),
-          variation: String(body.variation)
+          variation: String(body.variation),
         });
         if (!deleted) {
           json(res, 404, { error: "Profile not found." });
@@ -454,4 +522,3 @@ export function startFormServer(options?: FormServerOptions): http.Server {
   });
   return server;
 }
-

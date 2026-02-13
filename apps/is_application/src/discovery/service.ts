@@ -5,7 +5,7 @@ import {
   SNMP_COMMUNITY,
   SNMP_TIMEOUT_MS,
   SNMP_VERSION,
-  DISCOVERY_TIMEOUT_MS
+  DISCOVERY_TIMEOUT_MS,
 } from "@is-browser/env";
 import { resolveDeviceByModelAndSerial } from "@is-browser/sqlite-store";
 
@@ -45,7 +45,11 @@ export type DiscoveredDevice = {
   variation?: string;
   resolved: boolean;
   requiresIntervention: boolean;
-  status: "READY" | "UNREACHABLE" | "WEBUI_UNREACHABLE" | "USER_INTERVENTION_REQUIRED";
+  status:
+    | "READY"
+    | "UNREACHABLE"
+    | "WEBUI_UNREACHABLE"
+    | "USER_INTERVENTION_REQUIRED";
 };
 
 type IPv4Range = {
@@ -85,7 +89,13 @@ export function isValidIpv4(ip: string): boolean {
 
 function ipv4ToInt(ip: string): number {
   const parts = ip.split(".").map((part) => Number(part));
-  return (((parts[0] << 24) >>> 0) + (parts[1] << 16) + (parts[2] << 8) + parts[3]) >>> 0;
+  return (
+    (((parts[0] << 24) >>> 0) +
+      (parts[1] << 16) +
+      (parts[2] << 8) +
+      parts[3]) >>>
+    0
+  );
 }
 
 function intToIpv4(value: number): string {
@@ -93,7 +103,7 @@ function intToIpv4(value: number): string {
     (value >>> 24) & 255,
     (value >>> 16) & 255,
     (value >>> 8) & 255,
-    value & 255
+    value & 255,
   ].join(".");
 }
 
@@ -111,7 +121,7 @@ function parseRangeToken(token: string): IPv4Range | null {
   }
 
   const rangeMatch = trimmed.match(
-    /^(\d{1,3}(?:\.\d{1,3}){3})\s*-\s*(\d{1,3}(?:\.\d{1,3}){3})$/
+    /^(\d{1,3}(?:\.\d{1,3}){3})\s*-\s*(\d{1,3}(?:\.\d{1,3}){3})$/,
   );
   if (rangeMatch) {
     const startIp = rangeMatch[1];
@@ -134,10 +144,15 @@ function parseRangeToken(token: string): IPv4Range | null {
     if (!isValidIpv4(ip)) {
       throw new Error(`Invalid CIDR token "${trimmed}".`);
     }
-    if (!Number.isInteger(prefixLength) || prefixLength < 16 || prefixLength > 32) {
+    if (
+      !Number.isInteger(prefixLength) ||
+      prefixLength < 16 ||
+      prefixLength > 32
+    ) {
       throw new Error(`Unsupported CIDR token "${trimmed}". Use /16 to /32.`);
     }
-    const mask = prefixLength === 0 ? 0 : (0xffffffff << (32 - prefixLength)) >>> 0;
+    const mask =
+      prefixLength === 0 ? 0 : (0xffffffff << (32 - prefixLength)) >>> 0;
     const start = ipv4ToInt(ip) & mask;
     const hostCount = 2 ** (32 - prefixLength);
     const end = start + hostCount - 1;
@@ -162,13 +177,17 @@ export function expandSubnetRanges(subnetRanges: string[]): string[] {
   for (const range of ranges) {
     const size = range.end - range.start + 1;
     if (size > 4096) {
-      throw new Error("Range exceeds 4096 addresses. Split into smaller ranges.");
+      throw new Error(
+        "Range exceeds 4096 addresses. Split into smaller ranges.",
+      );
     }
     for (let value = range.start; value <= range.end; value += 1) {
       ips.add(intToIpv4(value));
     }
   }
-  return Array.from(ips).sort((left, right) => ipv4ToInt(left) - ipv4ToInt(right));
+  return Array.from(ips).sort(
+    (left, right) => ipv4ToInt(left) - ipv4ToInt(right),
+  );
 }
 
 async function pingHost(ip: string): Promise<boolean> {
@@ -181,7 +200,11 @@ async function pingHost(ip: string): Promise<boolean> {
   }
 }
 
-async function tcpProbe(ip: string, port: number, timeoutMs = 500): Promise<boolean> {
+async function tcpProbe(
+  ip: string,
+  port: number,
+  timeoutMs = 500,
+): Promise<boolean> {
   return new Promise((resolve) => {
     const socket = new net.Socket();
     let done = false;
@@ -209,7 +232,10 @@ function parseSnmpValue(output: string): string {
     if (valueIndex < 0) {
       continue;
     }
-    const rawValue = line.slice(valueIndex + 1).replace(/^.*?:/, "").trim();
+    const rawValue = line
+      .slice(valueIndex + 1)
+      .replace(/^.*?:/, "")
+      .trim();
     if (rawValue) {
       return rawValue.replace(/^"(.*)"$/, "$1").trim();
     }
@@ -228,7 +254,7 @@ function normalizeCombinedIdentity(rawValue: string): DeviceIdentity {
     return {
       serial,
       productCode: productCode || undefined,
-      rawSerialCombined: trimmed
+      rawSerialCombined: trimmed,
     };
   }
   return { serial: trimmed.padStart(6, "0") };
@@ -242,10 +268,10 @@ async function fetchIdentity(ip: string): Promise<DeviceIdentity | null> {
 
   try {
     const modelResult = await execAsync(
-      `snmpget -v ${version} -c ${SNMP_COMMUNITY} -t ${timeoutSeconds} -r 0 ${ip} ${modelArgs}`
+      `snmpget -v ${version} -c ${SNMP_COMMUNITY} -t ${timeoutSeconds} -r 0 ${ip} ${modelArgs}`,
     ).catch(() => ({ stdout: "" }));
     const serialResult = await execAsync(
-      `snmpget -v ${version} -c ${SNMP_COMMUNITY} -t ${timeoutSeconds} -r 0 ${ip} ${serialArgs}`
+      `snmpget -v ${version} -c ${SNMP_COMMUNITY} -t ${timeoutSeconds} -r 0 ${ip} ${serialArgs}`,
     ).catch(() => ({ stdout: "" }));
     const model = parseSnmpValue(modelResult.stdout);
     const serialRaw = parseSnmpValue(serialResult.stdout);
@@ -258,11 +284,13 @@ async function fetchIdentity(ip: string): Promise<DeviceIdentity | null> {
       model: model || undefined,
       serial: combined.serial,
       productCode: combined.productCode,
-      rawSerialCombined: combined.rawSerialCombined
+      rawSerialCombined: combined.rawSerialCombined,
     };
   } catch (error) {
     // Runtime can operate without SNMP tooling.
-    console.warn(`SNMP identity lookup failed for ${ip}: ${toErrorMessage(error)}`);
+    console.warn(
+      `SNMP identity lookup failed for ${ip}: ${toErrorMessage(error)}`,
+    );
     return null;
   }
 }
@@ -271,7 +299,7 @@ async function evaluateDevice(
   dbPath: string,
   ip: string,
   source: ScanSource,
-  runtime: DiscoveryRuntime
+  runtime: DiscoveryRuntime,
 ): Promise<DiscoveredDevice> {
   const pingOk = await runtime.pingHost(ip);
   const httpOk = await runtime.tcpProbe(ip, 80);
@@ -287,7 +315,7 @@ async function evaluateDevice(
       webUiReachable: false,
       resolved: false,
       requiresIntervention: false,
-      status: "UNREACHABLE"
+      status: "UNREACHABLE",
     };
   }
 
@@ -298,7 +326,7 @@ async function evaluateDevice(
   if (identity?.model && identity?.serial) {
     const matched = await resolveDeviceByModelAndSerial(dbPath, {
       modelName: identity.model,
-      serial: identity.serial
+      serial: identity.serial,
     });
     if (matched) {
       resolution = {
@@ -306,7 +334,7 @@ async function evaluateDevice(
         accountNumber: matched.accountNumber,
         variation: matched.variation,
         resolved: true,
-        requiresIntervention: false
+        requiresIntervention: false,
       };
       resolved = true;
     } else {
@@ -333,24 +361,26 @@ async function evaluateDevice(
       ? "WEBUI_UNREACHABLE"
       : requiresIntervention
         ? "USER_INTERVENTION_REQUIRED"
-        : "READY"
+        : "READY",
   };
 }
 
 async function mapWithConcurrency<TInput, TOutput>(
   items: TInput[],
   concurrency: number,
-  callback: (item: TInput) => Promise<TOutput>
+  callback: (item: TInput) => Promise<TOutput>,
 ): Promise<TOutput[]> {
   const results: TOutput[] = [];
   let index = 0;
-  const workers = new Array(Math.max(1, concurrency)).fill(null).map(async () => {
-    while (index < items.length) {
-      const current = index;
-      index += 1;
-      results[current] = await callback(items[current]);
-    }
-  });
+  const workers = new Array(Math.max(1, concurrency))
+    .fill(null)
+    .map(async () => {
+      while (index < items.length) {
+        const current = index;
+        index += 1;
+        results[current] = await callback(items[current]);
+      }
+    });
   await Promise.all(workers);
   return results;
 }
@@ -358,23 +388,25 @@ async function mapWithConcurrency<TInput, TOutput>(
 export async function discoverDevicesFromSubnets(
   dbPath: string,
   subnetRanges: string[],
-  runtimeOverrides?: Partial<DiscoveryRuntime>
+  runtimeOverrides?: Partial<DiscoveryRuntime>,
 ): Promise<DiscoveredDevice[]> {
   const runtime: DiscoveryRuntime = {
     pingHost,
     tcpProbe,
     fetchIdentity,
-    ...runtimeOverrides
+    ...runtimeOverrides,
   };
   const ips = expandSubnetRanges(subnetRanges);
-  const evaluated = await mapWithConcurrency(ips, 20, (ip) => evaluateDevice(dbPath, ip, "scan", runtime));
+  const evaluated = await mapWithConcurrency(ips, 20, (ip) =>
+    evaluateDevice(dbPath, ip, "scan", runtime),
+  );
   return evaluated.filter((device) => device.reachable);
 }
 
 export async function addManualDevice(
   dbPath: string,
   ip: string,
-  runtimeOverrides?: Partial<DiscoveryRuntime>
+  runtimeOverrides?: Partial<DiscoveryRuntime>,
 ): Promise<DiscoveredDevice> {
   if (!isValidIpv4(ip)) {
     throw new Error("Manual device input must be a valid IPv4 address.");
@@ -383,7 +415,7 @@ export async function addManualDevice(
     pingHost,
     tcpProbe,
     fetchIdentity,
-    ...runtimeOverrides
+    ...runtimeOverrides,
   };
   const device = await evaluateDevice(dbPath, ip, "manual", runtime);
   if (!device.reachable) {
@@ -391,4 +423,3 @@ export async function addManualDevice(
   }
   return device;
 }
-

@@ -9,7 +9,7 @@ import {
   isNavigationTargetReached,
   parseSwitchTarget,
   rankSelectors,
-  resolveLocatorByPriority
+  resolveLocatorByPriority,
 } from "../src/runner/engine.js";
 
 function createMockLocator({
@@ -18,7 +18,7 @@ function createMockLocator({
   onSelectOption,
   checkedState,
   ariaChecked,
-  children = {}
+  children = {},
 } = {}) {
   return {
     _count: count,
@@ -67,11 +67,15 @@ function createMockLocator({
         return this._ariaChecked ?? null;
       }
       return null;
-    }
+    },
   };
 }
 
-function createMockPage({ counts = {}, clickHandlers = {}, initialUrl = "http://printer/#/home" } = {}) {
+function createMockPage({
+  counts = {},
+  clickHandlers = {},
+  initialUrl = "http://printer/#/home",
+} = {}) {
   const page = {
     currentUrl: initialUrl,
     actions: [],
@@ -97,7 +101,7 @@ function createMockPage({ counts = {}, clickHandlers = {}, initialUrl = "http://
     },
     locator(value) {
       return buildLocator(`css:${value}`);
-    }
+    },
   };
 
   function buildLocator(key) {
@@ -109,7 +113,7 @@ function createMockPage({ counts = {}, clickHandlers = {}, initialUrl = "http://
         if (handler) {
           handler(page);
         }
-      }
+      },
     });
   }
 
@@ -120,11 +124,11 @@ test("rankSelectors prefers lower numeric priority", () => {
   const ranked = rankSelectors([
     { kind: "css", value: "#third", priority: 3 },
     { kind: "label", value: "First", priority: 1 },
-    { kind: "text", value: "Second", priority: 2 }
+    { kind: "text", value: "Second", priority: 2 },
   ]);
   assert.deepEqual(
     ranked.map((item) => item.priority),
-    [1, 2, 3]
+    [1, 2, 3],
   );
   assert.equal(ranked[0].selector.kind, "label");
 });
@@ -133,16 +137,16 @@ test("resolveLocatorByPriority tries selectors in priority order", async () => {
   const page = createMockPage({
     counts: {
       "css:#missing": 0,
-      "label:Hostname": 1
-    }
+      "label:Hostname": 1,
+    },
   });
   const resolved = await resolveLocatorByPriority(
     page,
     [
       { kind: "label", value: "Hostname", priority: 2 },
-      { kind: "css", value: "#missing", priority: 1 }
+      { kind: "css", value: "#missing", priority: 1 },
     ],
-    'setting "network.host" on page "network"'
+    'setting "network.host" on page "network"',
   );
   assert.equal(resolved.priority, 2);
   assert.equal(resolved.selector.kind, "label");
@@ -150,16 +154,13 @@ test("resolveLocatorByPriority tries selectors in priority order", async () => {
 
 test("resolveLocatorByPriority failure includes context", async () => {
   const page = createMockPage();
-  await assert.rejects(
-    async () => {
-      await resolveLocatorByPriority(
-        page,
-        [{ kind: "css", value: "#missing", priority: 1 }],
-        'setting "network.host" on page "network"'
-      );
-    },
-    /Selector resolution failed for setting "network\.host" on page "network"/
-  );
+  await assert.rejects(async () => {
+    await resolveLocatorByPriority(
+      page,
+      [{ kind: "css", value: "#missing", priority: 1 }],
+      'setting "network.host" on page "network"',
+    );
+  }, /Selector resolution failed for setting "network\.host" on page "network"/);
 });
 
 test("executePageNavigation follows steps and confirms target", async () => {
@@ -168,8 +169,8 @@ test("executePageNavigation follows steps and confirms target", async () => {
     clickHandlers: {
       "css:#open-network": (context) => {
         context.currentUrl = "http://printer/#/network";
-      }
-    }
+      },
+    },
   });
 
   await executePageNavigation(
@@ -179,41 +180,43 @@ test("executePageNavigation follows steps and confirms target", async () => {
       url: "http://printer/#/network",
       navPath: [
         { action: "goto", url: "http://printer/#/home" },
-        { action: "click", selector: { kind: "css", value: "#open-network" } }
-      ]
+        { action: "click", selector: { kind: "css", value: "#open-network" } },
+      ],
     },
-    "http://printer"
+    "http://printer",
   );
 
   assert.deepEqual(page.actions, [
     "goto:http://printer/#/home",
     "click:css:#open-network",
-    "wait:networkidle"
+    "wait:networkidle",
   ]);
 });
 
 test("executePageNavigation fails when click target is missing", async () => {
   const page = createMockPage();
-  await assert.rejects(
-    async () => {
-      await executePageNavigation(
-        page,
-        {
-          id: "system",
-          url: "http://printer/#/system",
-          navPath: [{ action: "click", selector: { kind: "css", value: "#missing" } }]
-        },
-        "http://printer"
-      );
-    },
-    /navigation step 1 on page "system"/
-  );
+  await assert.rejects(async () => {
+    await executePageNavigation(
+      page,
+      {
+        id: "system",
+        url: "http://printer/#/system",
+        navPath: [
+          { action: "click", selector: { kind: "css", value: "#missing" } },
+        ],
+      },
+      "http://printer",
+    );
+  }, /navigation step 1 on page "system"/);
 });
 
 test("parseSwitchTarget handles On and Off variants", () => {
   assert.equal(parseSwitchTarget("On", "network.ipv6"), true);
   assert.equal(parseSwitchTarget("off", "network.ipv6"), false);
-  assert.throws(() => parseSwitchTarget("invalid", "network.ipv6"), /Invalid switch value/);
+  assert.throws(
+    () => parseSwitchTarget("invalid", "network.ipv6"),
+    /Invalid switch value/,
+  );
 });
 
 test("applySwitchValue converges to requested state", async () => {
@@ -229,7 +232,7 @@ test("applySelectValue uses option-text fallback when direct selection fails", a
     count: 1,
     onClick: () => {
       optionTextClicked = true;
-    }
+    },
   });
   const optionCollection = {
     first() {
@@ -239,16 +242,18 @@ test("applySelectValue uses option-text fallback when direct selection fails", a
       return 0;
     },
     filter({ hasText }) {
-      return hasText === "Office" ? optionByText : createMockLocator({ count: 0 });
-    }
+      return hasText === "Office"
+        ? optionByText
+        : createMockLocator({ count: 0 });
+    },
   };
   const selectLocator = createMockLocator({
     count: 1,
     onSelectOption: () => [],
     children: {
       'option[value="Office"]': optionByValue,
-      option: optionCollection
-    }
+      option: optionCollection,
+    },
   });
   const page = createMockPage();
 
@@ -260,13 +265,13 @@ test("applyRadioValue selects by target option label first", async () => {
   let targetRadioClicked = false;
   const page = createMockPage({
     counts: {
-      "role:radio:Night": 1
+      "role:radio:Night": 1,
     },
     clickHandlers: {
       "role:radio:Night": () => {
         targetRadioClicked = true;
-      }
-    }
+      },
+    },
   });
   const fallbackLocator = createMockLocator({ count: 1, checkedState: false });
   await applyRadioValue(page, fallbackLocator, "Night", "system.profile");
@@ -275,12 +280,18 @@ test("applyRadioValue selects by target option label first", async () => {
 
 test("isNavigationTargetReached requires hash when expected contains hash", () => {
   assert.equal(
-    isNavigationTargetReached("http://printer/#/network", "http://printer/#/network"),
-    true
+    isNavigationTargetReached(
+      "http://printer/#/network",
+      "http://printer/#/network",
+    ),
+    true,
   );
   assert.equal(
-    isNavigationTargetReached("http://printer/#/network", "http://printer/#/home"),
-    false
+    isNavigationTargetReached(
+      "http://printer/#/network",
+      "http://printer/#/home",
+    ),
+    false,
   );
 });
 
@@ -292,7 +303,9 @@ test("buildPageCommitActionMap prefers Save-like actions per page", () => {
       label: "Host Name",
       type: "text",
       selectors: [{ kind: "css", value: "#host" }],
-      actions: [{ selector: { kind: "css", value: "#applyButton" }, label: "Apply" }]
+      actions: [
+        { selector: { kind: "css", value: "#applyButton" }, label: "Apply" },
+      ],
     },
     {
       id: "system.location",
@@ -300,12 +313,13 @@ test("buildPageCommitActionMap prefers Save-like actions per page", () => {
       label: "Location",
       type: "text",
       selectors: [{ kind: "css", value: "#location" }],
-      actions: [{ selector: { kind: "css", value: "#saveButton" }, label: "Save" }]
-    }
+      actions: [
+        { selector: { kind: "css", value: "#saveButton" }, label: "Save" },
+      ],
+    },
   ]);
 
   const chosen = actions.get("system");
   assert.ok(chosen);
   assert.equal(chosen?.label, "Save");
 });
-

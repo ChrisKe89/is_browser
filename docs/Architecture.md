@@ -4,8 +4,8 @@ This document describes the structural architecture of is_browser and how its co
 
 It implements the strategy defined in:
 
-* PRD 
-* Technical Strategy Document 
+- PRD
+- Technical Strategy Document
 
 ---
 
@@ -27,17 +27,17 @@ These layers must remain strictly separated.
 
 Responsibility:
 
-* Crawl printer WebUI.
-* Build canonical knowledge graph.
-* Capture navigation paths, groups, fields, constraints.
-* Generate JSON map.
-* Generate YAML derived views.
+- Crawl printer WebUI.
+- Build canonical knowledge graph.
+- Capture navigation paths, groups, fields, constraints.
+- Generate JSON map.
+- Generate YAML derived views.
 
 Outputs:
 
-* Versioned UI Map (JSON)
-* YAML navigation view
-* YAML layout view
+- Versioned UI Map (JSON)
+- YAML navigation view
+- YAML layout view
 
 This layer defines system truth.
 
@@ -51,19 +51,19 @@ The knowledge graph is defined in `packages/contract`.
 
 It includes:
 
-* Nodes (pages, modals)
-* Groups
-* Fields
-* Selectors
-* Actions
-* Edges (navigation relationships)
+- Nodes (pages, modals)
+- Groups
+- Fields
+- Selectors
+- Actions
+- Edges (navigation relationships)
 
 The graph:
 
-* Is model-specific.
-* Is firmware-aware.
-* Must be deterministic.
-* Must produce stable identifiers across repeated runs.
+- Is model-specific.
+- Is firmware-aware.
+- Must be deterministic.
+- Must produce stable identifiers across repeated runs.
 
 ---
 
@@ -73,10 +73,10 @@ Implemented via `packages/sqlite-store`.
 
 Responsibilities:
 
-* Store profiles by model + customer + variation.
-* Persist apply run audits.
-* Version profiles.
-* Maintain separation from UI structure.
+- Store profiles by model + customer + variation.
+- Persist apply run audits.
+- Version profiles.
+- Maintain separation from UI structure.
 
 Profiles reference `fieldId` only.
 They do not contain selectors or navigation logic.
@@ -87,19 +87,19 @@ They do not contain selectors or navigation logic.
 
 Responsibilities:
 
-* Load profile.
-* Resolve target device via SNMP.
-* Navigate using stored navPath.
-* Apply changes using stored selectors.
-* Respect modal save scopes.
-* Produce structured logs.
-* Persist run outcomes.
+- Load profile.
+- Resolve target device via SNMP.
+- Navigate using stored navPath.
+- Apply changes using stored selectors.
+- Respect modal save scopes.
+- Produce structured logs.
+- Persist run outcomes.
 
 Application engine must:
 
-* Verify landing node identity before applying.
-* Only modify defined fields.
-* Confirm final state.
+- Verify landing node identity before applying.
+- Only modify defined fields.
+- Confirm final state.
 
 It must not bypass the knowledge graph abstraction.
 
@@ -109,15 +109,15 @@ It must not bypass the knowledge graph abstraction.
 
 Responsibilities:
 
-* Load UI map schema from DB.
-* Render configuration form grouped by UI structure.
-* Validate values against UI constraints.
-* Save profiles.
+- Load UI map schema from DB.
+- Render configuration form grouped by UI structure.
+- Validate values against UI constraints.
+- Save profiles.
 
 The form product:
 
-* Does not define UI structure.
-* Does not contain automation logic.
+- Does not define UI structure.
+- Does not contain automation logic.
 
 ---
 
@@ -127,9 +127,9 @@ The form product:
 
 Canonical schemas:
 
-* UI Map
-* Profile
-* Apply Run
+- UI Map
+- Profile
+- Apply Run
 
 #### packages/sqlite-store
 
@@ -149,9 +149,9 @@ Environment loading.
 
 Each product may run independently:
 
-* is_mapper requires printer + browser.
-* is_form requires UI map + DB.
-* is_application requires UI map + profile DB + printer.
+- is_mapper requires printer + browser.
+- is_form requires UI map + DB.
+- is_application requires UI map + profile DB + printer.
 
 No product may depend on runtime state of another.
 
@@ -173,9 +173,9 @@ No product may depend on runtime state of another.
 
 Architecture must remain aligned with:
 
-* Deterministic identity requirements 
-* Separation of concerns 
-* Documentation hierarchy 
+- Deterministic identity requirements
+- Separation of concerns
+- Documentation hierarchy
 
 Any change affecting data contracts requires Technical Strategy update first.
 

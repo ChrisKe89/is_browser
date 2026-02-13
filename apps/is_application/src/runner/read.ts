@@ -38,9 +38,10 @@ function deriveOutputPath(templatePath: string): string {
 }
 
 function resolveMapPath(template: SettingsFile): string {
-  const sourceMap = template.meta && "sourceMap" in template.meta
-    ? String((template.meta as Record<string, unknown>).sourceMap ?? "")
-    : "";
+  const sourceMap =
+    template.meta && "sourceMap" in template.meta
+      ? String((template.meta as Record<string, unknown>).sourceMap ?? "")
+      : "";
   if (sourceMap.trim()) {
     return sourceMap.trim();
   }
@@ -49,7 +50,7 @@ function resolveMapPath(template: SettingsFile): string {
 
 async function findField(
   map: UiMap,
-  setting: TemplateSetting
+  setting: TemplateSetting,
 ): Promise<FieldEntry | undefined> {
   if (setting.id) {
     const exact = map.fields.find((field) => field.id === setting.id);
@@ -57,12 +58,16 @@ async function findField(
   }
   if (setting.label) {
     const normalized = setting.label.toLowerCase();
-    return map.fields.find((field) => (field.label ?? "").toLowerCase() === normalized);
+    return map.fields.find(
+      (field) => (field.label ?? "").toLowerCase() === normalized,
+    );
   }
   return undefined;
 }
 
-async function readCheckboxOrRadio(locator: import("playwright").Locator): Promise<string> {
+async function readCheckboxOrRadio(
+  locator: import("playwright").Locator,
+): Promise<string> {
   const checked = await locator.isChecked().catch(() => null);
   if (typeof checked === "boolean") {
     return checked ? "On" : "Off";
@@ -73,7 +78,9 @@ async function readCheckboxOrRadio(locator: import("playwright").Locator): Promi
   return "";
 }
 
-async function readSelect(locator: import("playwright").Locator): Promise<string> {
+async function readSelect(
+  locator: import("playwright").Locator,
+): Promise<string> {
   const selectedValue = await locator
     .evaluate((element) => {
       if (element instanceof HTMLSelectElement) {
@@ -92,7 +99,9 @@ async function readSelect(locator: import("playwright").Locator): Promise<string
   return "";
 }
 
-async function readTextLike(locator: import("playwright").Locator): Promise<string> {
+async function readTextLike(
+  locator: import("playwright").Locator,
+): Promise<string> {
   const valueFromInput = await locator.inputValue().catch(() => "");
   if (valueFromInput) return valueFromInput;
 
@@ -105,12 +114,12 @@ async function readTextLike(locator: import("playwright").Locator): Promise<stri
 
 async function readFieldValue(
   page: import("playwright").Page,
-  field: FieldEntry
+  field: FieldEntry,
 ): Promise<string> {
   const resolved = await resolveLocatorByPriority(
     page,
     field.selectors,
-    `read setting "${field.id}" on page "${field.pageId}"`
+    `read setting "${field.id}" on page "${field.pageId}"`,
   );
 
   switch (field.type) {
@@ -129,8 +138,14 @@ async function readFieldValue(
 }
 
 async function run(): Promise<void> {
-  const templatePath = process.argv[2] ?? process.env.SETTINGS_PATH ?? "examples/settings.manual-clicks.blank.json";
-  const outputPath = process.argv[3] ?? process.env.READ_OUTPUT_PATH ?? deriveOutputPath(templatePath);
+  const templatePath =
+    process.argv[2] ??
+    process.env.SETTINGS_PATH ??
+    "examples/settings.manual-clicks.blank.json";
+  const outputPath =
+    process.argv[3] ??
+    process.env.READ_OUTPUT_PATH ??
+    deriveOutputPath(templatePath);
   const deviceHost = process.env.PRINTER_IP ?? new URL(PRINTER_URL).hostname;
 
   const template = await readSettings(templatePath);
@@ -146,13 +161,13 @@ async function run(): Promise<void> {
       readAt: new Date().toISOString(),
       sourceTemplate: templatePath,
       sourceMap: mapPath,
-      sourceDevice: deviceHost
+      sourceDevice: deviceHost,
     },
     settings: settings.map((setting) => ({
       id: setting.id,
       label: setting.label,
-      value: ""
-    }))
+      value: "",
+    })),
   };
 
   const unmatchedSettings: Array<{ id?: string; label?: string }> = [];
@@ -179,7 +194,9 @@ async function run(): Promise<void> {
   const browser = await openBrowser({ headless: template.options?.headless });
   const page = await newPage(browser);
   const pageEntries = Array.from(byPage.entries());
-  console.log(`[read] Settings: ${settings.length} across ${pageEntries.length} pages`);
+  console.log(
+    `[read] Settings: ${settings.length} across ${pageEntries.length} pages`,
+  );
   let pagesCompleted = 0;
 
   try {
@@ -189,14 +206,16 @@ async function run(): Promise<void> {
     }
 
     for (const [pageId, items] of pageEntries) {
-      console.log(`[read] Page ${pagesCompleted + 1}/${pageEntries.length}: ${pageId} (${items.length} fields)`);
+      console.log(
+        `[read] Page ${pagesCompleted + 1}/${pageEntries.length}: ${pageId} (${items.length} fields)`,
+      );
       const pageEntry = map.pages.find((entry) => entry.id === pageId);
       if (!pageEntry) {
         for (const item of items) {
           readErrors.push({
             id: item.setting.id,
             label: item.setting.label,
-            error: `Missing page entry for ${pageId}`
+            error: `Missing page entry for ${pageId}`,
           });
         }
         pagesCompleted += 1;
@@ -211,7 +230,7 @@ async function run(): Promise<void> {
           readErrors.push({
             id: item.setting.id,
             label: item.setting.label,
-            error: `Navigation failed for page "${pageId}": ${message}`
+            error: `Navigation failed for page "${pageId}": ${message}`,
           });
         }
         pagesCompleted += 1;
@@ -226,14 +245,18 @@ async function run(): Promise<void> {
           readErrors.push({
             id: item.setting.id,
             label: item.setting.label,
-            error: toErrorMessage(error)
+            error: toErrorMessage(error),
           });
         }
       }
       pagesCompleted += 1;
       readResult.meta.pagesCompleted = pagesCompleted;
       if (pagesCompleted % 10 === 0 || pagesCompleted === pageEntries.length) {
-        await writeFile(outputPath, JSON.stringify(readResult, null, 2), "utf8");
+        await writeFile(
+          outputPath,
+          JSON.stringify(readResult, null, 2),
+          "utf8",
+        );
       }
     }
   } finally {
@@ -256,7 +279,7 @@ async function run(): Promise<void> {
 
   console.log(`Read complete. Output: ${outputPath}`);
   console.log(
-    `Total: ${settings.length} | Unmatched: ${unmatchedSettings.length} | ReadErrors: ${readErrors.length}`
+    `Total: ${settings.length} | Unmatched: ${unmatchedSettings.length} | ReadErrors: ${readErrors.length}`,
   );
 }
 
@@ -264,4 +287,3 @@ run().catch((error) => {
   console.error(`Read failed: ${toErrorMessage(error)}`);
   process.exit(1);
 });
-

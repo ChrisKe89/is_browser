@@ -31,8 +31,13 @@ export function canonicalSelectorKey(selectors: Selector[]): string {
 export function fieldFingerprint(
   type: FieldEntry["type"],
   selectors: Selector[],
-  label?: string
+  label?: string,
 ): string {
-  const normalizedLabel = (label ?? "").toLowerCase().trim().replace(/\s+/g, " ");
-  return hashValue(`${type}|${canonicalSelectorKey(selectors)}|${normalizedLabel}`);
+  const normalizedLabel = (label ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+  return hashValue(
+    `${type}|${canonicalSelectorKey(selectors)}|${normalizedLabel}`,
+  );
 }

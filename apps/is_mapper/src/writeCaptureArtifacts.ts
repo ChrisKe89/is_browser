@@ -1,13 +1,20 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { readMap, type FieldEntry, type NavStep, type PageEntry, type Selector, type UiMap } from "@is-browser/contract";
+import {
+  readMap,
+  type FieldEntry,
+  type NavStep,
+  type PageEntry,
+  type Selector,
+  type UiMap,
+} from "@is-browser/contract";
 import {
   buildCaptureSchema,
   buildCaptureVerifyReport,
   captureSchemaToFormYaml,
   type CaptureSchema,
   type CaptureVerifyReport,
-  type SnapshotOverlayEntry
+  type SnapshotOverlayEntry,
 } from "./captureContract.js";
 import { type FieldStateSnapshotEntry } from "./clickCapture.js";
 
@@ -91,10 +98,14 @@ type LegacyContainer = {
 };
 
 function normalizeText(value: unknown): string {
-  return String(value ?? "").replace(/\s+/g, " ").trim();
+  return String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function controlTypeToFieldType(controlType: string | undefined): FieldEntry["type"] {
+function controlTypeToFieldType(
+  controlType: string | undefined,
+): FieldEntry["type"] {
   switch ((controlType ?? "").toLowerCase()) {
     case "switch":
     case "checkbox":
@@ -118,7 +129,9 @@ function controlTypeToFieldType(controlType: string | undefined): FieldEntry["ty
   }
 }
 
-function legacyLocatorToSelector(locator: LegacyLocator | Selector | undefined): Selector | undefined {
+function legacyLocatorToSelector(
+  locator: LegacyLocator | Selector | undefined,
+): Selector | undefined {
   if (!locator) return undefined;
 
   const kind = normalizeText((locator as LegacyLocator).kind);
@@ -132,13 +145,17 @@ function legacyLocatorToSelector(locator: LegacyLocator | Selector | undefined):
   }
 
   if (kind === "label") {
-    const value = normalizeText((locator as LegacyLocator).value || (locator as LegacyLocator).text);
+    const value = normalizeText(
+      (locator as LegacyLocator).value || (locator as LegacyLocator).text,
+    );
     if (!value) return undefined;
     return { kind: "label", value };
   }
 
   if (kind === "text") {
-    const value = normalizeText((locator as LegacyLocator).value || (locator as LegacyLocator).text);
+    const value = normalizeText(
+      (locator as LegacyLocator).value || (locator as LegacyLocator).text,
+    );
     if (!value) return undefined;
     return { kind: "text", value };
   }
@@ -169,18 +186,22 @@ function legacyFieldSelectors(field: LegacyField): Selector[] {
 function asFieldEntry(
   pageId: string,
   field: LegacyField,
-  index: number
+  index: number,
 ): FieldEntry {
   const selectors = legacyFieldSelectors(field);
   const type = controlTypeToFieldType(field.controlType);
-  const id = normalizeText(field.sourceFieldId) || normalizeText(field.fieldKey) || `${pageId}.field-${index + 1}`;
+  const id =
+    normalizeText(field.sourceFieldId) ||
+    normalizeText(field.fieldKey) ||
+    `${pageId}.field-${index + 1}`;
   const currentValue = field.currentValue;
   const defaultValue = field.defaultValue;
   return {
     id,
     fieldId: normalizeText(field.fieldId) || undefined,
     label: normalizeText(field.label) || undefined,
-    labelQuality: (field.labelQuality as FieldEntry["labelQuality"]) || undefined,
+    labelQuality:
+      (field.labelQuality as FieldEntry["labelQuality"]) || undefined,
     type,
     selectors,
     pageId,
@@ -192,36 +213,51 @@ function asFieldEntry(
     defaultValue: (defaultValue as FieldEntry["defaultValue"]) ?? null,
     currentValue: (currentValue as FieldEntry["currentValue"]) ?? null,
     currentLabel: normalizeText(field.currentLabel) || undefined,
-    options: (field.constraints?.options ?? []).map((option) => ({
-      value: normalizeText(option.value),
-      label: normalizeText(option.label) || undefined
-    })).filter((option) => option.value.length > 0),
+    options: (field.constraints?.options ?? [])
+      .map((option) => ({
+        value: normalizeText(option.value),
+        label: normalizeText(option.label) || undefined,
+      }))
+      .filter((option) => option.value.length > 0),
     constraints: {
       min: field.constraints?.min,
       max: field.constraints?.max,
       step: field.constraints?.step,
       pattern: field.constraints?.pattern,
       enum: field.constraints?.enum,
-      readOnly: field.readonly
+      readOnly: field.readonly,
     },
     readonly: field.readonly,
     visibility: {
       visible: field.visibility?.visible ?? true,
-      enabled: field.visibility?.enabled ?? !(field.readonly ?? false)
-    }
+      enabled: field.visibility?.enabled ?? !(field.readonly ?? false),
+    },
   };
 }
 
-function legacyToUiMap(payload: { meta?: Record<string, unknown>; pages?: LegacyContainer[]; containers?: LegacyContainer[] }): UiMap {
-  const containers = (payload.pages ?? payload.containers ?? []).filter((item): item is LegacyContainer => Boolean(item));
+function legacyToUiMap(payload: {
+  meta?: Record<string, unknown>;
+  pages?: LegacyContainer[];
+  containers?: LegacyContainer[];
+}): UiMap {
+  const containers = (payload.pages ?? payload.containers ?? []).filter(
+    (item): item is LegacyContainer => Boolean(item),
+  );
   const pages: PageEntry[] = [];
   const fields: FieldEntry[] = [];
   const fieldByLegacyKey = new Map<string, FieldEntry>();
   const pageIdByContainerKey = new Map<string, string>();
-  const modalLinkByFieldKey = new Map<string, { pageId: string; title?: string }>();
+  const modalLinkByFieldKey = new Map<
+    string,
+    { pageId: string; title?: string }
+  >();
 
   for (const container of containers) {
-    const pageId = normalizeText(container.sourceNodeId) || normalizeText(container.pageKey) || normalizeText(container.containerKey) || `page-${pages.length + 1}`;
+    const pageId =
+      normalizeText(container.sourceNodeId) ||
+      normalizeText(container.pageKey) ||
+      normalizeText(container.containerKey) ||
+      `page-${pages.length + 1}`;
     pageIdByContainerKey.set(normalizeText(container.containerKey), pageId);
     const navPath = (container.navPath ?? [])
       .map((step) => {
@@ -233,7 +269,7 @@ function legacyToUiMap(payload: { meta?: Record<string, unknown>; pages?: Legacy
           label: normalizeText(step.label) || undefined,
           kind: step.kind,
           frameUrl: normalizeText(step.frameUrl) || undefined,
-          selector
+          selector,
         };
         return navStep;
       })
@@ -245,17 +281,23 @@ function legacyToUiMap(payload: { meta?: Record<string, unknown>; pages?: Legacy
       if (!selector) continue;
       actions.push({
         selector,
-        label: normalizeText(action.label) || undefined
+        label: normalizeText(action.label) || undefined,
       });
     }
 
     pages.push({
       id: pageId,
       title: normalizeText(container.title) || undefined,
-      url: normalizeText(container.url) || normalizeText(container.normalizedUrl) || normalizeText(container.urlNormalized) || "",
-      breadcrumbs: (container.breadcrumb ?? []).map((crumb) => normalizeText(crumb)).filter(Boolean),
+      url:
+        normalizeText(container.url) ||
+        normalizeText(container.normalizedUrl) ||
+        normalizeText(container.urlNormalized) ||
+        "",
+      breadcrumbs: (container.breadcrumb ?? [])
+        .map((crumb) => normalizeText(crumb))
+        .filter(Boolean),
       navPath,
-      actions
+      actions,
     });
 
     for (const [index, field] of (container.fields ?? []).entries()) {
@@ -269,13 +311,15 @@ function legacyToUiMap(payload: { meta?: Record<string, unknown>; pages?: Legacy
   }
 
   for (const container of containers) {
-    const pageId = pageIdByContainerKey.get(normalizeText(container.containerKey));
+    const pageId = pageIdByContainerKey.get(
+      normalizeText(container.containerKey),
+    );
     if (!pageId) continue;
     const openerFieldKey = normalizeText(container.openedBy?.fieldKey);
     if (!openerFieldKey) continue;
     modalLinkByFieldKey.set(openerFieldKey, {
       pageId,
-      title: normalizeText(container.title) || undefined
+      title: normalizeText(container.title) || undefined,
     });
   }
 
@@ -290,24 +334,31 @@ function legacyToUiMap(payload: { meta?: Record<string, unknown>; pages?: Legacy
 
   return {
     meta: {
-      generatedAt: normalizeText(payload.meta?.generatedAt) || new Date().toISOString(),
-      printerUrl: normalizeText(payload.meta?.printerUrl || payload.meta?.printerBaseUrl),
+      generatedAt:
+        normalizeText(payload.meta?.generatedAt) || new Date().toISOString(),
+      printerUrl: normalizeText(
+        payload.meta?.printerUrl || payload.meta?.printerBaseUrl,
+      ),
       firmware: normalizeText(payload.meta?.firmware) || undefined,
       deviceModel: normalizeText(payload.meta?.deviceModel) || undefined,
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
     pages,
-    fields
+    fields,
   };
 }
 
 function isRawUiMapPayload(payload: unknown): payload is UiMap {
   const probe = payload as UiMap;
-  return Boolean(probe?.meta?.printerUrl && Array.isArray(probe.pages) && Array.isArray(probe.fields));
+  return Boolean(
+    probe?.meta?.printerUrl &&
+    Array.isArray(probe.pages) &&
+    Array.isArray(probe.fields),
+  );
 }
 
 async function buildSnapshotOverlayFromClickLog(
-  clickLogPath: string
+  clickLogPath: string,
 ): Promise<Map<string, SnapshotOverlayEntry> | undefined> {
   try {
     await access(clickLogPath);
@@ -326,20 +377,23 @@ async function buildSnapshotOverlayFromClickLog(
       for (const snap of click.fieldStateSnapshot ?? []) {
         if (!snap.capture_ok) continue;
         const existing = overlay.get(snap.fieldId);
-        const currentValue = snap.current_value !== null && snap.current_value !== undefined
-          ? snap.current_value
-          : existing?.current_value ?? null;
-        const defaultValue = snap.default_value !== null && snap.default_value !== undefined
-          ? snap.default_value
-          : existing?.default_value ?? null;
-        const currentLabel = snap.current_label !== null
-          ? snap.current_label
-          : existing?.current_label ?? null;
+        const currentValue =
+          snap.current_value !== null && snap.current_value !== undefined
+            ? snap.current_value
+            : (existing?.current_value ?? null);
+        const defaultValue =
+          snap.default_value !== null && snap.default_value !== undefined
+            ? snap.default_value
+            : (existing?.default_value ?? null);
+        const currentLabel =
+          snap.current_label !== null
+            ? snap.current_label
+            : (existing?.current_label ?? null);
 
         overlay.set(snap.fieldId, {
           current_value: currentValue,
           current_label: currentLabel,
-          default_value: defaultValue
+          default_value: defaultValue,
         });
       }
     }
@@ -353,7 +407,7 @@ async function buildSnapshotOverlayFromClickLog(
 export async function writeCaptureArtifacts(
   map: UiMap,
   distDir = "dist",
-  snapshotOverlay?: Map<string, SnapshotOverlayEntry>
+  snapshotOverlay?: Map<string, SnapshotOverlayEntry>,
 ): Promise<CaptureArtifacts> {
   const schema = buildCaptureSchema(map, snapshotOverlay);
   const verifyReport = buildCaptureVerifyReport(schema);
@@ -365,7 +419,11 @@ export async function writeCaptureArtifacts(
 
   await writeFile(schemaPath, `${JSON.stringify(schema, null, 2)}\n`, "utf8");
   await writeFile(formPath, captureSchemaToFormYaml(schema), "utf8");
-  await writeFile(verifyPath, `${JSON.stringify(verifyReport, null, 2)}\n`, "utf8");
+  await writeFile(
+    verifyPath,
+    `${JSON.stringify(verifyReport, null, 2)}\n`,
+    "utf8",
+  );
 
   return {
     schema,
@@ -373,40 +431,67 @@ export async function writeCaptureArtifacts(
     paths: {
       schema: schemaPath,
       form: formPath,
-      verify: verifyPath
-    }
+      verify: verifyPath,
+    },
   };
 }
 
 export async function writeCaptureArtifactsFromMapPath(
   mapPath: string,
-  distDir = "dist"
+  distDir = "dist",
 ): Promise<CaptureArtifacts> {
-  const clickLogPath = path.join(path.dirname(path.resolve(mapPath)), "click-log.json");
+  const clickLogPath = path.join(
+    path.dirname(path.resolve(mapPath)),
+    "click-log.json",
+  );
   const snapshotOverlay = await buildSnapshotOverlayFromClickLog(clickLogPath);
 
   try {
     const map = await readMap(mapPath);
-    const artifacts = await writeCaptureArtifacts(map, distDir, snapshotOverlay);
+    const artifacts = await writeCaptureArtifacts(
+      map,
+      distDir,
+      snapshotOverlay,
+    );
     await reconcileClickLogWithFieldRecords(mapPath, artifacts);
     return artifacts;
   } catch {
     const raw = await readFile(mapPath, "utf8");
     const parsed = JSON.parse(raw) as unknown;
     if (isRawUiMapPayload(parsed)) {
-      const artifacts = await writeCaptureArtifacts(parsed, distDir, snapshotOverlay);
+      const artifacts = await writeCaptureArtifacts(
+        parsed,
+        distDir,
+        snapshotOverlay,
+      );
       await reconcileClickLogWithFieldRecords(mapPath, artifacts);
       return artifacts;
     }
-    const normalized = legacyToUiMap(parsed as { meta?: Record<string, unknown>; pages?: LegacyContainer[]; containers?: LegacyContainer[] });
-    const artifacts = await writeCaptureArtifacts(normalized, distDir, snapshotOverlay);
+    const normalized = legacyToUiMap(
+      parsed as {
+        meta?: Record<string, unknown>;
+        pages?: LegacyContainer[];
+        containers?: LegacyContainer[];
+      },
+    );
+    const artifacts = await writeCaptureArtifacts(
+      normalized,
+      distDir,
+      snapshotOverlay,
+    );
     await reconcileClickLogWithFieldRecords(mapPath, artifacts);
     return artifacts;
   }
 }
 
-async function reconcileClickLogWithFieldRecords(mapPath: string, artifacts: CaptureArtifacts): Promise<void> {
-  const clickLogPath = path.join(path.dirname(path.resolve(mapPath)), "click-log.json");
+async function reconcileClickLogWithFieldRecords(
+  mapPath: string,
+  artifacts: CaptureArtifacts,
+): Promise<void> {
+  const clickLogPath = path.join(
+    path.dirname(path.resolve(mapPath)),
+    "click-log.json",
+  );
   try {
     await access(clickLogPath);
   } catch {
@@ -414,7 +499,9 @@ async function reconcileClickLogWithFieldRecords(mapPath: string, artifacts: Cap
   }
 
   const sourceFieldIds = new Set(
-    artifacts.schema.fieldRecords.map((record) => record.source_field_id).filter(Boolean)
+    artifacts.schema.fieldRecords
+      .map((record) => record.source_field_id)
+      .filter(Boolean),
   );
   const raw = await readFile(clickLogPath, "utf8");
   const parsed = JSON.parse(raw) as {
@@ -428,10 +515,12 @@ async function reconcileClickLogWithFieldRecords(mapPath: string, artifacts: Cap
       discovered.add(normalized);
     }
   }
-  const missing = Array.from(discovered).filter((id) => !sourceFieldIds.has(id));
+  const missing = Array.from(discovered).filter(
+    (id) => !sourceFieldIds.has(id),
+  );
   if (missing.length > 0) {
     throw new Error(
-      `Click-log reconciliation failed: ${missing.length} newlyDiscoveredFieldIds missing from FieldRecords (sample: ${missing.slice(0, 8).join(", ")}).`
+      `Click-log reconciliation failed: ${missing.length} newlyDiscoveredFieldIds missing from FieldRecords (sample: ${missing.slice(0, 8).join(", ")}).`,
     );
   }
 }

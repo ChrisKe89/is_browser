@@ -58,7 +58,9 @@ function normalizeSerial(value: string): string {
   if (!trimmed) {
     return "";
   }
-  return trimmed.length > 6 ? trimmed.slice(-6).padStart(6, "0") : trimmed.padStart(6, "0");
+  return trimmed.length > 6
+    ? trimmed.slice(-6).padStart(6, "0")
+    : trimmed.padStart(6, "0");
 }
 
 function toLikePattern(query?: string): string {
@@ -70,7 +72,10 @@ function normalizeRequirement(value?: string): string | undefined {
   return normalized.length > 0 ? normalized : undefined;
 }
 
-export function modelMatchesRequirement(modelName: string, requirement?: string): boolean {
+export function modelMatchesRequirement(
+  modelName: string,
+  requirement?: string,
+): boolean {
   const model = modelName.trim().toLowerCase();
   const required = normalizeRequirement(requirement)?.toLowerCase();
   if (!required) {
@@ -79,7 +84,9 @@ export function modelMatchesRequirement(modelName: string, requirement?: string)
 
   // Supports simple wildcard semantics with '*' for operator-maintained requirements.
   if (required.includes("*")) {
-    const escaped = required.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
+    const escaped = required
+      .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/\*/g, ".*");
     const expression = new RegExp(`^${escaped}$`, "i");
     return expression.test(modelName);
   }
@@ -89,7 +96,7 @@ export function modelMatchesRequirement(modelName: string, requirement?: string)
 
 export async function upsertDeviceResolutionRecords(
   dbPath: string,
-  records: DeviceResolutionRecord[]
+  records: DeviceResolutionRecord[],
 ): Promise<{ insertedOrUpdated: number }> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -104,7 +111,7 @@ export async function upsertDeviceResolutionRecords(
       account_number = excluded.account_number,
       variation = excluded.variation,
       model_match = excluded.model_match,
-      updated_at = excluded.updated_at`
+      updated_at = excluded.updated_at`,
   );
 
   let insertedOrUpdated = 0;
@@ -128,7 +135,7 @@ export async function upsertDeviceResolutionRecords(
         accountNumber,
         variation,
         normalizeRequirement(record.modelMatch ?? modelName) ?? null,
-        now
+        now,
       );
       insertedOrUpdated += 1;
     }
@@ -147,7 +154,7 @@ export async function upsertDeviceResolutionRecords(
 
 export async function importDeviceResolutionFromCsv(
   dbPath: string,
-  csvPath: string
+  csvPath: string,
 ): Promise<{ rowsRead: number; rowsUpserted: number }> {
   const raw = await readFile(csvPath, "utf8");
   const lines = raw
@@ -165,7 +172,12 @@ export async function importDeviceResolutionFromCsv(
   const accountIndex = headers.indexOf("account_number");
   const variationIndex = headers.indexOf("variation");
   const matchIndex = headers.indexOf("model_match");
-  if (modelIndex < 0 || serialIndex < 0 || customerIndex < 0 || accountIndex < 0) {
+  if (
+    modelIndex < 0 ||
+    serialIndex < 0 ||
+    customerIndex < 0 ||
+    accountIndex < 0
+  ) {
     return { rowsRead: 0, rowsUpserted: 0 };
   }
 
@@ -178,7 +190,7 @@ export async function importDeviceResolutionFromCsv(
       customerName: columns[customerIndex] ?? "",
       accountNumber: columns[accountIndex] ?? "",
       variation: columns[variationIndex] ?? "default",
-      modelMatch: columns[matchIndex] ?? undefined
+      modelMatch: columns[matchIndex] ?? undefined,
     });
   }
 
@@ -188,12 +200,14 @@ export async function importDeviceResolutionFromCsv(
 
 export async function ensureDeviceResolutionSeededFromCsv(
   dbPath: string,
-  csvPath: string
+  csvPath: string,
 ): Promise<{ seeded: boolean; rowsUpserted: number }> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
   try {
-    const row = db.prepare("SELECT COUNT(*) AS count FROM device_resolution").get() as { count: number };
+    const row = db
+      .prepare("SELECT COUNT(*) AS count FROM device_resolution")
+      .get() as { count: number };
     if (Number(row.count ?? 0) > 0) {
       return { seeded: false, rowsUpserted: 0 };
     }
@@ -201,16 +215,21 @@ export async function ensureDeviceResolutionSeededFromCsv(
     db.close();
   }
 
-  const imported = await importDeviceResolutionFromCsv(dbPath, csvPath).catch(() => ({
-    rowsRead: 0,
-    rowsUpserted: 0
-  }));
-  return { seeded: imported.rowsUpserted > 0, rowsUpserted: imported.rowsUpserted };
+  const imported = await importDeviceResolutionFromCsv(dbPath, csvPath).catch(
+    () => ({
+      rowsRead: 0,
+      rowsUpserted: 0,
+    }),
+  );
+  return {
+    seeded: imported.rowsUpserted > 0,
+    rowsUpserted: imported.rowsUpserted,
+  };
 }
 
 export async function resolveDeviceByModelAndSerial(
   dbPath: string,
-  input: { modelName: string; serial: string }
+  input: { modelName: string; serial: string },
 ): Promise<DeviceResolutionRecord | null> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -224,23 +243,28 @@ export async function resolveDeviceByModelAndSerial(
         `SELECT model_name, serial, customer_name, account_number, variation, model_match
          FROM device_resolution
          WHERE serial = ?
-         ORDER BY CASE WHEN LOWER(model_name) = LOWER(?) THEN 0 ELSE 1 END, id ASC`
+         ORDER BY CASE WHEN LOWER(model_name) = LOWER(?) THEN 0 ELSE 1 END, id ASC`,
       )
       .all(serial, input.modelName)
-      .map((row) => row as {
-        model_name: string;
-        serial: string;
-        customer_name: string;
-        account_number: string;
-        variation: string;
-        model_match: string | null;
-      });
+      .map(
+        (row) =>
+          row as {
+            model_name: string;
+            serial: string;
+            customer_name: string;
+            account_number: string;
+            variation: string;
+            model_match: string | null;
+          },
+      );
 
     for (const row of rows) {
       if (row.model_name.toLowerCase() !== input.modelName.toLowerCase()) {
         continue;
       }
-      if (!modelMatchesRequirement(input.modelName, row.model_match ?? undefined)) {
+      if (
+        !modelMatchesRequirement(input.modelName, row.model_match ?? undefined)
+      ) {
         continue;
       }
       return {
@@ -249,7 +273,7 @@ export async function resolveDeviceByModelAndSerial(
         customerName: row.customer_name,
         accountNumber: row.account_number,
         variation: row.variation,
-        modelMatch: row.model_match ?? undefined
+        modelMatch: row.model_match ?? undefined,
       };
     }
     return null;
@@ -260,7 +284,7 @@ export async function resolveDeviceByModelAndSerial(
 
 export async function searchAccounts(
   dbPath: string,
-  query?: string
+  query?: string,
 ): Promise<AccountSearchRecord[]> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -276,7 +300,7 @@ export async function searchAccounts(
          )
          WHERE account_number LIKE ?
          ORDER BY account_number ASC
-         LIMIT 50`
+         LIMIT 50`,
       )
       .all(like)
       .map((row) => row as { account_number: string });
@@ -289,7 +313,7 @@ export async function searchAccounts(
 
 export async function listVariationsForAccount(
   dbPath: string,
-  accountNumber: string
+  accountNumber: string,
 ): Promise<AccountVariation[]> {
   await migrateDatabase(dbPath);
   const db = new DatabaseSync(dbPath);
@@ -299,7 +323,7 @@ export async function listVariationsForAccount(
         `SELECT variation
          FROM config_profile
          WHERE account_number = ?
-         ORDER BY variation`
+         ORDER BY variation`,
       )
       .all(accountNumber)
       .map((row) => (row as { variation: string }).variation);
@@ -309,7 +333,7 @@ export async function listVariationsForAccount(
         `SELECT variation, model_match
          FROM device_resolution
          WHERE account_number = ?
-         ORDER BY variation`
+         ORDER BY variation`,
       )
       .all(accountNumber)
       .map((row) => row as { variation: string; model_match: string | null });
@@ -338,9 +362,9 @@ export async function listVariationsForAccount(
       .sort((left, right) => left.localeCompare(right))
       .map((variation) => ({
         variation,
-        modelRequirements: Array.from(requirementsByVariation.get(variation) ?? []).sort((left, right) =>
-          left.localeCompare(right)
-        )
+        modelRequirements: Array.from(
+          requirementsByVariation.get(variation) ?? [],
+        ).sort((left, right) => left.localeCompare(right)),
       }));
   } finally {
     db.close();
@@ -349,10 +373,15 @@ export async function listVariationsForAccount(
 
 export async function variationMatchesModelRequirement(
   dbPath: string,
-  input: { accountNumber: string; variation: string; modelName: string }
+  input: { accountNumber: string; variation: string; modelName: string },
 ): Promise<boolean> {
-  const variations = await listVariationsForAccount(dbPath, input.accountNumber);
-  const variation = variations.find((item) => item.variation === input.variation);
+  const variations = await listVariationsForAccount(
+    dbPath,
+    input.accountNumber,
+  );
+  const variation = variations.find(
+    (item) => item.variation === input.variation,
+  );
   if (!variation) {
     return false;
   }
@@ -360,7 +389,6 @@ export async function variationMatchesModelRequirement(
     return true;
   }
   return variation.modelRequirements.some((requirement) =>
-    modelMatchesRequirement(input.modelName, requirement)
+    modelMatchesRequirement(input.modelName, requirement),
   );
 }
-

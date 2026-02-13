@@ -2,7 +2,7 @@ import {
   DISCOVERY_RANGE_END,
   DISCOVERY_RANGE_START,
   DISCOVERY_SUBNET,
-  PROFILE_DB_PATH
+  PROFILE_DB_PATH,
 } from "@is-browser/env";
 import { discoverDevicesFromSubnets } from "./service.js";
 
@@ -21,12 +21,13 @@ export type DiscoveredDevice = {
 };
 
 export async function discoverDevices(): Promise<DiscoveredDevice[]> {
-  const devices = await discoverDevicesFromSubnets(PROFILE_DB_PATH, [defaultSubnetRange()]);
+  const devices = await discoverDevicesFromSubnets(PROFILE_DB_PATH, [
+    defaultSubnetRange(),
+  ]);
   return devices.map((device) => ({
     ip: device.ip,
     reachable: device.reachable,
     source: device.source,
-    webUiReachable: device.webUiReachable
+    webUiReachable: device.webUiReachable,
   }));
 }
-

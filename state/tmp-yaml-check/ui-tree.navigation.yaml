@@ -1,5 +1,4 @@
--
-  ref: node-4f0457ad8eab
+- ref: node-4f0457ad8eab
   path:
     - Home
   breadcrumb:
@@ -7,7 +6,5 @@
   container:
     type: page
     title: Home
-  groups:
-    []
-  actions:
-    []
+  groups: []
+  actions: []

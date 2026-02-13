@@ -5,6 +5,7 @@ This guide explains the profile-driven data model and the end-to-end workflow fr
 ## Data Model (Table Purposes)
 
 ### UI Map Tables
+
 - `ui_page`: One row per mapped page (URL/title/source metadata).
 - `ui_setting`: One row per setting field on a page (control type and constraints).
 - `ui_setting_option`: Allowed options for `select`, `radio`, and normalized `switch` settings.
@@ -12,10 +13,12 @@ This guide explains the profile-driven data model and the end-to-end workflow fr
 - `ui_page_nav_step`: Ordered `goto`/`click` steps required to reach a page.
 
 ### Profile Tables
+
 - `config_profile`: Profile identity keyed by `account_number` + `variation`.
 - `config_profile_value`: Value rows per profile/setting pair, including `enabled` state.
 
 ### Run-Audit Tables
+
 - `apply_run`: One row per apply attempt lifecycle (`started`, `completed`, `partial`, `failed`).
 - `apply_run_item`: Per-attempt outcome rows per setting (or commit-level item), including status/message/attempt number.
 
@@ -60,6 +63,7 @@ A single account can keep multiple profile variations (for example: `base`, `nig
   - Run ended without any successful apply/commit items.
 
 For troubleshooting:
+
 - Check `apply_run.message` for the run-level summary.
 - Check `apply_run_item` rows ordered by `id` for per-attempt details:
   - `status`: `ok`, `error`, or `skipped`

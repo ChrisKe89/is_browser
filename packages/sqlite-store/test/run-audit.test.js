@@ -35,22 +35,22 @@ test("run audit persists lifecycle and item outcomes", async () => {
       accountNumber: "10001",
       variation: "base",
       deviceIp: "192.168.0.10",
-      mapPath: "state/printer-ui-map.json"
+      mapPath: "state/printer-ui-map.json",
     });
 
     session.recordItem({
       attempt: 1,
       status: "ok",
-      message: "Applied one setting"
+      message: "Applied one setting",
     });
     session.recordItem({
       attempt: 1,
       status: "error",
-      message: "Invalid option"
+      message: "Invalid option",
     });
     session.finish({
       status: "partial",
-      message: "Run completed with partial failures."
+      message: "Run completed with partial failures.",
     });
     session.close();
 
@@ -59,7 +59,7 @@ test("run audit persists lifecycle and item outcomes", async () => {
       .prepare(
         `SELECT account_number, variation, status, message, started_at, finished_at
          FROM apply_run
-         LIMIT 1`
+         LIMIT 1`,
       )
       .get();
     assert.equal(run.account_number, "10001");
@@ -73,7 +73,7 @@ test("run audit persists lifecycle and item outcomes", async () => {
       .prepare(
         `SELECT setting_id, attempt, status, message
          FROM apply_run_item
-         ORDER BY id`
+         ORDER BY id`,
       )
       .all();
     assert.equal(items.length, 2);
@@ -86,4 +86,3 @@ test("run audit persists lifecycle and item outcomes", async () => {
     await removeWithRetry(tempDir);
   }
 });
-

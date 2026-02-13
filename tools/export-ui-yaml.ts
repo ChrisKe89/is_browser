@@ -2,7 +2,10 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { readMap, writeMap } from "@is-browser/contract";
 import { attachCanonicalGraph } from "../apps/is_mapper/src/graph.js";
-import { buildYamlViews, validateMapForYaml } from "../apps/is_mapper/src/yamlViews.js";
+import {
+  buildYamlViews,
+  validateMapForYaml,
+} from "../apps/is_mapper/src/yamlViews.js";
 
 type Args = {
   mapPath: string;
@@ -10,8 +13,12 @@ type Args = {
 };
 
 function parseArgs(argv: string[]): Args {
-  let mapPath = process.env.MAP_PATH ?? process.env.npm_config_map ?? "state/printer-ui-map.json";
-  let outDir = process.env.YAML_OUT_DIR ?? process.env.npm_config_out_dir ?? "docs";
+  let mapPath =
+    process.env.MAP_PATH ??
+    process.env.npm_config_map ??
+    "state/printer-ui-map.json";
+  let outDir =
+    process.env.YAML_OUT_DIR ?? process.env.npm_config_out_dir ?? "docs";
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -60,12 +67,14 @@ async function main(): Promise<void> {
     attachCanonicalGraph(map, {
       runId: path.basename(path.dirname(args.mapPath)) || "manual",
       capturedAt: new Date().toISOString(),
-      mapperVersion: process.env.npm_package_version
+      mapperVersion: process.env.npm_package_version,
     });
     await writeMap(args.mapPath, map);
   }
 
-  validateMapForYaml(map, (warning) => console.warn(`[yaml-validation] ${warning}`));
+  validateMapForYaml(map, (warning) =>
+    console.warn(`[yaml-validation] ${warning}`),
+  );
   const { navigationYaml, layoutYaml } = buildYamlViews(map);
   await mkdir(args.outDir, { recursive: true });
 

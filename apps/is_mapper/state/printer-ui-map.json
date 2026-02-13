@@ -1,0 +1,2472 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-13T10:54:42.968Z",
+    "printerUrl": "http://192.168.0.107",
+    "schemaVersion": "1.1",
+    "capturedAt": "2026-02-13T10:54:42.968Z",
+    "version": "ui-graph-1",
+    "runId": "20260213105004"
+  },
+  "pages": [
+    {
+      "id": "field",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        }
+      ]
+    },
+    {
+      "id": "modal::notification_0::yellow-toner-y",
+      "title": "Yellow Toner (Y)",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "label",
+            "value": "Replace Soon (Yellow Toner (Y))"
+          },
+          "label": "Replace Soon (Yellow Toner (Y))",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Close"
+          },
+          "label": "Close"
+        }
+      ]
+    },
+    {
+      "id": "home.yellow-toner-y",
+      "title": "Yellow Toner (Y)",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Close"
+          },
+          "label": "Close"
+        }
+      ]
+    },
+    {
+      "id": "home-2",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Help"
+          },
+          "label": "Help",
+          "kind": "button"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Help"
+          },
+          "label": "Help",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "recorded-flow",
+      "title": "Recorded Flow",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "recorded-flow.device-details",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "email",
+      "title": "Email",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ]
+    },
+    {
+      "id": "email.device-details",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "remote-assistance",
+      "title": "Remote Assistance",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "remote-assistance.device-details",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "home-2.device-details.comment",
+      "fieldId": "6319f8f63139aa60",
+      "label": "Comment",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Comment"
+        },
+        {
+          "kind": "label",
+          "value": "Comment"
+        },
+        {
+          "kind": "css",
+          "value": "#commentInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "6319f8f63139aa60",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.customer-asset-tag",
+      "fieldId": "ae59ee49a49a63ad",
+      "label": "Customer Asset Tag",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Customer Asset Tag"
+        },
+        {
+          "kind": "label",
+          "value": "Customer Asset Tag"
+        },
+        {
+          "kind": "css",
+          "value": "#customerAssetInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "ae59ee49a49a63ad",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 31
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.device-email-address",
+      "fieldId": "02bf744216ad7d36",
+      "label": "Device Email Address",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Device Email Address"
+        },
+        {
+          "kind": "label",
+          "value": "Device Email Address"
+        },
+        {
+          "kind": "css",
+          "value": "#localEmailInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "02bf744216ad7d36",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.device-name",
+      "fieldId": "be4294d054962c73",
+      "label": "Device Name*",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Device Name*"
+        },
+        {
+          "kind": "label",
+          "value": "Device Name*"
+        },
+        {
+          "kind": "css",
+          "value": "#deviceNameInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "be4294d054962c73",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": "Test_Printer",
+      "currentValue": "11111",
+      "constraints": {
+        "maxLength": 32
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.manufacturer-asset-tag",
+      "fieldId": "0496e6f39cc0b21c",
+      "label": "Manufacturer Asset Tag",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Manufacturer Asset Tag"
+        },
+        {
+          "kind": "label",
+          "value": "Manufacturer Asset Tag"
+        },
+        {
+          "kind": "css",
+          "value": "#providerAssetInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "0496e6f39cc0b21c",
+      "groupKey": "group:device-details",
+      "groupTitle": "Device Details",
+      "groupOrder": 1,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 31
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home.replace-soon-yellow-toner-y",
+      "fieldId": "notification_0",
+      "label": "Replace Soon (Yellow Toner (Y))",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "css",
+          "value": "#notification_0"
+        },
+        {
+          "kind": "role",
+          "role": "button",
+          "name": "Replace Soon (Yellow Toner (Y))"
+        },
+        {
+          "kind": "label",
+          "value": "Replace Soon (Yellow Toner (Y))"
+        }
+      ],
+      "pageId": "home",
+      "selectorKey": "73c27d9a2f14f449",
+      "groupKey": "group:notifications-settings",
+      "groupTitle": "Notifications Settings",
+      "groupOrder": 1,
+      "controlType": "staticTextButton",
+      "valueType": "string",
+      "defaultValue": "11/02/2026 13:41",
+      "currentValue": "11/02/2026 13:41",
+      "currentLabel": "11/02/2026 13:41",
+      "valueQuality": "static-text",
+      "opensModal": true,
+      "modalRef": "modal::notification_0::yellow-toner-y",
+      "modalTitle": "Yellow Toner (Y)",
+      "interaction": "opensModal",
+      "readonly": true,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      }
+    },
+    {
+      "id": "home-2.device-details.latitude",
+      "fieldId": "9acd101e654ab683",
+      "label": "Latitude",
+      "labelQuality": "explicit",
+      "type": "number",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Latitude"
+        },
+        {
+          "kind": "label",
+          "value": "Latitude"
+        },
+        {
+          "kind": "css",
+          "value": "#latitudeInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "9acd101e654ab683",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "number",
+      "valueType": "number",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "min": -90,
+        "max": 90,
+        "step": 0.000001
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.location",
+      "fieldId": "c9a9981e4cf35b7e",
+      "label": "Location",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Location"
+        },
+        {
+          "kind": "label",
+          "value": "Location"
+        },
+        {
+          "kind": "css",
+          "value": "#locationInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "c9a9981e4cf35b7e",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.longitude",
+      "fieldId": "62288e7a44e51d3a",
+      "label": "Longitude",
+      "labelQuality": "explicit",
+      "type": "number",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Longitude"
+        },
+        {
+          "kind": "label",
+          "value": "Longitude"
+        },
+        {
+          "kind": "css",
+          "value": "#longitudeInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "62288e7a44e51d3a",
+      "groupKey": "group:device-location",
+      "groupTitle": "Device Location",
+      "groupOrder": 2,
+      "controlType": "number",
+      "valueType": "number",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "min": -180,
+        "max": 180,
+        "step": 0.000001
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.email",
+      "fieldId": "7576f00b3422988d",
+      "label": "Email",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Email"
+        },
+        {
+          "kind": "label",
+          "value": "Email"
+        },
+        {
+          "kind": "css",
+          "value": "#adminEmailInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "7576f00b3422988d",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.name",
+      "fieldId": "b3ce2f4910da0f68",
+      "label": "Name",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Name"
+        },
+        {
+          "kind": "label",
+          "value": "Name"
+        },
+        {
+          "kind": "css",
+          "value": "#adminNameInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "b3ce2f4910da0f68",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    },
+    {
+      "id": "home-2.device-details.phone",
+      "fieldId": "d9c6e043d922240f",
+      "label": "Phone",
+      "labelQuality": "explicit",
+      "type": "text",
+      "selectors": [
+        {
+          "kind": "role",
+          "role": "textbox",
+          "name": "Phone"
+        },
+        {
+          "kind": "label",
+          "value": "Phone"
+        },
+        {
+          "kind": "css",
+          "value": "#adminPhoneInput"
+        }
+      ],
+      "pageId": "home-2.device-details",
+      "selectorKey": "d9c6e043d922240f",
+      "groupKey": "group:system-administrator",
+      "groupTitle": "System Administrator",
+      "groupOrder": 3,
+      "controlType": "textbox",
+      "valueType": "string",
+      "defaultValue": null,
+      "currentValue": null,
+      "constraints": {
+        "maxLength": 128
+      },
+      "readonly": false,
+      "visibility": {
+        "visible": true,
+        "enabled": true
+      },
+      "source": {
+        "discoveredFrom": "scan",
+        "runId": "20260213105004"
+      },
+      "actions": [
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          },
+          "label": "Cancel"
+        },
+        {
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          },
+          "label": "Save"
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "node.page.field.field.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "field",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        }
+      ],
+      "groups": [],
+      "actions": [],
+      "fingerprint": "b0b238e18d4f1aee6f18f27e98f7b8be7e445fda",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\field.png"
+      }
+    },
+    {
+      "nodeId": "node.page.home.home.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        }
+      ],
+      "groups": [
+        {
+          "groupId": "group:notifications-settings",
+          "title": "Notifications Settings",
+          "order": 1,
+          "fields": [
+            {
+              "id": "home.replace-soon-yellow-toner-y",
+              "fieldId": "notification_0",
+              "label": "Replace Soon (Yellow Toner (Y))",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "css",
+                  "value": "#notification_0"
+                },
+                {
+                  "kind": "role",
+                  "role": "button",
+                  "name": "Replace Soon (Yellow Toner (Y))"
+                },
+                {
+                  "kind": "label",
+                  "value": "Replace Soon (Yellow Toner (Y))"
+                }
+              ],
+              "pageId": "home",
+              "selectorKey": "73c27d9a2f14f449",
+              "groupKey": "group:notifications-settings",
+              "groupTitle": "Notifications Settings",
+              "groupOrder": 1,
+              "controlType": "staticTextButton",
+              "valueType": "string",
+              "defaultValue": "11/02/2026 13:41",
+              "currentValue": "11/02/2026 13:41",
+              "currentLabel": "11/02/2026 13:41",
+              "valueQuality": "static-text",
+              "opensModal": true,
+              "modalRef": "modal::notification_0::yellow-toner-y",
+              "modalTitle": "Yellow Toner (Y)",
+              "interaction": "opensModal",
+              "readonly": true,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              }
+            }
+          ]
+        }
+      ],
+      "actions": [],
+      "fingerprint": "438df9c573cdb052d45948ce3ee9fb522f0a89ad",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home.png"
+      }
+    },
+    {
+      "nodeId": "node.modal.replace-soon-yellow-toner-y.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "kind": "modal",
+      "title": "Yellow Toner (Y)",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Replace Soon (Yellow Toner (Y))"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "label",
+            "value": "Replace Soon (Yellow Toner (Y))"
+          },
+          "label": "Replace Soon (Yellow Toner (Y))",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Close",
+          "kind": "close",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Close"
+          }
+        }
+      ],
+      "fingerprint": "b24552940bceae5accb876d7948c851fa202559c",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\modal-notification-0-yellow-toner-y.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Yellow Toner (Y)",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Administrator"
+          },
+          "label": "Administrator",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Close",
+          "kind": "close",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Close"
+          }
+        }
+      ],
+      "fingerprint": "8a43a10138618a48aa8a3f264dd55185008f626c",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-yellow-toner-y.png"
+      }
+    },
+    {
+      "nodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
+      "kind": "page",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Help"
+          },
+          "label": "Help",
+          "kind": "button"
+        }
+      ],
+      "groups": [],
+      "actions": [],
+      "fingerprint": "74e4fa6cf037b69337de603ce8ea082eb280b8b4",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-2.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "http://192.168.0.107"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Help"
+          },
+          "label": "Help",
+          "kind": "button"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [
+        {
+          "groupId": "group:device-details",
+          "title": "Device Details",
+          "order": 1,
+          "fields": [
+            {
+              "id": "home-2.device-details.comment",
+              "fieldId": "6319f8f63139aa60",
+              "label": "Comment",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Comment"
+                },
+                {
+                  "kind": "label",
+                  "value": "Comment"
+                },
+                {
+                  "kind": "css",
+                  "value": "#commentInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "6319f8f63139aa60",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.customer-asset-tag",
+              "fieldId": "ae59ee49a49a63ad",
+              "label": "Customer Asset Tag",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Customer Asset Tag"
+                },
+                {
+                  "kind": "label",
+                  "value": "Customer Asset Tag"
+                },
+                {
+                  "kind": "css",
+                  "value": "#customerAssetInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "ae59ee49a49a63ad",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 31
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.device-email-address",
+              "fieldId": "02bf744216ad7d36",
+              "label": "Device Email Address",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Device Email Address"
+                },
+                {
+                  "kind": "label",
+                  "value": "Device Email Address"
+                },
+                {
+                  "kind": "css",
+                  "value": "#localEmailInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "02bf744216ad7d36",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.device-name",
+              "fieldId": "be4294d054962c73",
+              "label": "Device Name*",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Device Name*"
+                },
+                {
+                  "kind": "label",
+                  "value": "Device Name*"
+                },
+                {
+                  "kind": "css",
+                  "value": "#deviceNameInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "be4294d054962c73",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": "Test_Printer",
+              "currentValue": "11111",
+              "constraints": {
+                "maxLength": 32
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.manufacturer-asset-tag",
+              "fieldId": "0496e6f39cc0b21c",
+              "label": "Manufacturer Asset Tag",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Manufacturer Asset Tag"
+                },
+                {
+                  "kind": "label",
+                  "value": "Manufacturer Asset Tag"
+                },
+                {
+                  "kind": "css",
+                  "value": "#providerAssetInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "0496e6f39cc0b21c",
+              "groupKey": "group:device-details",
+              "groupTitle": "Device Details",
+              "groupOrder": 1,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 31
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "groupId": "group:device-location",
+          "title": "Device Location",
+          "order": 2,
+          "fields": [
+            {
+              "id": "home-2.device-details.latitude",
+              "fieldId": "9acd101e654ab683",
+              "label": "Latitude",
+              "labelQuality": "explicit",
+              "type": "number",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Latitude"
+                },
+                {
+                  "kind": "label",
+                  "value": "Latitude"
+                },
+                {
+                  "kind": "css",
+                  "value": "#latitudeInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "9acd101e654ab683",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "number",
+              "valueType": "number",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "min": -90,
+                "max": 90,
+                "step": 0.000001
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.location",
+              "fieldId": "c9a9981e4cf35b7e",
+              "label": "Location",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Location"
+                },
+                {
+                  "kind": "label",
+                  "value": "Location"
+                },
+                {
+                  "kind": "css",
+                  "value": "#locationInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "c9a9981e4cf35b7e",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.longitude",
+              "fieldId": "62288e7a44e51d3a",
+              "label": "Longitude",
+              "labelQuality": "explicit",
+              "type": "number",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Longitude"
+                },
+                {
+                  "kind": "label",
+                  "value": "Longitude"
+                },
+                {
+                  "kind": "css",
+                  "value": "#longitudeInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "62288e7a44e51d3a",
+              "groupKey": "group:device-location",
+              "groupTitle": "Device Location",
+              "groupOrder": 2,
+              "controlType": "number",
+              "valueType": "number",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "min": -180,
+                "max": 180,
+                "step": 0.000001
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "groupId": "group:system-administrator",
+          "title": "System Administrator",
+          "order": 3,
+          "fields": [
+            {
+              "id": "home-2.device-details.email",
+              "fieldId": "7576f00b3422988d",
+              "label": "Email",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Email"
+                },
+                {
+                  "kind": "label",
+                  "value": "Email"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminEmailInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "7576f00b3422988d",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.name",
+              "fieldId": "b3ce2f4910da0f68",
+              "label": "Name",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Name"
+                },
+                {
+                  "kind": "label",
+                  "value": "Name"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminNameInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "b3ce2f4910da0f68",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            },
+            {
+              "id": "home-2.device-details.phone",
+              "fieldId": "d9c6e043d922240f",
+              "label": "Phone",
+              "labelQuality": "explicit",
+              "type": "text",
+              "selectors": [
+                {
+                  "kind": "role",
+                  "role": "textbox",
+                  "name": "Phone"
+                },
+                {
+                  "kind": "label",
+                  "value": "Phone"
+                },
+                {
+                  "kind": "css",
+                  "value": "#adminPhoneInput"
+                }
+              ],
+              "pageId": "home-2.device-details",
+              "selectorKey": "d9c6e043d922240f",
+              "groupKey": "group:system-administrator",
+              "groupTitle": "System Administrator",
+              "groupOrder": 3,
+              "controlType": "textbox",
+              "valueType": "string",
+              "defaultValue": null,
+              "currentValue": null,
+              "constraints": {
+                "maxLength": 128
+              },
+              "readonly": false,
+              "visibility": {
+                "visible": true,
+                "enabled": true
+              },
+              "source": {
+                "discoveredFrom": "scan",
+                "runId": "20260213105004"
+              },
+              "actions": [
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Cancel"
+                  },
+                  "label": "Cancel"
+                },
+                {
+                  "selector": {
+                    "kind": "role",
+                    "role": "button",
+                    "name": "Save"
+                  },
+                  "label": "Save"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "a4baa0b8def9d17f25f0390970f7227450c1ed77",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\home-2-device-details.png"
+      }
+    },
+    {
+      "nodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Recorded Flow",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "836831c7b1a718921964deb12461d9ce5893f38e",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.2",
+      "kind": "page",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\recorded-flow-device-details.png"
+      }
+    },
+    {
+      "nodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Email",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [],
+      "fingerprint": "62e1a338f208c1602385e4f68dc3980c2a3cee90",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\email.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.3",
+      "kind": "page",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\email-device-details.png"
+      }
+    },
+    {
+      "nodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "kind": "page",
+      "title": "Remote Assistance",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "1d9bf6e069edc7889b02388ae89a3b806c148930",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance.png"
+      }
+    },
+    {
+      "nodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.4",
+      "kind": "page",
+      "title": "Device Details",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "breadcrumbs": [
+        "Details"
+      ],
+      "navPath": [
+        {
+          "action": "goto",
+          "url": "https://192.168.0.107/home/index.html#hashHome"
+        },
+        {
+          "action": "click",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Details"
+          },
+          "label": "Details",
+          "kind": "modal_open",
+          "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+        }
+      ],
+      "groups": [],
+      "actions": [
+        {
+          "label": "Cancel",
+          "kind": "cancel",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Cancel"
+          }
+        },
+        {
+          "label": "Save",
+          "kind": "save",
+          "selector": {
+            "kind": "role",
+            "role": "button",
+            "name": "Save"
+          }
+        }
+      ],
+      "fingerprint": "6f4556d389578f4feab01bd3c5b8c2023b15d3dc",
+      "snapshots": {
+        "screenshotPath": "tools\\recordings\\crawler-20260213105004\\nodes\\remote-assistance-device-details.png"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "fromNodeId": "node.page.field.field.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.home.home.https-192-168-0-107-home-index-html",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Administrator"
+        },
+        "label": "Administrator",
+        "kind": "button"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.home.home.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.modal.replace-soon-yellow-toner-y.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "label",
+          "value": "Replace Soon (Yellow Toner (Y))"
+        },
+        "label": "Replace Soon (Yellow Toner (Y))",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "open_modal"
+    },
+    {
+      "fromNodeId": "node.modal.replace-soon-yellow-toner-y.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "close_modal"
+    },
+    {
+      "fromNodeId": "node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Help"
+        },
+        "label": "Help",
+        "kind": "button"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.home.home.https-192-168-0-107-home-index-html.2",
+      "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.2",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.email.email.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.3",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "expand_section"
+    },
+    {
+      "fromNodeId": "node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html",
+      "toNodeId": "node.page.details.device-details.https-192-168-0-107-home-index-html.4",
+      "trigger": {
+        "action": "click",
+        "selector": {
+          "kind": "role",
+          "role": "button",
+          "name": "Details"
+        },
+        "label": "Details",
+        "kind": "modal_open",
+        "urlAfter": "https://192.168.0.107/home/index.html#hashHome"
+      },
+      "edgeType": "expand_section"
+    }
+  ]
+}

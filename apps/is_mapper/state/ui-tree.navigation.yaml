@@ -1,0 +1,341 @@
+-
+  ref: node.page.home.home.https-192-168-0-107-home-index-html
+  path:
+    - Administrator
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: Home
+  groups:
+    -
+      ref: group:notifications-settings
+      title: "Notifications Settings"
+      order: 1
+      fields:
+        -
+          ref: notification_0
+          label: "Replace Soon (Yellow Toner (Y))"
+          labelQuality: explicit
+          control: staticTextButton
+          valueType: string
+          default: "11/02/2026 13:41"
+          current: "11/02/2026 13:41"
+          currentLabel: "11/02/2026 13:41"
+          valueQuality: static-text
+          opensModal: true
+          modalRef: modal::notification_0::yellow-toner-y
+          modalTitle: "Yellow Toner (Y)"
+  actions:
+    []
+-
+  ref: node.page.details.yellow-toner-y.https-192-168-0-107-home-index-html
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Yellow Toner (Y)"
+  groups:
+    []
+  actions:
+    -
+      label: Close
+      kind: close
+-
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    -
+      ref: group:device-details
+      title: "Device Details"
+      order: 1
+      fields:
+        -
+          ref: 6319f8f63139aa60
+          label: Comment
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+        -
+          ref: ae59ee49a49a63ad
+          label: "Customer Asset Tag"
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 31
+        -
+          ref: 02bf744216ad7d36
+          label: "Device Email Address"
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+        -
+          ref: be4294d054962c73
+          label: "Device Name*"
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: Test_Printer
+          current: 11111
+          constraints:
+            maxLength: 32
+        -
+          ref: 0496e6f39cc0b21c
+          label: "Manufacturer Asset Tag"
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 31
+    -
+      ref: group:device-location
+      title: "Device Location"
+      order: 2
+      fields:
+        -
+          ref: 9acd101e654ab683
+          label: Latitude
+          labelQuality: explicit
+          control: number
+          valueType: number
+          default: null
+          current: null
+          range:
+            - -90
+            - 90
+          constraints:
+            min: -90
+            max: 90
+            step: 0.000001
+        -
+          ref: c9a9981e4cf35b7e
+          label: Location
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+        -
+          ref: 62288e7a44e51d3a
+          label: Longitude
+          labelQuality: explicit
+          control: number
+          valueType: number
+          default: null
+          current: null
+          range:
+            - -180
+            - 180
+          constraints:
+            min: -180
+            max: 180
+            step: 0.000001
+    -
+      ref: group:system-administrator
+      title: "System Administrator"
+      order: 3
+      fields:
+        -
+          ref: 7576f00b3422988d
+          label: Email
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+        -
+          ref: b3ce2f4910da0f68
+          label: Name
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+        -
+          ref: d9c6e043d922240f
+          label: Phone
+          labelQuality: explicit
+          control: textbox
+          valueType: string
+          default: null
+          current: null
+          constraints:
+            maxLength: 128
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html.2
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html.3
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.page.details.device-details.https-192-168-0-107-home-index-html.4
+  path:
+    - Details
+  breadcrumb:
+    - Details
+  container:
+    type: page
+    title: "Device Details"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.page.email.email.https-192-168-0-107-home-index-html
+  path:
+    - Email
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: Email
+  groups:
+    []
+  actions:
+    []
+-
+  ref: node.page.field.field.https-192-168-0-107-home-index-html
+  path:
+    - field
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: field
+  groups:
+    []
+  actions:
+    []
+-
+  ref: node.page.home.home.https-192-168-0-107-home-index-html.2
+  path:
+    - Help
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: Home
+  groups:
+    []
+  actions:
+    []
+-
+  ref: node.page.recorded-flow.recorded-flow.https-192-168-0-107-home-index-html
+  path:
+    - "Recorded Flow"
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: "Recorded Flow"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.page.remote-assistance.remote-assistance.https-192-168-0-107-home-index-html
+  path:
+    - "Remote Assistance"
+  breadcrumb:
+    []
+  container:
+    type: page
+    title: "Remote Assistance"
+  groups:
+    []
+  actions:
+    -
+      label: Cancel
+      kind: cancel
+    -
+      label: Save
+      kind: save
+-
+  ref: node.modal.replace-soon-yellow-toner-y.yellow-toner-y.https-192-168-0-107-home-index-html
+  path:
+    - "Replace Soon (Yellow Toner (Y))"
+  breadcrumb:
+    - "Replace Soon (Yellow Toner (Y))"
+  container:
+    type: modal
+    title: "Yellow Toner (Y)"
+  groups:
+    []
+  actions:
+    -
+      label: Close
+      kind: close

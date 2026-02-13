@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveCustomerFolder, resolveSettingsFromCsv } from "../src/runner/settings.js";
+import {
+  resolveCustomerFolder,
+  resolveSettingsFromCsv,
+} from "../src/runner/settings.js";
 import { splitProductCodeAndSerial } from "../src/runner/logging.js";
 
 test("resolveCustomerFolder sanitizes names", () => {
@@ -19,4 +22,3 @@ test("splitProductCodeAndSerial splits combined value", () => {
   assert.equal(productCode, "TC101894");
   assert.equal(serial, "043240");
 });
-

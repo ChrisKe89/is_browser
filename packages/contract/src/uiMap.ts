@@ -7,7 +7,7 @@ export const SelectorSchema = z.object({
   priority: z.number().int().positive().optional(),
   role: z.string().optional(),
   name: z.string().optional(),
-  value: z.string().optional()
+  value: z.string().optional(),
 });
 
 export const NavStepSchema = z.object({
@@ -30,18 +30,18 @@ export const NavStepSchema = z.object({
       "modal_close",
       "dismiss_alert",
       "system_alert",
-      "unknown"
+      "unknown",
     ])
     .optional(),
   urlBefore: z.string().optional(),
   urlAfter: z.string().optional(),
   frameUrl: z.string().optional(),
-  timestamp: z.string().optional()
+  timestamp: z.string().optional(),
 });
 
 const DiscoverableActionSchema = z.object({
   selector: SelectorSchema,
-  label: z.string().optional()
+  label: z.string().optional(),
 });
 
 export const PageSchema = z.object({
@@ -50,7 +50,7 @@ export const PageSchema = z.object({
   url: z.string(),
   breadcrumbs: z.array(z.string()).optional(),
   navPath: z.array(NavStepSchema).optional(),
-  actions: z.array(DiscoverableActionSchema).optional()
+  actions: z.array(DiscoverableActionSchema).optional(),
 });
 
 export const FieldSchema = z.object({
@@ -65,7 +65,7 @@ export const FieldSchema = z.object({
     "radio",
     "select",
     "button",
-    "textarea"
+    "textarea",
   ]),
   selectors: z.array(SelectorSchema),
   pageId: z.string(),
@@ -83,14 +83,29 @@ export const FieldSchema = z.object({
       "radio_group",
       "button",
       "staticTextButton",
-      "unknown"
+      "unknown",
     ])
     .optional(),
-  valueType: z.enum(["string", "number", "boolean", "enum", "unknown"]).optional(),
-  defaultValue: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional(),
-  currentValue: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional(),
+  valueType: z
+    .enum(["string", "number", "boolean", "enum", "unknown"])
+    .optional(),
+  defaultValue: z
+    .union([z.string(), z.number(), z.boolean(), z.null()])
+    .optional(),
+  currentValue: z
+    .union([z.string(), z.number(), z.boolean(), z.null()])
+    .optional(),
   currentLabel: z.string().optional(),
-  valueQuality: z.enum(["native-select", "trigger-text", "opened-options", "static-text", "missing", "unknown"]).optional(),
+  valueQuality: z
+    .enum([
+      "native-select",
+      "trigger-text",
+      "opened-options",
+      "static-text",
+      "missing",
+      "unknown",
+    ])
+    .optional(),
   valueQualityReason: z.string().optional(),
   opensModal: z.boolean().optional(),
   modalRef: z.string().optional(),
@@ -100,8 +115,8 @@ export const FieldSchema = z.object({
     .array(
       z.object({
         value: z.string(),
-        label: z.string().optional()
-      })
+        label: z.string().optional(),
+      }),
     )
     .optional(),
   constraints: z
@@ -113,7 +128,7 @@ export const FieldSchema = z.object({
       pattern: z.string().optional(),
       inputMode: z.string().optional(),
       enum: z.array(z.string()).optional(),
-      readOnly: z.boolean().optional()
+      readOnly: z.boolean().optional(),
     })
     .optional(),
   hints: z.array(z.string()).optional(),
@@ -122,7 +137,7 @@ export const FieldSchema = z.object({
   visibility: z
     .object({
       visible: z.boolean(),
-      enabled: z.boolean()
+      enabled: z.boolean(),
     })
     .optional(),
   dependencies: z
@@ -130,32 +145,30 @@ export const FieldSchema = z.object({
       z.object({
         when: z.union([z.string(), z.number(), z.boolean(), z.null()]),
         reveals: z.array(z.string()).optional(),
-        hides: z.array(z.string()).optional()
-      })
+        hides: z.array(z.string()).optional(),
+      }),
     )
     .optional(),
   source: z
     .object({
       discoveredFrom: z.enum(["scan", "variant", "click"]),
-      runId: z.string()
+      runId: z.string(),
     })
     .optional(),
-  actions: z
-    .array(DiscoverableActionSchema)
-    .optional()
+  actions: z.array(DiscoverableActionSchema).optional(),
 });
 
 export const GroupSchema = z.object({
   groupId: z.string(),
   title: z.string(),
   order: z.number().int(),
-  fields: z.array(FieldSchema)
+  fields: z.array(FieldSchema),
 });
 
 export const ActionSchema = z.object({
   label: z.string(),
   kind: z.enum(["save", "cancel", "apply", "close", "reset", "unknown"]),
-  selector: SelectorSchema
+  selector: SelectorSchema,
 });
 
 export const NodeSchema = z.object({
@@ -172,16 +185,23 @@ export const NodeSchema = z.object({
   snapshots: z
     .object({
       screenshotPath: z.string().optional(),
-      domHash: z.string().optional()
+      domHash: z.string().optional(),
     })
-    .optional()
+    .optional(),
 });
 
 export const EdgeSchema = z.object({
   fromNodeId: z.string(),
   toNodeId: z.string(),
   trigger: NavStepSchema,
-  edgeType: z.enum(["navigate", "open_modal", "close_modal", "tab_switch", "dismiss_alert", "expand_section"])
+  edgeType: z.enum([
+    "navigate",
+    "open_modal",
+    "close_modal",
+    "tab_switch",
+    "dismiss_alert",
+    "expand_section",
+  ]),
 });
 
 export const MapSchema = z.object({
@@ -195,12 +215,12 @@ export const MapSchema = z.object({
     mapperVersion: z.string().optional(),
     gitSha: z.string().optional(),
     runId: z.string().optional(),
-    deviceModel: z.string().optional()
+    deviceModel: z.string().optional(),
   }),
   pages: z.array(PageSchema),
   fields: z.array(FieldSchema),
   nodes: z.array(NodeSchema).optional(),
-  edges: z.array(EdgeSchema).optional()
+  edges: z.array(EdgeSchema).optional(),
 });
 
 export type Selector = z.infer<typeof SelectorSchema>;
@@ -215,12 +235,12 @@ export type UiMap = z.infer<typeof MapSchema>;
 
 export function assertUiMapCompatible(
   map: Pick<UiMap, "meta">,
-  expectedSchemaVersion = UI_MAP_SCHEMA_VERSION
+  expectedSchemaVersion = UI_MAP_SCHEMA_VERSION,
 ): void {
   const actual = map.meta.schemaVersion;
   if (actual !== expectedSchemaVersion) {
     throw new Error(
-      `Incompatible UI map schema version. Expected "${expectedSchemaVersion}" but got "${actual}".`
+      `Incompatible UI map schema version. Expected "${expectedSchemaVersion}" but got "${actual}".`,
     );
   }
 }

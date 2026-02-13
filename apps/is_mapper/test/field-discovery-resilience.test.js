@@ -6,7 +6,7 @@ import { buildSelectorCandidates } from "../src/utils.ts";
 function emptyList() {
   return {
     count: async () => 0,
-    nth: () => ({})
+    nth: () => ({}),
   };
 }
 
@@ -20,7 +20,7 @@ function fakeRootWithDetachedControl() {
       throw new Error("detached");
     },
     locator: () => emptyList(),
-    isEnabled: async () => true
+    isEnabled: async () => true,
   };
 
   return {
@@ -28,7 +28,7 @@ function fakeRootWithDetachedControl() {
       if (selector.includes("input:not([type='radio'])")) {
         return {
           count: async () => 1,
-          nth: () => detachedControl
+          nth: () => detachedControl,
         };
       }
       if (selector === "input[type='radio']") {
@@ -36,7 +36,7 @@ function fakeRootWithDetachedControl() {
       }
       return emptyList();
     },
-    getByRole: () => emptyList()
+    getByRole: () => emptyList(),
   };
 }
 
@@ -45,7 +45,7 @@ test("field discovery: detached controls are skipped without throwing", async ()
   const fakePage = {
     locator: () => root,
     getByRole: () => emptyList(),
-    evaluate: async () => ""
+    evaluate: async () => "",
   };
 
   const result = await discoverFieldCandidates(fakePage, root);
@@ -65,9 +65,9 @@ test("selector candidates: locator read errors return empty selector set", async
     locator: () => ({
       first: () => ({
         count: async () => 0,
-        innerText: async () => ""
-      })
-    })
+        innerText: async () => "",
+      }),
+    }),
   };
 
   const fakePage = {
@@ -75,9 +75,9 @@ test("selector candidates: locator read errors return empty selector set", async
     locator: () => ({
       first: () => ({
         count: async () => 0,
-        innerText: async () => ""
-      })
-    })
+        innerText: async () => "",
+      }),
+    }),
   };
 
   const result = await buildSelectorCandidates(fakePage, fakeElement);

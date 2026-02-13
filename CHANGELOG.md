@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
+
 ### Added
+
 - Deterministic `FieldRecord` contract in mapper artifacts (`fieldRecords[]`) with stable `field_id` derivation from breadcrumb/container/group/control identity plus frame/modal context.
 - Stability-check enforcement for mapper schema drift beyond key existence: deterministic field-id mapping, empty dropdown-option detection, and radio option-order drift checks.
 - Manual click-log modal metadata (`modalId`, `modalOpenTrigger`, `modalCloseTrigger`) and click-log reconciliation that verifies every `newlyDiscoveredFieldId` resolves to a captured `FieldRecord`.
@@ -59,6 +61,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Optional independent deployment webhook integration via `OPERATOR_DEPLOY_WEBHOOK_URL` and `FORM_DEPLOY_WEBHOOK_URL`.
 
 ### Changed
+
 - Graph node IDs in mapper canonical graph are now deterministic path-based IDs instead of opaque `node-<hash>` values.
 - Dropdown capture now marks non-enumerable controls with `value_quality=\"unknown\"` and an explicit reason for downstream auditing.
 - `apps/is_mapper/src/index.ts` now emits contract artifacts to `dist/` as part of crawl runs.
@@ -90,7 +93,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Operator and form UIs now cross-link through product config endpoints (`/api/operator/config`, `/api/form/config`) instead of sharing one server surface.
 
 ## [0.2.0] - 2026-02-07
+
 ### Added
+
 - Device discovery (ARP + ping sweep) with manual IP entry fallback.
 - Static HTML/JS form and schema for generating settings JSON.
 - Orchestration server with operator UI endpoints.
@@ -99,5 +104,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - PRD, implementation, and UAT documentation.
 
 ## [0.1.0] - 2026-02-06
+
 ### Added
+
 - Initial Playwright crawler and settings applier.

@@ -8,12 +8,12 @@
 
 This document defines:
 
-* Architectural structure
-* Data contracts
-* Stability guarantees
-* Identity rules
-* Execution principles
-* Boundaries between layers
+- Architectural structure
+- Data contracts
+- Stability guarantees
+- Identity rules
+- Execution principles
+- Boundaries between layers
 
 It does **not** define implementation tasks.
 It defines how the system must behave and be structured.
@@ -40,26 +40,26 @@ Each layer has strict responsibilities and must not bleed into others.
 
 The UI mapping layer produces a **canonical, versioned knowledge graph** representing:
 
-* Navigation paths
-* UI nodes (pages, modals)
-* Groups/sections
-* Fields (controls)
-* Constraints
-* Dependencies
-* Actions (Save/Cancel/etc.)
+- Navigation paths
+- UI nodes (pages, modals)
+- Groups/sections
+- Fields (controls)
+- Constraints
+- Dependencies
+- Actions (Save/Cancel/etc.)
 
 This graph is:
 
-* Deterministic
-* Replayable
-* Stable across identical firmware runs
-* Model-specific
+- Deterministic
+- Replayable
+- Stable across identical firmware runs
+- Model-specific
 
 The knowledge graph is the source of truth for:
 
-* YAML exports
-* Form generation
-* Replay automation
+- YAML exports
+- Form generation
+- Replay automation
 
 No downstream layer may invent UI structure.
 
@@ -71,29 +71,29 @@ Every structural element must have a stable identity:
 
 #### Nodes
 
-* Based on URL path (normalized)
-* Modal title
-* Breadcrumb
-* Structural hash
+- Based on URL path (normalized)
+- Modal title
+- Breadcrumb
+- Structural hash
 
 #### Fields
 
-* Normalized label
-* Control type
-* Preferred selector
-* Group title
-* Node fingerprint
+- Normalized label
+- Control type
+- Preferred selector
+- Group title
+- Node fingerprint
 
 Canonical replay artifacts are generated as:
 
-* `dist/ui_schema.json`
-* `dist/ui_form.yaml`
-* `dist/verify_report.json`
+- `dist/ui_schema.json`
+- `dist/ui_form.yaml`
+- `dist/verify_report.json`
 
 Identity rules for this contract:
 
-* `containerKey = sha1(join(" > ", breadcrumb) + "|" + type + "|" + title + "|" + urlNormalized + "|" + frameUrl)`
-* `settingKey = sha1(containerKey + "|" + groupTitle + "|" + label + "|" + type + "|" + domIdOrNameIfAny)`
+- `containerKey = sha1(join(" > ", breadcrumb) + "|" + type + "|" + title + "|" + urlNormalized + "|" + frameUrl)`
+- `settingKey = sha1(containerKey + "|" + groupTitle + "|" + label + "|" + type + "|" + domIdOrNameIfAny)`
 
 Repeated mapping runs on unchanged firmware must produce identical IDs.
 
@@ -121,13 +121,13 @@ Profiles must never embed selectors or navigation logic.
 
 Storage layer:
 
-* Stores structured profile data.
-* Contains no Playwright logic.
+- Stores structured profile data.
+- Contains no Playwright logic.
 
 Application engine:
 
-* Reads profile.
-* Uses UI graph to execute.
+- Reads profile.
+- Uses UI graph to execute.
 
 ---
 
@@ -135,9 +135,9 @@ Application engine:
 
 YAML is:
 
-* A derived representation.
-* Human-readable.
-* Auto-generated.
+- A derived representation.
+- Human-readable.
+- Auto-generated.
 
 It is not the source of truth.
 
@@ -151,37 +151,37 @@ The knowledge graph must include:
 
 #### Node
 
-* nodeId (stable)
-* kind (page/modal/etc.)
-* title
-* url
-* breadcrumb
-* navPath (human labels + selectors)
-* groups[]
-* actions[]
-* fingerprint
+- nodeId (stable)
+- kind (page/modal/etc.)
+- title
+- url
+- breadcrumb
+- navPath (human labels + selectors)
+- groups[]
+- actions[]
+- fingerprint
 
 #### Group
 
-* groupId
-* title
-* order
-* fields[]
+- groupId
+- title
+- order
+- fields[]
 
 #### Field
 
-* fieldId (stable)
-* label
-* labelQuality (explicit/derived/missing)
-* controlType
-* valueType
-* options[]
-* constraints (min/max/step/maxLength/pattern/inputMode/readOnly)
-* hints[] / rangeHint
-* defaultValue
-* currentValue
-* dependencies[]
-* selectors[]
+- fieldId (stable)
+- label
+- labelQuality (explicit/derived/missing)
+- controlType
+- valueType
+- options[]
+- constraints (min/max/step/maxLength/pattern/inputMode/readOnly)
+- hints[] / rangeHint
+- defaultValue
+- currentValue
+- dependencies[]
+- selectors[]
 
 Field metadata additions must remain backward compatible (additive optional fields only).
 
@@ -191,15 +191,14 @@ Field metadata additions must remain backward compatible (additive optional fiel
 
 Profiles must:
 
-* Reference fieldId
-* Store desiredValue
-* Include metadata:
-
-  * model
-  * optional firmware
-  * customer
-  * variation
-  * version
+- Reference fieldId
+- Store desiredValue
+- Include metadata:
+  - model
+  - optional firmware
+  - customer
+  - variation
+  - version
 
 Profiles must not duplicate UI structure.
 
@@ -211,10 +210,10 @@ Profiles must not duplicate UI structure.
 
 Mapping must:
 
-* Detect modal context
-* Respect iframe boundaries
-* Avoid capturing hidden background DOM
-* Preserve group hierarchy as displayed
+- Detect modal context
+- Respect iframe boundaries
+- Avoid capturing hidden background DOM
+- Preserve group hierarchy as displayed
 
 ---
 
@@ -222,10 +221,10 @@ Mapping must:
 
 When exploring dropdowns/radios:
 
-* Capture original value
-* Explore variants
-* Record newly revealed fields
-* Restore original state
+- Capture original value
+- Explore variants
+- Record newly revealed fields
+- Restore original state
 
 Dependencies must be stored as structural rules.
 
@@ -235,9 +234,9 @@ Dependencies must be stored as structural rules.
 
 Mapping must:
 
-* Distinguish page-level save
-* Distinguish modal-level save
-* Capture action semantics
+- Distinguish page-level save
+- Distinguish modal-level save
+- Capture action semantics
 
 Automation must rely on this modeling.
 
@@ -249,9 +248,9 @@ Automation must rely on this modeling.
 
 Application engine must:
 
-* Navigate using stored navPath
-* Prefer role + label selectors
-* Verify landing node fingerprint before applying
+- Navigate using stored navPath
+- Prefer role + label selectors
+- Verify landing node fingerprint before applying
 
 ---
 
@@ -259,10 +258,10 @@ Application engine must:
 
 Engine must:
 
-* Confirm current value before changing
-* Only modify fields defined in profile
-* Avoid unintended Save actions
-* Provide observable progress logs
+- Confirm current value before changing
+- Only modify fields defined in profile
+- Avoid unintended Save actions
+- Provide observable progress logs
 
 ---
 
@@ -270,9 +269,9 @@ Engine must:
 
 After application:
 
-* Re-read field values
-* Confirm match with desired profile
-* Report discrepancies
+- Re-read field values
+- Confirm match with desired profile
+- Report discrepancies
 
 ---
 
@@ -282,9 +281,9 @@ Detection layer must:
 
 1. Discover device (network or manual entry)
 2. Query SNMP:
+   - Model
+   - Serial
 
-   * Model
-   * Serial
 3. Resolve matching profile
 4. Pass control to application engine
 
@@ -296,14 +295,13 @@ Detection logic must not contain mapping logic.
 
 Each run must generate:
 
-* Step-level structured logs
-* Final device report entry
-* Status state transitions:
-
-  * WORKING
-  * COMPLETED
-  * FAILED
-  * USER_INTERVENTION_REQUIRED
+- Step-level structured logs
+- Final device report entry
+- Status state transitions:
+  - WORKING
+  - COMPLETED
+  - FAILED
+  - USER_INTERVENTION_REQUIRED
 
 Logs must be deterministic and traceable to profile version.
 
@@ -315,10 +313,10 @@ Logs must be deterministic and traceable to profile version.
 
 When firmware changes:
 
-* Run mapper
-* Compare graph fingerprints
-* Identify structural differences
-* Determine compatibility
+- Run mapper
+- Compare graph fingerprints
+- Identify structural differences
+- Determine compatibility
 
 Profiles should declare compatible model + firmware scope.
 
@@ -328,9 +326,9 @@ Profiles should declare compatible model + firmware scope.
 
 Profiles must:
 
-* Be versioned
-* Support historical audit
-* Allow diff comparison
+- Be versioned
+- Support historical audit
+- Allow diff comparison
 
 ---
 
@@ -338,10 +336,10 @@ Profiles must:
 
 The system is considered stable when:
 
-* Mapping same firmware twice → identical graph IDs
-* Applying same profile twice → no unintended changes
-* YAML exports are consistent across runs
-* Node/field fingerprinting is resilient to minor DOM order shifts
+- Mapping same firmware twice → identical graph IDs
+- Applying same profile twice → no unintended changes
+- YAML exports are consistent across runs
+- Node/field fingerprinting is resilient to minor DOM order shifts
 
 ---
 
@@ -349,10 +347,10 @@ The system is considered stable when:
 
 This strategy does not currently support:
 
-* Visual DOM replication
-* Vendor-agnostic device abstraction
-* Fully dynamic UI inference outside mapped structure
-* SNMP-only configuration application
+- Visual DOM replication
+- Vendor-agnostic device abstraction
+- Fully dynamic UI inference outside mapped structure
+- SNMP-only configuration application
 
 ---
 
@@ -360,11 +358,11 @@ This strategy does not currently support:
 
 Codex and developers must not:
 
-* Embed Playwright selectors inside profiles
-* Bypass knowledge graph for application logic
-* Modify YAML manually
-* Hardcode navigation outside navPath
-* Use unstable CSS-only selectors as primary identity
+- Embed Playwright selectors inside profiles
+- Bypass knowledge graph for application logic
+- Modify YAML manually
+- Hardcode navigation outside navPath
+- Use unstable CSS-only selectors as primary identity
 
 All feature documents must respect this strategy.
 
@@ -374,12 +372,12 @@ All feature documents must respect this strategy.
 
 Potential evolution paths:
 
-* Firmware drift visualizer
-* Profile diff UI
-* Dependency rule engine validation
-* Multi-model abstraction layer
-* Policy-based profile generation
-* SNMP + WebUI hybrid apply
+- Firmware drift visualizer
+- Profile diff UI
+- Dependency rule engine validation
+- Multi-model abstraction layer
+- Policy-based profile generation
+- SNMP + WebUI hybrid apply
 
 These must not compromise core invariants.
 

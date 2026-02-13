@@ -10,7 +10,7 @@ import {
   getProfile,
   getProfileEditorPages,
   listProfiles,
-  saveProfile
+  saveProfile,
 } from "@is-browser/sqlite-store";
 import { importUiMapToDatabase } from "@is-browser/sqlite-store";
 
@@ -24,15 +24,15 @@ function sampleMap() {
     meta: {
       generatedAt: "2026-02-10T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
     pages: [
       {
         id: "system",
         title: "System",
         url: "http://192.168.0.10/#/system",
-        navPath: [{ action: "goto", url: "http://192.168.0.10/#/system" }]
-      }
+        navPath: [{ action: "goto", url: "http://192.168.0.10/#/system" }],
+      },
     ],
     fields: [
       {
@@ -40,7 +40,7 @@ function sampleMap() {
         label: "Device Name",
         type: "text",
         selectors: [{ kind: "css", value: "#deviceName" }],
-        pageId: "system"
+        pageId: "system",
       },
       {
         id: "system.mode",
@@ -48,16 +48,16 @@ function sampleMap() {
         type: "select",
         selectors: [{ kind: "css", value: "#mode" }],
         pageId: "system",
-        constraints: { enum: ["Office", "Warehouse"] }
+        constraints: { enum: ["Office", "Warehouse"] },
       },
       {
         id: "system.energy-save",
         label: "Energy Save",
         type: "checkbox",
         selectors: [{ kind: "label", value: "Energy Save" }],
-        pageId: "system"
-      }
-    ]
+        pageId: "system",
+      },
+    ],
   };
 }
 
@@ -73,8 +73,8 @@ test("save/get/list/delete profile by account and variation", async () => {
       values: [
         { settingId: "system.device-name", value: "Main Lobby Printer" },
         { settingId: "system.mode", value: "Office" },
-        { settingId: "system.energy-save", value: "On" }
-      ]
+        { settingId: "system.energy-save", value: "On" },
+      ],
     });
     assert.equal(base.accountNumber, "10001");
     assert.equal(base.variation, "base");
@@ -87,20 +87,29 @@ test("save/get/list/delete profile by account and variation", async () => {
       values: [
         { settingId: "system.device-name", value: "Night Printer" },
         { settingId: "system.mode", value: "Warehouse" },
-        { settingId: "system.energy-save", value: "Off" }
-      ]
+        { settingId: "system.energy-save", value: "Off" },
+      ],
     });
 
-    const fetched = await getProfile(dbPath, { accountNumber: "10001", variation: "night" });
+    const fetched = await getProfile(dbPath, {
+      accountNumber: "10001",
+      variation: "night",
+    });
     assert.ok(fetched);
     assert.equal(fetched?.displayName, "Night Setup");
 
     const profiles = await listProfiles(dbPath, "10001");
     assert.equal(profiles.length, 2);
 
-    const deleted = await deleteProfile(dbPath, { accountNumber: "10001", variation: "base" });
+    const deleted = await deleteProfile(dbPath, {
+      accountNumber: "10001",
+      variation: "base",
+    });
     assert.equal(deleted, true);
-    const missing = await getProfile(dbPath, { accountNumber: "10001", variation: "base" });
+    const missing = await getProfile(dbPath, {
+      accountNumber: "10001",
+      variation: "base",
+    });
     assert.equal(missing, null);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -119,8 +128,8 @@ test("profile save returns per-field validation errors", async () => {
           variation: "",
           values: [
             { settingId: "system.mode", value: "InvalidMode" },
-            { settingId: "system.energy-save", value: "invalid-switch" }
-          ]
+            { settingId: "system.energy-save", value: "invalid-switch" },
+          ],
         });
       },
       (error) => {
@@ -131,7 +140,7 @@ test("profile save returns per-field validation errors", async () => {
         assert.ok(fields.includes("values.system.mode"));
         assert.ok(fields.includes("values.system.energy-save"));
         return true;
-      }
+      },
     );
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -163,13 +172,13 @@ test("buildSettingsFromProfile validates before apply", async () => {
       values: [
         { settingId: "system.device-name", value: "Profile Device" },
         { settingId: "system.mode", value: "Office" },
-        { settingId: "system.energy-save", value: "On", enabled: false }
-      ]
+        { settingId: "system.energy-save", value: "On", enabled: false },
+      ],
     });
 
     const settings = await buildSettingsFromProfile(dbPath, {
       accountNumber: "10001",
-      variation: "base"
+      variation: "base",
     });
     assert.equal(settings.length, 2);
     assert.ok(!settings.find((item) => item.id === "system.energy-save"));
@@ -188,13 +197,13 @@ test("disabled profile setting can keep invalid value without blocking apply set
       values: [
         { settingId: "system.device-name", value: "Profile Device" },
         { settingId: "system.mode", value: "InvalidMode", enabled: false },
-        { settingId: "system.energy-save", value: "On" }
-      ]
+        { settingId: "system.energy-save", value: "On" },
+      ],
     });
 
     const settings = await buildSettingsFromProfile(dbPath, {
       accountNumber: "10001",
-      variation: "base"
+      variation: "base",
     });
     assert.equal(settings.length, 2);
     assert.ok(!settings.find((item) => item.id === "system.mode"));
@@ -213,13 +222,13 @@ test("enabled setting with missing value is persisted and skipped during apply s
       values: [
         { settingId: "system.device-name", value: "Profile Device" },
         { settingId: "system.mode", value: "", enabled: true },
-        { settingId: "system.energy-save", value: "On", enabled: true }
-      ]
+        { settingId: "system.energy-save", value: "On", enabled: true },
+      ],
     });
 
     const settings = await buildSettingsFromProfile(dbPath, {
       accountNumber: "10002",
-      variation: "base"
+      variation: "base",
     });
     assert.equal(settings.length, 2);
     assert.ok(!settings.find((item) => item.id === "system.mode"));
@@ -227,4 +236,3 @@ test("enabled setting with missing value is persisted and skipped during apply s
     await rm(tempDir, { recursive: true, force: true });
   }
 });
-

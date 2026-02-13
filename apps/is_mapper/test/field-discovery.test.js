@@ -11,8 +11,16 @@ test("fingerprint dedupe: same selector and type dedupes", () => {
 });
 
 test("fingerprint dedupe: different selector stays unique", () => {
-  const one = fieldFingerprint("text", [{ kind: "css", value: "#hostA" }], "Host Name");
-  const two = fieldFingerprint("text", [{ kind: "css", value: "#hostB" }], "Host Name");
+  const one = fieldFingerprint(
+    "text",
+    [{ kind: "css", value: "#hostA" }],
+    "Host Name",
+  );
+  const two = fieldFingerprint(
+    "text",
+    [{ kind: "css", value: "#hostB" }],
+    "Host Name",
+  );
   assert.notEqual(one, two);
 });
 

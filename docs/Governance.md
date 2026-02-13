@@ -10,10 +10,10 @@ This document defines how documentation is structured, how authority flows betwe
 
 The goal is to:
 
-* Preserve architectural clarity
-* Prevent documentation drift
-* Maintain separation between strategy and implementation
-* Ensure long-term system stability
+- Preserve architectural clarity
+- Prevent documentation drift
+- Maintain separation between strategy and implementation
+- Ensure long-term system stability
 
 This governance applies to both human contributors and AI agents (including Codex).
 
@@ -48,11 +48,11 @@ Lower layers must not override higher layers.
 
 Defines:
 
-* System identity
-* Strategic objectives
-* Success criteria
-* Non-goals
-* High-level scope boundaries
+- System identity
+- Strategic objectives
+- Success criteria
+- Non-goals
+- High-level scope boundaries
 
 The PRD answers:
 
@@ -60,15 +60,15 @@ The PRD answers:
 
 The PRD:
 
-* Must remain strategic.
-* Must not contain implementation tasks.
-* Must not contain CLI instructions or operational detail.
+- Must remain strategic.
+- Must not contain implementation tasks.
+- Must not contain CLI instructions or operational detail.
 
 The PRD may only change when:
 
-* System identity shifts.
-* Strategic scope expands or contracts.
-* Core objectives change.
+- System identity shifts.
+- Strategic scope expands or contracts.
+- Core objectives change.
 
 ---
 
@@ -76,12 +76,12 @@ The PRD may only change when:
 
 Defines:
 
-* Architectural invariants
-* Data model contracts
-* Deterministic identity requirements
-* Layer boundaries
-* Replay and mapping principles
-* Stability guarantees
+- Architectural invariants
+- Data model contracts
+- Deterministic identity requirements
+- Layer boundaries
+- Replay and mapping principles
+- Stability guarantees
 
 The TSD answers:
 
@@ -89,9 +89,9 @@ The TSD answers:
 
 The TSD:
 
-* Is authoritative for structural rules.
-* Cannot contradict the PRD.
-* Must be updated before feature work that alters data contracts.
+- Is authoritative for structural rules.
+- Cannot contradict the PRD.
+- Must be updated before feature work that alters data contracts.
 
 ---
 
@@ -99,32 +99,32 @@ The TSD:
 
 Describes:
 
-* System components
-* Data flow
-* Package responsibilities
-* Deployment structure
+- System components
+- Data flow
+- Package responsibilities
+- Deployment structure
 
 The Architecture document:
 
-* Must align with PRD and TSD.
-* Describes implementation shape, not strategic direction.
+- Must align with PRD and TSD.
+- Describes implementation shape, not strategic direction.
 
 ---
 
-### 3.4 prd-feature-*.md
+### 3.4 prd-feature-\*.md
 
 Defines:
 
-* Feature scope
-* Acceptance criteria
-* Implementation boundaries
-* Validation requirements
+- Feature scope
+- Acceptance criteria
+- Implementation boundaries
+- Validation requirements
 
 Feature documents:
 
-* Must not redefine architecture.
-* Must not modify core data model contracts unless TSD is updated first.
-* May reference PRD and TSD but may not override them.
+- Must not redefine architecture.
+- Must not modify core data model contracts unless TSD is updated first.
+- May reference PRD and TSD but may not override them.
 
 ---
 
@@ -132,17 +132,17 @@ Feature documents:
 
 Defines:
 
-* App purpose
-* Runtime commands
-* Local development instructions
-* Environment variables
-* App-specific architecture notes
+- App purpose
+- Runtime commands
+- Local development instructions
+- Environment variables
+- App-specific architecture notes
 
 App READMEs:
 
-* Must not redefine system architecture.
-* Must not introduce strategic product decisions.
-* Must not duplicate PRD content.
+- Must not redefine system architecture.
+- Must not introduce strategic product decisions.
+- Must not duplicate PRD content.
 
 ---
 
@@ -150,16 +150,16 @@ App READMEs:
 
 Defines:
 
-* High-level system overview
-* Monorepo structure
-* Minimal development quick start
-* Links to authoritative documents
+- High-level system overview
+- Monorepo structure
+- Minimal development quick start
+- Links to authoritative documents
 
 The root README:
 
-* Must remain general and stable.
-* Must not accumulate CLI flags or deep operational instructions.
-* Must not become the canonical source of truth for architecture.
+- Must remain general and stable.
+- Must not accumulate CLI flags or deep operational instructions.
+- Must not become the canonical source of truth for architecture.
 
 ---
 
@@ -169,16 +169,16 @@ The root README:
 
 No document below the TSD may:
 
-* Alter deterministic ID requirements.
-* Merge UI knowledge and configuration logic.
-* Embed Playwright selectors in profiles.
-* Bypass the knowledge graph abstraction.
-* Introduce automation logic into storage models.
+- Alter deterministic ID requirements.
+- Merge UI knowledge and configuration logic.
+- Embed Playwright selectors in profiles.
+- Bypass the knowledge graph abstraction.
+- Introduce automation logic into storage models.
 
 If a feature requires altering any of the above:
 
-* The TSD must be updated first.
-* The PRD must be reviewed if strategic scope shifts.
+- The TSD must be updated first.
+- The PRD must be reviewed if strategic scope shifts.
 
 ---
 
@@ -186,16 +186,16 @@ If a feature requires altering any of the above:
 
 The following are derived artifacts:
 
-* YAML exports
-* Generated form schemas
-* JSON map outputs
-* Screenshots
+- YAML exports
+- Generated form schemas
+- JSON map outputs
+- Screenshots
 
 Derived artifacts:
 
-* Are not canonical sources of truth.
-* Must not be manually edited.
-* Must be regenerated from the knowledge graph.
+- Are not canonical sources of truth.
+- Must not be manually edited.
+- Must be regenerated from the knowledge graph.
 
 ---
 
@@ -237,8 +237,8 @@ AI agents operating in this repository must adhere to the following:
 
 If uncertain whether a change affects architecture:
 
-* Assume it does.
-* Escalate via Technical Strategy update before proceeding.
+- Assume it does.
+- Escalate via Technical Strategy update before proceeding.
 
 ---
 
@@ -249,7 +249,7 @@ The documentation system evolves in the following order:
 1. Strategic shift → Update PRD.
 2. Architectural contract change → Update Technical Strategy.
 3. Component structure change → Update Architecture.md.
-4. New capability → Add prd-feature-*.md.
+4. New capability → Add prd-feature-\*.md.
 5. Runtime behavior change → Update relevant app README.
 
 Reverse flow (feature redefining PRD) is not permitted.
@@ -260,10 +260,10 @@ Reverse flow (feature redefining PRD) is not permitted.
 
 Governance exists to:
 
-* Preserve clarity.
-* Prevent silent architectural drift.
-* Maintain long-term maintainability.
-* Support safe AI-assisted development.
+- Preserve clarity.
+- Prevent silent architectural drift.
+- Maintain long-term maintainability.
+- Support safe AI-assisted development.
 
 It is not intended to slow feature development.
 It is intended to prevent compounding structural mistakes.
@@ -274,9 +274,9 @@ It is intended to prevent compounding structural mistakes.
 
 The repository owner retains authority over:
 
-* PRD direction
-* Architectural invariants
-* Governance model
+- PRD direction
+- Architectural invariants
+- Governance model
 
 AI agents may propose changes but must not autonomously redefine system identity.
 

@@ -13,7 +13,7 @@ test("cli parser: parses manual mapper flags", () => {
     "--max-clicks",
     "25",
     "--timeout-ms",
-    "12000"
+    "12000",
   ]);
 
   assert.equal(parsed.manual, true);
@@ -38,10 +38,14 @@ test("cli parser: defaults to crawler mode", () => {
     assert.equal(parsed.manual, false);
     assert.equal(parsed.screenshot, false);
   } finally {
-    if (typeof originalLocation === "string") process.env.npm_config_location = originalLocation;
-    if (typeof originalScreenshot === "string") process.env.npm_config_screenshot = originalScreenshot;
-    if (typeof originalMapperLocation === "string") process.env.IS_MAPPER_LOCATION = originalMapperLocation;
-    if (typeof originalMapperScreenshot === "string") process.env.IS_MAPPER_SCREENSHOT = originalMapperScreenshot;
+    if (typeof originalLocation === "string")
+      process.env.npm_config_location = originalLocation;
+    if (typeof originalScreenshot === "string")
+      process.env.npm_config_screenshot = originalScreenshot;
+    if (typeof originalMapperLocation === "string")
+      process.env.IS_MAPPER_LOCATION = originalMapperLocation;
+    if (typeof originalMapperScreenshot === "string")
+      process.env.IS_MAPPER_SCREENSHOT = originalMapperScreenshot;
   }
 });
 
@@ -55,9 +59,11 @@ test("cli parser: supports npm-config fallback for swallowed flags", () => {
     assert.equal(parsed.location, "permissions");
     assert.equal(parsed.screenshot, true);
   } finally {
-    if (typeof originalLocation === "string") process.env.npm_config_location = originalLocation;
+    if (typeof originalLocation === "string")
+      process.env.npm_config_location = originalLocation;
     else delete process.env.npm_config_location;
-    if (typeof originalScreenshot === "string") process.env.npm_config_screenshot = originalScreenshot;
+    if (typeof originalScreenshot === "string")
+      process.env.npm_config_screenshot = originalScreenshot;
     else delete process.env.npm_config_screenshot;
   }
 });

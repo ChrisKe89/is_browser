@@ -8,7 +8,9 @@ import { importUiMapToDatabase } from "@is-browser/sqlite-store";
 import { applySettings } from "../../src/runner/applySettings.js";
 
 async function makeTempDbPath() {
-  const tempDir = await mkdtemp(path.join(os.tmpdir(), "printer-ui-apply-int-"));
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "printer-ui-apply-int-"),
+  );
   return { tempDir, dbPath: path.join(tempDir, "test.sqlite") };
 }
 
@@ -34,15 +36,15 @@ function createIntegrationMap() {
     meta: {
       generatedAt: "2026-02-10T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
     pages: [
       {
         id: "main",
         title: "Main",
         url: "http://192.168.0.10/#/main",
-        navPath: [{ action: "goto", url: "http://192.168.0.10/#/main" }]
-      }
+        navPath: [{ action: "goto", url: "http://192.168.0.10/#/main" }],
+      },
     ],
     fields: [
       {
@@ -51,35 +53,41 @@ function createIntegrationMap() {
         type: "text",
         selectors: [
           { kind: "css", value: "#missing-host", priority: 1 },
-          { kind: "label", value: "Host Name", priority: 2 }
+          { kind: "label", value: "Host Name", priority: 2 },
         ],
         pageId: "main",
-        actions: [{ selector: { kind: "css", value: "#save-main" }, label: "Save" }]
+        actions: [
+          { selector: { kind: "css", value: "#save-main" }, label: "Save" },
+        ],
       },
       {
         id: "main.mode",
         label: "Mode",
         type: "select",
-        selectors: [{ kind: "role", role: "combobox", name: "Mode", priority: 1 }],
+        selectors: [
+          { kind: "role", role: "combobox", name: "Mode", priority: 1 },
+        ],
         pageId: "main",
-        constraints: { enum: ["Auto", "Manual"] }
+        constraints: { enum: ["Auto", "Manual"] },
       },
       {
         id: "main.enabled",
         label: "Enabled",
         type: "checkbox",
         selectors: [{ kind: "label", value: "Enabled", priority: 1 }],
-        pageId: "main"
+        pageId: "main",
       },
       {
         id: "main.profile",
         label: "Profile",
         type: "radio",
-        selectors: [{ kind: "role", role: "radio", name: "Office", priority: 1 }],
+        selectors: [
+          { kind: "role", role: "radio", name: "Office", priority: 1 },
+        ],
         pageId: "main",
-        constraints: { enum: ["Office", "Night"] }
-      }
-    ]
+        constraints: { enum: ["Office", "Night"] },
+      },
+    ],
   };
 }
 
@@ -89,13 +97,11 @@ function createFakeLocator(pageState, key, options = {}) {
     exists: options.exists ?? false,
     selectedValue: null,
     checked:
-      options.checked === undefined
-        ? undefined
-        : Boolean(options.checked),
+      options.checked === undefined ? undefined : Boolean(options.checked),
     fillFailures: [...(options.fillFailures ?? [])],
     clickFailures: [...(options.clickFailures ?? [])],
     selectFailures: [...(options.selectFailures ?? [])],
-    selectAllowed: [...(options.selectAllowed ?? [])]
+    selectAllowed: [...(options.selectAllowed ?? [])],
   };
 
   return {
@@ -125,9 +131,7 @@ function createFakeLocator(pageState, key, options = {}) {
       const failure = locatorState.selectFailures.shift();
       if (failure) throw new Error(failure);
       const target =
-        typeof arg === "string"
-          ? arg
-          : arg?.value ?? arg?.label ?? "";
+        typeof arg === "string" ? arg : (arg?.value ?? arg?.label ?? "");
       if (locatorState.selectAllowed.includes(String(target))) {
         locatorState.selectedValue = String(target);
         return [String(target)];
@@ -135,7 +139,9 @@ function createFakeLocator(pageState, key, options = {}) {
       return [];
     },
     locator(childKey) {
-      return createFakeLocator(pageState, `${key}|${childKey}`, { exists: false });
+      return createFakeLocator(pageState, `${key}|${childKey}`, {
+        exists: false,
+      });
     },
     filter() {
       return createFakeLocator(pageState, `${key}|filter`, { exists: false });
@@ -161,14 +167,14 @@ function createFakeLocator(pageState, key, options = {}) {
         }
       }
       return null;
-    }
+    },
   };
 }
 
 function createFakeRuntime(map, config) {
   const pageState = {
     currentUrl: "about:blank",
-    calls: []
+    calls: [],
   };
 
   const locators = new Map();
@@ -208,13 +214,13 @@ function createFakeRuntime(map, config) {
     },
     locator(value) {
       return getLocator(`css:${value}`);
-    }
+    },
   };
 
   const browser = {
     async close() {
       pageState.calls.push("browser:close");
-    }
+    },
   };
 
   return {
@@ -227,8 +233,8 @@ function createFakeRuntime(map, config) {
       login: async () => {},
       runRemotePanel: async () => {},
       writeDeviceLog: async () => "tools/recordings/test-log.json",
-      appendDeviceReport: async () => "devices/reports/test.csv"
-    }
+      appendDeviceReport: async () => "devices/reports/test.csv",
+    },
   };
 }
 
@@ -239,7 +245,7 @@ function getRunRecord(dbPath) {
       `SELECT id, status, message, account_number, variation
        FROM apply_run
        ORDER BY id DESC
-       LIMIT 1`
+       LIMIT 1`,
     )
     .get();
   const items = db
@@ -247,7 +253,7 @@ function getRunRecord(dbPath) {
       `SELECT setting_id, attempt, status, message
        FROM apply_run_item
        WHERE run_id = ?
-       ORDER BY id`
+       ORDER BY id`,
     )
     .all(run.id);
   db.close();
@@ -264,8 +270,11 @@ test("integration: importer + runner produces completed run with selector-priori
     const counts = {
       pages: db.prepare("SELECT COUNT(*) AS c FROM ui_page").get().c,
       settings: db.prepare("SELECT COUNT(*) AS c FROM ui_setting").get().c,
-      selectors: db.prepare("SELECT COUNT(*) AS c FROM ui_setting_selector").get().c,
-      options: db.prepare("SELECT COUNT(*) AS c FROM ui_setting_option").get().c
+      selectors: db
+        .prepare("SELECT COUNT(*) AS c FROM ui_setting_selector")
+        .get().c,
+      options: db.prepare("SELECT COUNT(*) AS c FROM ui_setting_option").get()
+        .c,
     };
     db.close();
     assert.equal(counts.pages, 1);
@@ -276,11 +285,14 @@ test("integration: importer + runner produces completed run with selector-priori
     const { runtime, pageState } = createFakeRuntime(map, {
       locators: {
         "label:Host Name": { exists: true },
-        "role:combobox:Mode": { exists: true, selectAllowed: ["Auto", "Manual"] },
+        "role:combobox:Mode": {
+          exists: true,
+          selectAllowed: ["Auto", "Manual"],
+        },
         "label:Enabled": { exists: true, checked: false },
         "role:radio:Office": { exists: true, checked: false },
-        "css:#save-main": { exists: true }
-      }
+        "css:#save-main": { exists: true },
+      },
     });
 
     const result = await applySettings({
@@ -292,24 +304,34 @@ test("integration: importer + runner produces completed run with selector-priori
           customerName: "Acme",
           accountNumber: "10001",
           variation: "base",
-          scriptVariant: "base"
+          scriptVariant: "base",
         },
         settings: [
           { id: "main.host-name", value: "Printer-A" },
           { id: "main.mode", value: "Auto" },
           { id: "main.enabled", value: "On" },
-          { id: "main.profile", value: "Office" }
-        ]
+          { id: "main.profile", value: "Office" },
+        ],
       },
       deviceLogMode: "daily",
-      runtime
+      runtime,
     });
 
     assert.equal(result.status, "COMPLETED");
-    assert.ok(pageState.calls.some((line) => line.startsWith("fill:label:Host Name:Printer-A")));
-    assert.ok(pageState.calls.some((line) => line.includes("select:role:combobox:Mode")));
+    assert.ok(
+      pageState.calls.some((line) =>
+        line.startsWith("fill:label:Host Name:Printer-A"),
+      ),
+    );
+    assert.ok(
+      pageState.calls.some((line) =>
+        line.includes("select:role:combobox:Mode"),
+      ),
+    );
     assert.ok(pageState.calls.some((line) => line === "check:label:Enabled"));
-    assert.ok(pageState.calls.some((line) => line === "click:role:radio:Office"));
+    assert.ok(
+      pageState.calls.some((line) => line === "click:role:radio:Office"),
+    );
     assert.ok(pageState.calls.some((line) => line === "click:css:#save-main"));
 
     const { run, items } = getRunRecord(dbPath);
@@ -332,8 +354,11 @@ test("integration: runner records partial run when prior items succeed before te
     const { runtime } = createFakeRuntime(map, {
       locators: {
         "label:Host Name": { exists: true },
-        "role:combobox:Mode": { exists: true, selectAllowed: ["Auto", "Manual"] }
-      }
+        "role:combobox:Mode": {
+          exists: true,
+          selectAllowed: ["Auto", "Manual"],
+        },
+      },
     });
 
     const result = await applySettings({
@@ -344,22 +369,30 @@ test("integration: runner records partial run when prior items succeed before te
         meta: {
           customerName: "Acme",
           accountNumber: "10001",
-          variation: "partial"
+          variation: "partial",
         },
         settings: [
           { id: "main.host-name", value: "Printer-B" },
-          { id: "main.mode", value: "InvalidOption" }
-        ]
+          { id: "main.mode", value: "InvalidOption" },
+        ],
       },
       deviceLogMode: "daily",
-      runtime
+      runtime,
     });
 
     assert.equal(result.status, "FAILED");
     const { run, items } = getRunRecord(dbPath);
     assert.equal(run.status, "partial");
-    assert.ok(items.some((item) => item.setting_id === "main.host-name" && item.status === "ok"));
-    assert.ok(items.some((item) => item.setting_id === "main.mode" && item.status === "error"));
+    assert.ok(
+      items.some(
+        (item) => item.setting_id === "main.host-name" && item.status === "ok",
+      ),
+    );
+    assert.ok(
+      items.some(
+        (item) => item.setting_id === "main.mode" && item.status === "error",
+      ),
+    );
   } finally {
     await removeWithRetry(tempDir);
   }
@@ -373,8 +406,11 @@ test("integration: runner records failed run when first setting terminally fails
 
     const { runtime } = createFakeRuntime(map, {
       locators: {
-        "role:combobox:Mode": { exists: true, selectAllowed: ["Auto", "Manual"] }
-      }
+        "role:combobox:Mode": {
+          exists: true,
+          selectAllowed: ["Auto", "Manual"],
+        },
+      },
     });
 
     const result = await applySettings({
@@ -385,12 +421,12 @@ test("integration: runner records failed run when first setting terminally fails
         meta: {
           customerName: "Acme",
           accountNumber: "10001",
-          variation: "failed"
+          variation: "failed",
         },
-        settings: [{ id: "main.host-name", value: "Printer-C" }]
+        settings: [{ id: "main.host-name", value: "Printer-C" }],
       },
       deviceLogMode: "daily",
-      runtime
+      runtime,
     });
 
     assert.equal(result.status, "FAILED");
@@ -404,5 +440,3 @@ test("integration: runner records failed run when first setting terminally fails
     await removeWithRetry(tempDir);
   }
 });
-
-

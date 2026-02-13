@@ -33,7 +33,10 @@ export function resolveManualRunPaths(options?: {
   now?: Date;
 }): ManualRunPaths {
   const timestamp = formatRunTimestamp(options?.now ?? new Date());
-  const base = options?.location && options.location.trim() ? options.location.trim() : "state";
+  const base =
+    options?.location && options.location.trim()
+      ? options.location.trim()
+      : "state";
   const rootDir = path.resolve(REPO_ROOT, base, timestamp);
   return manualRunPathsFromRoot(rootDir);
 }
@@ -45,7 +48,7 @@ function manualRunPathsFromRoot(rootDir: string): ManualRunPaths {
     clickLogPath: path.join(rootDir, "click-log.json"),
     navigationYamlPath: path.join(rootDir, "ui-tree.navigation.yaml"),
     layoutYamlPath: path.join(rootDir, "ui-tree.layout.yaml"),
-    screenshotsDir: path.join(rootDir, "screenshots")
+    screenshotsDir: path.join(rootDir, "screenshots"),
   };
 }
 
@@ -60,7 +63,7 @@ async function pathExists(pathname: string): Promise<boolean> {
 
 export async function ensureManualRunPaths(
   paths: ManualRunPaths,
-  withScreenshots: boolean
+  withScreenshots: boolean,
 ): Promise<ManualRunPaths> {
   let rootDir = paths.rootDir;
   if (await pathExists(rootDir)) {

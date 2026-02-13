@@ -82,7 +82,7 @@ CREATE INDEX IF NOT EXISTS idx_ui_setting_page_id ON ui_setting(page_id);
 CREATE INDEX IF NOT EXISTS idx_ui_setting_option_setting_id ON ui_setting_option(setting_id);
 CREATE INDEX IF NOT EXISTS idx_ui_setting_selector_setting_id ON ui_setting_selector(setting_id);
 CREATE INDEX IF NOT EXISTS idx_ui_page_nav_step_page_id ON ui_page_nav_step(page_id);
-`
+`,
   },
   {
     name: "002_profile_and_run_audit",
@@ -139,14 +139,14 @@ CREATE INDEX IF NOT EXISTS idx_config_profile_identity ON config_profile(account
 CREATE INDEX IF NOT EXISTS idx_config_profile_value_profile_id ON config_profile_value(profile_id);
 CREATE INDEX IF NOT EXISTS idx_apply_run_identity ON apply_run(account_number, variation);
 CREATE INDEX IF NOT EXISTS idx_apply_run_item_run_id ON apply_run_item(run_id);
-`
+`,
   },
   {
     name: "003_profile_value_enabled",
     sql: `
 ALTER TABLE config_profile_value
 ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1 CHECK (enabled IN (0, 1));
-`
+`,
   },
   {
     name: "004_operator_discovery_and_resolution",
@@ -174,8 +174,8 @@ CREATE INDEX IF NOT EXISTS idx_device_resolution_identity
 ON device_resolution(model_name, serial);
 CREATE INDEX IF NOT EXISTS idx_device_resolution_account_variation
 ON device_resolution(account_number, variation);
-`
-  }
+`,
+  },
 ];
 
 async function ensureDbDirectory(dbPath: string): Promise<void> {
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS schema_migration (
 `);
 
     const markApplied = db.prepare(
-      "INSERT INTO schema_migration (name, applied_at) VALUES (?, ?)"
+      "INSERT INTO schema_migration (name, applied_at) VALUES (?, ?)",
     );
 
     for (const migration of MIGRATIONS) {
@@ -233,4 +233,3 @@ CREATE TABLE IF NOT EXISTS schema_migration (
     db.close();
   }
 }
-

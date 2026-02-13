@@ -3,7 +3,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 const INPUT = "tools/recordings/recorded-flow.ts";
 const OUTPUT = "config/crawler-flows.json";
 
-const SKIP_LABEL_RE = /save|apply|restart|cancel|close|disable|enable|start|ok|delete|reset|logout|log out|bb registration/i;
+const SKIP_LABEL_RE =
+  /save|apply|restart|cancel|close|disable|enable|start|ok|delete|reset|logout|log out|bb registration/i;
 
 function parseLines(text) {
   const lines = text.split(/\r?\n/);
@@ -51,7 +52,7 @@ function splitByMenuitem(steps) {
         title: step.name,
         startUrl: null,
         steps: [step],
-        modalTriggers: []
+        modalTriggers: [],
       };
       index += 1;
       continue;
@@ -62,7 +63,7 @@ function splitByMenuitem(steps) {
         title: "Recorded Flow",
         startUrl: null,
         steps: [],
-        modalTriggers: []
+        modalTriggers: [],
       };
       index += 1;
     }
@@ -81,7 +82,7 @@ function main() {
   const { startUrl, steps } = parseLines(input);
   const flows = splitByMenuitem(steps).map((flow) => ({
     ...flow,
-    startUrl: startUrl ?? "https://192.168.0.107/home/index.html#hashHome"
+    startUrl: startUrl ?? "https://192.168.0.107/home/index.html#hashHome",
   }));
 
   const output = { flows };

@@ -10,15 +10,15 @@ function sampleUiMap() {
     meta: {
       generatedAt: "2026-02-11T00:00:00.000Z",
       printerUrl: "http://192.168.0.10",
-      schemaVersion: "1.1"
+      schemaVersion: "1.1",
     },
     pages: [
       {
         id: "network",
         title: "Network",
         url: "http://192.168.0.10/#/network",
-        navPath: [{ action: "goto", url: "http://192.168.0.10/#/network" }]
-      }
+        navPath: [{ action: "goto", url: "http://192.168.0.10/#/network" }],
+      },
     ],
     fields: [
       {
@@ -26,9 +26,9 @@ function sampleUiMap() {
         label: "Host Name",
         type: "text",
         selectors: [{ kind: "css", value: "#hostname" }],
-        pageId: "network"
-      }
-    ]
+        pageId: "network",
+      },
+    ],
   };
 }
 
