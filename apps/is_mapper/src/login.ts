@@ -1,266 +1,192 @@
-import { type Page, type Locator } from "playwright";
-import { PRINTER_USER, PRINTER_PASS } from "@is-browser/env";
+import type { Page } from "playwright";
 
-const USER_LABEL_RE = /user id|user|login|name|email/i;
-const PASS_LABEL_RE = /pass|password|pin/i;
-const LOGIN_TRIGGER_RE = /log in|login|sign in/i;
-const LOGOUT_RE = /log out|logout/i;
-const CLOSE_RE = /close/i;
-const LOGIN_CONTAINER_SELECTOR = "#loginRoot, #loginModal, form";
-const PASSWORD_LIKE_INPUT_SELECTOR =
-  'input[type="password"], input[name*="pass" i], input[id*="pass" i], input[aria-label*="pass" i], input[placeholder*="pass" i]';
-let hasAuthenticatedSession = false;
-
-async function isFillableField(locator: Locator): Promise<boolean> {
-  return locator
-    .evaluate((el) => {
-      const tag = el.tagName.toLowerCase();
-      return (
-        tag === "input" ||
-        tag === "textarea" ||
-        tag === "select" ||
-        (el as HTMLElement).isContentEditable === true
-      );
-    })
-    .catch(() => false);
+export interface LoginOptions {
+  username: string;
+  password: string;
+  host?: string;
+  timeoutMs?: number;
 }
 
-async function fillFieldIfPossible(
-  locator: Locator,
-  value: string,
-): Promise<boolean> {
-  if (!(await locator.count())) {
-    return false;
+export interface LoginResult {
+  attempted: boolean;
+  submitted: boolean;
+  reason: string;
+}
+
+function normalizeHost(host: string): string {
+  const trimmed = host.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed.replace(/\/+$/, "");
+  return `https://${trimmed}`.replace(/\/+$/, "");
+}
+
+async function firstVisible(locators: Array<ReturnType<Page["locator"]>>): Promise<ReturnType<Page["locator"]> | null> {
+  for (const loc of locators) {
+    if ((await loc.count()) === 0) continue;
+    if (await loc.first().isVisible().catch(() => false)) return loc.first();
   }
-  if (!(await isFillableField(locator))) {
-    return false;
-  }
-  await locator.fill(value);
-  return true;
+  return null;
 }
 
-async function hasVisibleCredentialInputs(page: Page): Promise<boolean> {
-  return await page
-    .locator('input:visible, textarea:visible')
-    .evaluateAll((els, patterns) => {
-      const userRe = new RegExp(patterns.userPattern, "i");
-      const passRe = new RegExp(patterns.passPattern, "i");
-      let hasUserLike = false;
-      let hasPassLike = false;
-      for (const el of els) {
-        const input = el as HTMLInputElement;
-        const attrs = [
-          el.getAttribute("aria-label"),
-          el.getAttribute("name"),
-          el.getAttribute("id"),
-          el.getAttribute("placeholder"),
-        ]
-          .filter(Boolean)
-          .join(" ");
-        const type = (input.type || "").toLowerCase();
-        if (type === "password" || passRe.test(attrs)) {
-          hasPassLike = true;
-        }
-        if (userRe.test(attrs)) {
-          hasUserLike = true;
-        }
-      }
-      return hasPassLike && (hasUserLike || els.length <= 2);
-    }, { userPattern: USER_LABEL_RE.source, passPattern: PASS_LABEL_RE.source })
-    .catch(() => false);
-}
+async function openLoginEntryPoint(page: Page, host: string): Promise<void> {
+  const base = normalizeHost(host);
+  const candidates = [
+    `${base}/wuilib/login.html`,
+    `${base}/home/login.html`,
+    `${base}/home/index.html`
+  ];
 
-async function hasLoginContainerWithInputs(page: Page): Promise<boolean> {
-  const container = page.locator(LOGIN_CONTAINER_SELECTOR).filter({
-    has: page.locator(PASSWORD_LIKE_INPUT_SELECTOR),
-  });
-  return container.first().isVisible().catch(() => false);
-}
-
-async function openLoginModal(page: Page): Promise<boolean> {
-  const trigger = page.getByRole("button", { name: LOGIN_TRIGGER_RE }).first();
-  if (await trigger.count()) {
-    console.log("[login] clicking login trigger");
-    await trigger.click();
+  for (const url of candidates) {
     try {
-      const modal = page.locator("#loginRoot");
-      await modal.waitFor({ state: "visible", timeout: 5000 });
-      return true;
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 12000 });
+      await page.waitForTimeout(350);
+      return;
     } catch {
-      const passwordInputs = page.locator('input[type="password"]');
-      if ((await passwordInputs.count()) > 0) return true;
-      const userByLabel = page.getByLabel(USER_LABEL_RE);
-      if (await userByLabel.count()) return true;
+      // Try next URL.
     }
-  }
-  return false;
-}
-
-export async function isLoginPage(page: Page): Promise<boolean> {
-  if (await hasVisibleCredentialInputs(page)) {
-    return true;
-  }
-
-  if (await hasLoginContainerWithInputs(page)) {
-    return true;
-  }
-  if (hasAuthenticatedSession) {
-    return false;
-  }
-
-  const loginTrigger = page
-    .getByRole("button", { name: LOGIN_TRIGGER_RE })
-    .first();
-  const hasVisibleLoginTrigger =
-    (await loginTrigger.count()) > 0 &&
-    (await loginTrigger.isVisible().catch(() => false));
-  if (hasVisibleLoginTrigger) {
-    const hasVisibleLogout = await page
-      .getByRole("button", { name: LOGOUT_RE })
-      .first()
-      .isVisible()
-      .catch(() => false);
-    return !hasVisibleLogout;
-  }
-
-  return false;
-}
-
-export async function login(page: Page): Promise<void> {
-  console.log("[login] start");
-  await openLoginModal(page);
-  if (!(await hasVisibleCredentialInputs(page))) {
-    console.log("[login] no visible credential fields; skipping login");
-    return;
-  }
-
-  const userField = page.getByLabel(USER_LABEL_RE).first();
-  const passField = page.getByLabel(PASS_LABEL_RE).first();
-  const userByRole = page.getByRole("textbox", { name: USER_LABEL_RE }).first();
-  const passByRole = page.getByRole("textbox", { name: PASS_LABEL_RE }).first();
-  const passwordInputs = page.locator('input[type="password"]');
-
-  const chosenUserField = (await userField.count()) ? userField : userByRole;
-  if (await chosenUserField.count()) {
-    console.log("[login] filling user");
-    await fillFieldIfPossible(chosenUserField, PRINTER_USER);
-  }
-
-  const chosenPassField = (await passField.count()) ? passField : passByRole;
-  if (await chosenPassField.count()) {
-    console.log("[login] filling password");
-    await fillFieldIfPossible(chosenPassField, PRINTER_PASS);
-  } else if ((await passwordInputs.count()) > 0) {
-    await passwordInputs.first().fill(PRINTER_PASS);
-  }
-
-  const loginModal = page.locator("#loginModal");
-  if (await loginModal.isVisible().catch(() => false)) {
-    console.log("[login] login modal visible");
-    const modalSubmit = loginModal
-      .getByRole("button", { name: /login|log in|sign in|submit|ok|apply/i })
-      .first();
-    if (await modalSubmit.count()) {
-      console.log("[login] submitting modal login button");
-      await modalSubmit.click();
-      await finalizeLogin(page);
-      return;
-    }
-
-    const modalFormSubmit = loginModal
-      .locator('input[type="submit"], button[type="submit"]')
-      .first();
-    if (await modalFormSubmit.count()) {
-      console.log("[login] submitting modal form");
-      await modalFormSubmit.click();
-      await finalizeLogin(page);
-      return;
-    }
-  }
-
-  const scopedLogin = page
-    .getByLabel(/log in|login|sign in/i)
-    .getByRole("button", { name: LOGIN_TRIGGER_RE })
-    .first();
-  if (await scopedLogin.count()) {
-    console.log("[login] submitting scoped login button");
-    await scopedLogin.click();
-    await finalizeLogin(page);
-    return;
-  }
-
-  const formSubmit = page
-    .locator('form >> input[type="submit"], form >> button[type="submit"]')
-    .first();
-  if (
-    (await formSubmit.count()) &&
-    (await formSubmit.isVisible().catch(() => false))
-  ) {
-    console.log("[login] submitting form button");
-    await formSubmit.click();
-    await finalizeLogin(page);
-    return;
-  }
-
-  if ((await passwordInputs.count()) > 0) {
-    const form = passwordInputs.first().locator("xpath=ancestor::form[1]");
-    if (await form.count()) {
-      const formButton = form
-        .getByRole("button", { name: /login|log in|sign in|submit|ok|apply/i })
-        .first();
-      if (
-        (await formButton.count()) &&
-        (await formButton.isVisible().catch(() => false))
-      ) {
-        console.log("[login] submitting form ancestor button");
-        await formButton.click();
-        await finalizeLogin(page);
-        return;
-      }
-    }
-
-    const container = passwordInputs
-      .first()
-      .locator(
-        "xpath=ancestor::*[self::div or self::section or self::main][1]",
-      );
-    if (await container.count()) {
-      const containerButton = container
-        .getByRole("button", { name: /login|log in|sign in|submit|ok|apply/i })
-        .first();
-      if (await containerButton.count()) {
-        const label =
-          (await containerButton.getAttribute("aria-label"))?.trim() ||
-          (await containerButton.innerText()).trim();
-        if (!LOGOUT_RE.test(label)) {
-          console.log("[login] submitting container button");
-          await containerButton.click();
-          await finalizeLogin(page);
-          return;
-        }
-      }
-    }
-
-    await passwordInputs.first().press("Enter");
-    console.log("[login] submitting with enter");
-    await finalizeLogin(page);
   }
 }
 
-async function finalizeLogin(page: Page): Promise<void> {
-  hasAuthenticatedSession = true;
-  await page.waitForLoadState("networkidle").catch(() => null);
-  await dismissPostLoginDialogs(page);
+async function openLoginModalIfNeeded(page: Page): Promise<void> {
+  const triggers = [
+    page.locator("#xux-profileMenuItem"),
+    page.getByRole("button", { name: "Log In", exact: true }),
+    page.getByText("Log In", { exact: true }),
+    page.locator("a:has-text('Log In')"),
+    page.locator("[id*='login'][role='button']")
+  ];
+
+  for (const trigger of triggers) {
+    if ((await trigger.count()) === 0) continue;
+    const button = trigger.first();
+    if (!(await button.isVisible().catch(() => false))) continue;
+    await button.click({ timeout: 2000 }).catch(() => undefined);
+    await page.waitForTimeout(250);
+    break;
+  }
 }
 
-async function dismissPostLoginDialogs(page: Page): Promise<void> {
-  // Some device UIs show one or more informational modal popups after login.
-  for (let i = 0; i < 3; i += 1) {
-    const closeButton = page.getByRole("button", { name: CLOSE_RE }).first();
-    if (!(await closeButton.count())) break;
-    const visible = await closeButton.isVisible().catch(() => false);
-    if (!visible) break;
-    await closeButton.click().catch(() => null);
-    await page.waitForTimeout(200);
+export async function dismissSecurityWarnings(page: Page, timeoutMs = 15000): Promise<number> {
+  const selectors = [
+    "#securityAlertConfirmKoDefault",
+    "#securityAlertConfirmSnmpDefault"
+  ];
+
+  let dismissed = 0;
+  const endAt = Date.now() + timeoutMs;
+
+  while (Date.now() < endAt && !page.isClosed()) {
+    let clickedInThisPass = false;
+
+    for (const selector of selectors) {
+      const button = page.locator(selector).first();
+      if ((await button.count()) === 0) continue;
+      if (!(await button.isVisible().catch(() => false))) continue;
+
+      await button.click({ timeout: 2000 }).catch(() => undefined);
+      await page.waitForTimeout(250);
+      dismissed += 1;
+      clickedInThisPass = true;
+    }
+
+    // Fallback: close any remaining visible "Close" buttons inside security alert roots.
+    const fallbackButtons = page
+      .locator(".securityAlertRoot button, .securityAlertContent button")
+      .filter({ hasText: "Close" });
+
+    const count = await fallbackButtons.count();
+    for (let i = 0; i < count; i += 1) {
+      const btn = fallbackButtons.nth(i);
+      if (!(await btn.isVisible().catch(() => false))) continue;
+      await btn.click({ timeout: 1500 }).catch(() => undefined);
+      await page.waitForTimeout(150);
+      dismissed += 1;
+      clickedInThisPass = true;
+    }
+
+    if (!clickedInThisPass) {
+      // Wait a bit; second warning can appear after first is closed.
+      await page.waitForTimeout(350);
+    }
   }
+
+  return dismissed;
+}
+
+export async function autoLoginToPrinter(page: Page, options: LoginOptions): Promise<LoginResult> {
+  const timeout = options.timeoutMs ?? 20000;
+  const host = options.host ?? "";
+  if (host) {
+    await openLoginEntryPoint(page, host);
+  }
+
+  const startedAt = Date.now();
+  let userField: ReturnType<Page["locator"]> | null = null;
+  let passwordField: ReturnType<Page["locator"]> | null = null;
+
+  while (Date.now() - startedAt < timeout) {
+    userField = await firstVisible([
+      page.locator("#loginName"),
+      page.getByLabel("User ID", { exact: true }),
+      page.getByRole("textbox", { name: "User ID", exact: true }),
+      page.locator("input[name='NAME']"),
+      page.locator("input[type='text']")
+    ]);
+    passwordField = await firstVisible([
+      page.locator("#loginPsw"),
+      page.getByLabel("Password", { exact: true }),
+      page.getByRole("textbox", { name: "Password", exact: true }),
+      page.locator("input[name='PSW']"),
+      page.locator("input[type='password']")
+    ]);
+
+    if (userField && passwordField) break;
+    await openLoginModalIfNeeded(page);
+    await page.waitForTimeout(350);
+  }
+
+  if (!userField || !passwordField) {
+    return {
+      attempted: false,
+      submitted: false,
+      reason: "login fields not found or not visible"
+    };
+  }
+
+  await userField.fill(options.username);
+  await passwordField.fill(options.password);
+
+  const submitButton = await firstVisible([
+    page.locator("#loginButton"),
+    page.getByRole("button", { name: "Log In", exact: true }),
+    page.getByText("Log In", { exact: true }).locator("xpath=ancestor::button[1]"),
+    page.locator("button[type='submit']")
+  ]);
+
+  if (!submitButton) {
+    await passwordField.press("Enter").catch(() => undefined);
+    return {
+      attempted: true,
+      submitted: false,
+      reason: "submit button not found, attempted Enter key"
+    };
+  }
+
+  await Promise.race([
+    Promise.all([
+      page.waitForLoadState("domcontentloaded", { timeout }).catch(() => undefined),
+      submitButton.click({ timeout: Math.min(timeout, 5000) })
+    ]),
+    (async () => {
+      await submitButton.click({ timeout: Math.min(timeout, 5000) });
+      await page.waitForTimeout(1200);
+    })()
+  ]);
+
+  const dismissedWarnings = await dismissSecurityWarnings(page);
+
+  return {
+    attempted: true,
+    submitted: true,
+    reason: dismissedWarnings > 0 ? `login submitted, dismissed ${dismissedWarnings} warning dialog(s)` : "login submitted"
+  };
 }

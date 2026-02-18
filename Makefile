@@ -18,6 +18,9 @@ help:
 	@echo "  make is-mapper-yaml     Export navigation/layout YAML from map"
 	@echo "  make is-mapper-dev      Run is_mapper dev mode"
 	@echo "  make form-dev           Start is_form server"
+	@echo "  make form-transform     Build ui_schema_fields.json from deterministic capture"
+	@echo "  make form-db-init       Initialize/seed is_form SQLite DB"
+	@echo "  make schema             Extract deterministic schema JSON/YAML for is_form"
 	@echo "  make apply-dev          Start is_application server"
 	@echo "  make apply-settings     Run apply settings CLI"
 	@echo "  make discovery-scan     Run discovery scan CLI"
@@ -28,6 +31,8 @@ help:
 .PHONY: install
 install:
 	npm install
+	npm rebuild better-sqlite3
+	npm exec playwright install chromium
 
 .PHONY: clean
 clean:
@@ -91,13 +96,25 @@ is-mapper-apply-settings:
 form-dev:
 	npm -w apps/is_form run form:dev
 
+.PHONY: form-transform
+form-transform:
+	npm -w apps/is_form run form:transform
+
+.PHONY: form-db-init
+form-db-init:
+	npm -w apps/is_form run form:db-init
+
+.PHONY: schema
+schema:
+	npm -w apps/is_form run schema:extract
+
 .PHONY: db-migrate
 db-migrate:
-	npm -w apps/is_form run db:migrate
+	npm -w apps/is_form run form:db-init
 
 .PHONY: db-import-map
 db-import-map:
-	npm -w apps/is_form run db:import-map
+	npm -w apps/is_form run form:transform
 
 .PHONY: apply-dev
 apply-dev:
@@ -114,3 +131,6 @@ discovery-scan:
 .PHONY: dev-all
 dev-all:
 	npm run dev:all
+
+capture:
+	npm run capture:manual

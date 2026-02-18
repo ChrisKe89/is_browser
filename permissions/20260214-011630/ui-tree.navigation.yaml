@@ -1,0 +1,54 @@
+navigation:
+  - containerId: apps
+    id: /apps/index.html#hashApps
+    title: Apps
+    breadcrumb: Apps
+    navPath:
+      - click: Home
+        via: role=button[name='Home']
+        kind: button
+        edgeType: in_page
+      - click: Apps
+        via: role=button[name='Apps']
+        kind: button
+        edgeType: cross_page
+  - containerId: home
+    id: /home/index.html#hashHome
+    title: Home
+    breadcrumb: Home
+    navPath:
+      - click: Home
+        via: role=button[name='Home']
+        kind: button
+        edgeType: in_page
+  - containerId: home_index_html
+    id: /home/index.html
+    title: /home/index.html
+    breadcrumb: /home/index.html
+    navPath: []
+  - containerId: screen_default
+    id: /apps/index.html#hashPreferences/hashApps
+    title: Screen Default
+    breadcrumb: Screen Default
+    navPath:
+      - click: Home
+        via: role=button[name='Home']
+        kind: button
+        edgeType: in_page
+      - click: Apps
+        via: role=button[name='Apps']
+        kind: button
+        edgeType: cross_page
+      - click: hashPreferences/hashApps
+        via: role=button[name='hashPreferences/hashApps']
+        kind: button
+        edgeType: in_page
+  - containerId: wuilib_login_html_hashlogin
+    id: /wuilib/login.html#hashLogin
+    title: /wuilib/login.html#hashLogin
+    breadcrumb: /wuilib/login.html#hashLogin
+    navPath:
+      - click: hashLogin
+        via: role=button[name='hashLogin']
+        kind: button
+        edgeType: cross_page

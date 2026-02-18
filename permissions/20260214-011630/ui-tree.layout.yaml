@@ -1,0 +1,181 @@
+layout:
+  - containerId: apps
+    id: /apps/index.html#hashApps
+    title: Apps
+    sections:
+      - section: _unsectioned
+        fields:
+          - fieldKey: appPositionCancel
+            controlType: button_dialog
+            label: Cancel
+            valueSource: none
+          - fieldKey: appPositionSave
+            controlType: button_dialog
+            label: Save
+            valueSource: none
+          - fieldKey: csWebBrowserModalCancel
+            controlType: button_dialog
+            label: Cancel
+            valueSource: none
+          - fieldKey: csWebBrowserModalSave
+            controlType: button_dialog
+            label: Save
+            valueSource: none
+          - fieldKey: customServiceModalCancel
+            controlType: button_dialog
+            label: Cancel
+            valueSource: none
+          - fieldKey: customServiceModalSave
+            controlType: button_dialog
+            label: Save
+            valueSource: none
+          - fieldKey: radioButtonLabel0
+            controlType: radio
+            label: Do Not Display
+            currentValue: false
+            valueSource: checked
+          - fieldKey: radioButtonLabel1
+            controlType: radio
+            label: Display
+            currentValue: true
+            valueSource: checked
+          - fieldKey: radioCancel
+            controlType: button_dialog
+            label: Cancel
+            valueSource: none
+          - fieldKey: radioSave
+            controlType: button_dialog
+            label: Save
+            valueSource: none
+      - section: '#csWebBrowserSection'
+        fields:
+          - fieldKey: browserVersionDropdownList
+            controlType: combobox
+            label: Web Applications Version
+            currentValue: V5
+            options:
+              - V4
+              - V5
+            valueSource: select
+          - fieldKey: cookieDeletionToggle
+            controlType: checkbox
+            label: Delete Persistent Cookie upon Closing
+            currentValue: true
+            valueSource: checked
+          - fieldKey: cacheDeletionToggle
+            controlType: checkbox
+            label: Clear Cache upon Closing
+            currentValue: true
+            valueSource: checked
+          - fieldKey: cacheToggle
+            controlType: checkbox
+            label: Use Cache
+            currentValue: false
+            valueSource: checked
+          - fieldKey: cookieUsageDropdownList
+            controlType: combobox
+            label: Save Cookies
+            currentValue: Warn User When Cookie Is Offered
+            options:
+              - 'No'
+              - 'Yes'
+              - Warn User When Cookie Is Offered
+            valueSource: select
+          - fieldKey: SslCertFailActionDropdownList
+            controlType: combobox
+            label: SSL Cert Verification Failure
+            currentValue: Warn User Before Accessing
+            options:
+              - Stop Accessing the Site
+              - Warn User Before Accessing
+            valueSource: select
+          - fieldKey: filePrintingToggle
+            controlType: checkbox
+            label: Enable File Printing
+            currentValue: true
+            valueSource: checked
+          - fieldKey: functionCodeNumber
+            controlType: spinbutton
+            label: Functional Code
+            currentValue: 0
+            valueSource: inputValue
+      - section: '#customServiceSection'
+        fields:
+          - fieldKey: customServiceEnabled
+            controlType: checkbox
+            label: Enable
+            currentValue: true
+            valueSource: checked
+  - containerId: home
+    id: /home/index.html#hashHome
+    title: Home
+    sections: []
+  - containerId: home_index_html
+    id: /home/index.html
+    title: ''
+    sections: []
+  - containerId: screen_default
+    id: /apps/index.html#hashPreferences/hashApps
+    title: Screen Default
+    sections:
+      - section: Screen Default
+        fields:
+          - fieldKey: walkUpScreenList
+            controlType: combobox
+            label: You can specify the screen to be displayed when Device is powered on.
+            currentValue: Home
+            options:
+              - Home
+              - Copy
+              - Copy (ID Card)
+              - Scan
+              - Scan to Folder
+              - Send from Folder
+              - Email
+              - Scan to Desktop
+              - Job Flow Sheets
+              - Secure Print
+              - Sample Set
+              - Delayed Print
+              - Charge Print
+              - Check Smart Card ID
+              - Cloud On-Demand Print
+              - Cloud Service Hub
+              - Connect to Print Utility
+              - Device Log Service
+              - Paperless Fax Settings
+              - Private Charge Print (All)
+              - Settings Backup
+              - Smart Card Registration
+              - Switch Paperless Fax Operation
+              - Updating for Add-on Apps
+              - Working Folder
+              - Jobs
+              - Device
+              - Help
+              - Device Status
+            valueSource: select
+  - containerId: wuilib_login_html_hashlogin
+    id: /wuilib/login.html#hashLogin
+    title: ''
+    sections:
+      - section: '#loginSection'
+        fields:
+          - fieldKey: loginName
+            controlType: textbox
+            label: User ID
+            valueSource: inputValue
+          - fieldKey: loginPsw
+            controlType: textbox
+            label: Password
+            valueSource: inputValue
+      - section: _unsectioned
+        fields:
+          - fieldKey: loginCancelButton
+            controlType: button_dialog
+            label: Cancel
+            valueSource: none
+          - fieldKey: loginButton
+            controlType: button_dialog
+            label: Log In
+            valueSource: none

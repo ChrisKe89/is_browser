@@ -1,0 +1,518 @@
+[
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Edit Apps Screen of Device::#appPositionCancel",
+    "container_id": "/apps/index.html#hashApps::modal:Edit Apps Screen of Device",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Edit Apps Screen of Device",
+    "label": "Cancel",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Cancel",
+      "selector": "role=button[name='Cancel']",
+      "dom_selector": "#appPositionCancel",
+      "dependency": "#openAppPositionModalWindow"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashPreferences/hashApps::main::#walkUpScreenList",
+    "container_id": "/apps/index.html#hashPreferences/hashApps::main",
+    "page_path": "/apps/index.html#hashPreferences/hashApps",
+    "context": "main",
+    "label": "You can specify the screen to be displayed when Device is powered on.",
+    "control_type": "dropdown",
+    "value_type": "enum",
+    "current_value": "Home",
+    "default_value": "Home",
+    "options": [
+      "Home",
+      "Copy",
+      "Copy (ID Card)",
+      "Scan",
+      "Scan to Folder",
+      "Send from Folder",
+      "Email",
+      "Scan to Desktop",
+      "Job Flow Sheets",
+      "Secure Print",
+      "Sample Set",
+      "Delayed Print",
+      "Charge Print",
+      "Check Smart Card ID",
+      "Cloud On-Demand Print",
+      "Cloud Service Hub",
+      "Connect to Print Utility",
+      "Device Log Service",
+      "Paperless Fax Settings",
+      "Private Charge Print (All)",
+      "Settings Backup",
+      "Smart Card Registration",
+      "Switch Paperless Fax Operation",
+      "Updating for Add-on Apps",
+      "Working Folder",
+      "Jobs",
+      "Device",
+      "Help",
+      "Device Status"
+    ],
+    "locators": {
+      "role": "combobox",
+      "name": "You can specify the screen to be displayed when Device is powered on.",
+      "selector": "role=combobox[name='You can specify the screen to be displayed when Device is powered on.']",
+      "dom_selector": "#walkUpScreenList"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/wuilib/login.html#hashLogin::modal:Log In::#loginName",
+    "container_id": "/wuilib/login.html#hashLogin::modal:Log In",
+    "page_path": "/wuilib/login.html#hashLogin",
+    "context": "modal:Log In",
+    "label": "User ID",
+    "control_type": "text",
+    "value_type": "string",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "textbox",
+      "name": "User ID",
+      "selector": "role=textbox[name='User ID']",
+      "dom_selector": "#loginName",
+      "dependency": "#loginButton"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Edit Apps Screen of Device::#appPositionSave",
+    "container_id": "/apps/index.html#hashApps::modal:Edit Apps Screen of Device",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Edit Apps Screen of Device",
+    "label": "Save",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Save",
+      "selector": "role=button[name='Save']",
+      "dom_selector": "#appPositionSave",
+      "dependency": "#openAppPositionModalWindow"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/wuilib/login.html#hashLogin::modal:Log In::#loginPsw",
+    "container_id": "/wuilib/login.html#hashLogin::modal:Log In",
+    "page_path": "/wuilib/login.html#hashLogin",
+    "context": "modal:Log In",
+    "label": "Password",
+    "control_type": "text",
+    "value_type": "string",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "textbox",
+      "name": "Password",
+      "selector": "role=textbox[name='Password']",
+      "dom_selector": "#loginPsw",
+      "dependency": "#loginButton"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#browserVersionDropdownList",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Web Applications Version",
+    "control_type": "dropdown",
+    "value_type": "enum",
+    "current_value": "V5",
+    "default_value": "V5",
+    "options": [
+      "V4",
+      "V5"
+    ],
+    "locators": {
+      "role": "combobox",
+      "name": "Web Applications Version",
+      "selector": "role=combobox[name='Web Applications Version']",
+      "dom_selector": "#browserVersionDropdownList",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/wuilib/login.html#hashLogin::modal:Log In::#loginCancelButton",
+    "container_id": "/wuilib/login.html#hashLogin::modal:Log In",
+    "page_path": "/wuilib/login.html#hashLogin",
+    "context": "modal:Log In",
+    "label": "Cancel",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Cancel",
+      "selector": "role=button[name='Cancel']",
+      "dom_selector": "#loginCancelButton",
+      "dependency": "#loginButton"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#cookieDeletionToggle",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Delete Persistent Cookie upon Closing",
+    "control_type": "checkbox",
+    "value_type": "boolean",
+    "current_value": true,
+    "default_value": true,
+    "locators": {
+      "role": "checkbox",
+      "name": "Delete Persistent Cookie upon Closing",
+      "selector": "role=checkbox[name='Delete Persistent Cookie upon Closing']",
+      "dom_selector": "#cookieDeletionToggle",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/wuilib/login.html#hashLogin::modal:Log In::#loginButton",
+    "container_id": "/wuilib/login.html#hashLogin::modal:Log In",
+    "page_path": "/wuilib/login.html#hashLogin",
+    "context": "modal:Log In",
+    "label": "Log In",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Log In",
+      "selector": "role=button[name='Log In']",
+      "dom_selector": "#loginButton",
+      "dependency": "#loginButton"
+    },
+    "disabled": true,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#cacheDeletionToggle",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Clear Cache upon Closing",
+    "control_type": "checkbox",
+    "value_type": "boolean",
+    "current_value": true,
+    "default_value": true,
+    "locators": {
+      "role": "checkbox",
+      "name": "Clear Cache upon Closing",
+      "selector": "role=checkbox[name='Clear Cache upon Closing']",
+      "dom_selector": "#cacheDeletionToggle",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#cacheToggle",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Use Cache",
+    "control_type": "checkbox",
+    "value_type": "boolean",
+    "current_value": false,
+    "default_value": false,
+    "locators": {
+      "role": "checkbox",
+      "name": "Use Cache",
+      "selector": "role=checkbox[name='Use Cache']",
+      "dom_selector": "#cacheToggle",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#cookieUsageDropdownList",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Save Cookies",
+    "control_type": "dropdown",
+    "value_type": "enum",
+    "current_value": "Warn User When Cookie Is Offered",
+    "default_value": "Warn User When Cookie Is Offered",
+    "options": [
+      "No",
+      "Yes",
+      "Warn User When Cookie Is Offered"
+    ],
+    "locators": {
+      "role": "combobox",
+      "name": "Save Cookies",
+      "selector": "role=combobox[name='Save Cookies']",
+      "dom_selector": "#cookieUsageDropdownList",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#SslCertFailActionDropdownList",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "SSL Cert Verification Failure",
+    "control_type": "dropdown",
+    "value_type": "enum",
+    "current_value": "Warn User Before Accessing",
+    "default_value": "Warn User Before Accessing",
+    "options": [
+      "Stop Accessing the Site",
+      "Warn User Before Accessing"
+    ],
+    "locators": {
+      "role": "combobox",
+      "name": "SSL Cert Verification Failure",
+      "selector": "role=combobox[name='SSL Cert Verification Failure']",
+      "dom_selector": "#SslCertFailActionDropdownList",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#filePrintingToggle",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Enable File Printing",
+    "control_type": "checkbox",
+    "value_type": "boolean",
+    "current_value": true,
+    "default_value": true,
+    "locators": {
+      "role": "checkbox",
+      "name": "Enable File Printing",
+      "selector": "role=checkbox[name='Enable File Printing']",
+      "dom_selector": "#filePrintingToggle",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#functionCodeNumber",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Functional Code",
+    "control_type": "number",
+    "value_type": "number",
+    "current_value": 0,
+    "default_value": 0,
+    "locators": {
+      "role": "spinbutton",
+      "name": "Functional Code",
+      "selector": "role=spinbutton[name='Functional Code']",
+      "dom_selector": "#functionCodeNumber",
+      "dependency": "#csWebBrowserModalWindowArticle"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#csWebBrowserModalCancel",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Cancel",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Cancel",
+      "selector": "role=button[name='Cancel']",
+      "dom_selector": "#csWebBrowserModalCancel",
+      "dependency": "#cswebbrowser"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Web Browser Setup::#csWebBrowserModalSave",
+    "container_id": "/apps/index.html#hashApps::modal:Web Browser Setup",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Web Browser Setup",
+    "label": "Save",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Save",
+      "selector": "role=button[name='Save']",
+      "dom_selector": "#csWebBrowserModalSave",
+      "dependency": "#cswebbrowser"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps::#customServiceEnabled",
+    "container_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Enable Add-on Apps",
+    "label": "Enable",
+    "control_type": "checkbox",
+    "value_type": "boolean",
+    "current_value": true,
+    "default_value": true,
+    "locators": {
+      "role": "checkbox",
+      "name": "Enable",
+      "selector": "role=checkbox[name='Enable']",
+      "dom_selector": "#customServiceEnabled",
+      "dependency": "#customservice"
+    },
+    "disabled": false,
+    "is_action_only": false
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps::#customServiceModalCancel",
+    "container_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Enable Add-on Apps",
+    "label": "Cancel",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Cancel",
+      "selector": "role=button[name='Cancel']",
+      "dom_selector": "#customServiceModalCancel",
+      "dependency": "#customservice"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps::#customServiceModalSave",
+    "container_id": "/apps/index.html#hashApps::modal:Enable Add-on Apps",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Enable Add-on Apps",
+    "label": "Save",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Save",
+      "selector": "role=button[name='Save']",
+      "dom_selector": "#customServiceModalSave",
+      "dependency": "#customservice"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List::#radioButtonLabel0",
+    "container_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Display \"More Features\" on Feature List",
+    "label": "Selection (#optionalappfeaturelist)",
+    "control_type": "radio_group",
+    "value_type": "enum",
+    "current_value": "Display",
+    "default_value": "Display",
+    "options": [
+      "Do Not Display",
+      "Display"
+    ],
+    "locators": {
+      "selector": "role=radio[name='Do Not Display']",
+      "dom_selector": "#radioButtonLabel0",
+      "dependency": "#optionalappfeaturelist"
+    },
+    "disabled": false,
+    "radio_members": [
+      {
+        "option": "Do Not Display",
+        "selector": "role=radio[name='Do Not Display']",
+        "dom_selector": "#radioButtonLabel0"
+      },
+      {
+        "option": "Display",
+        "selector": "role=radio[name='Display']",
+        "dom_selector": "#radioButtonLabel1"
+      }
+    ]
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List::#radioCancel",
+    "container_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Display \"More Features\" on Feature List",
+    "label": "Cancel",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Cancel",
+      "selector": "role=button[name='Cancel']",
+      "dom_selector": "#radioCancel",
+      "dependency": "#optionalappfeaturelist"
+    },
+    "disabled": false,
+    "is_action_only": true
+  },
+  {
+    "field_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List::#radioSave",
+    "container_id": "/apps/index.html#hashApps::modal:Display \"More Features\" on Feature List",
+    "page_path": "/apps/index.html#hashApps",
+    "context": "modal:Display \"More Features\" on Feature List",
+    "label": "Save",
+    "control_type": "action_button",
+    "value_type": "none",
+    "current_value": null,
+    "default_value": null,
+    "locators": {
+      "role": "button",
+      "name": "Save",
+      "selector": "role=button[name='Save']",
+      "dom_selector": "#radioSave",
+      "dependency": "#optionalappfeaturelist"
+    },
+    "disabled": false,
+    "is_action_only": true
+  }
+]

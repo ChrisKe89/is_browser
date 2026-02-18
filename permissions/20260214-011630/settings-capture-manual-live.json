@@ -1,0 +1,964 @@
+{
+  "generatedAt": "2026-02-13T14:17:13.803Z",
+  "mode": "manual-live",
+  "startUrl": "https://192.168.0.107",
+  "pages": [
+    {
+      "source": "manual-live",
+      "title": "Apps",
+      "url": "https://192.168.0.107/apps/index.html#hashApps",
+      "settings": [
+        {
+          "order": 1,
+          "kind": "action",
+          "id": "appPositionCancel",
+          "name": null,
+          "label": "Cancel",
+          "section": null,
+          "context": "modal:Edit Apps Screen of Device",
+          "dependency": "#openAppPositionModalWindow",
+          "selector": "#appPositionCancel",
+          "cssPath": "#appPositionCancel",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 2,
+          "kind": "action",
+          "id": "appPositionSave",
+          "name": null,
+          "label": "Save",
+          "section": null,
+          "context": "modal:Edit Apps Screen of Device",
+          "dependency": "#openAppPositionModalWindow",
+          "selector": "#appPositionSave",
+          "cssPath": "#appPositionSave",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 3,
+          "kind": "select",
+          "id": "browserVersionDropdownList",
+          "name": null,
+          "label": "Web Applications Version",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#browserVersionDropdownList",
+          "cssPath": "#browserVersionDropdownList",
+          "value": "V5",
+          "checked": null,
+          "options": [
+            {
+              "value": "V4",
+              "text": "V4",
+              "selected": false
+            },
+            {
+              "value": "V5",
+              "text": "V5",
+              "selected": true
+            }
+          ],
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 4,
+          "kind": "checkbox",
+          "id": "cookieDeletionToggle",
+          "name": "cookieDeletionToggle",
+          "label": "Delete Persistent Cookie upon Closing",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#cookieDeletionToggle",
+          "cssPath": "#cookieDeletionToggle",
+          "value": "true",
+          "checked": true,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 5,
+          "kind": "checkbox",
+          "id": "cacheDeletionToggle",
+          "name": "cacheDeletionToggle",
+          "label": "Clear Cache upon Closing",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#cacheDeletionToggle",
+          "cssPath": "#cacheDeletionToggle",
+          "value": "true",
+          "checked": true,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 6,
+          "kind": "checkbox",
+          "id": "cacheToggle",
+          "name": "cacheToggle",
+          "label": "Use Cache",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#cacheToggle",
+          "cssPath": "#cacheToggle",
+          "value": "false",
+          "checked": false,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 7,
+          "kind": "select",
+          "id": "cookieUsageDropdownList",
+          "name": null,
+          "label": "Save Cookies",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#cookieUsageDropdownList",
+          "cssPath": "#cookieUsageDropdownList",
+          "value": "WARN",
+          "checked": null,
+          "options": [
+            {
+              "value": "REJECT",
+              "text": "No",
+              "selected": false
+            },
+            {
+              "value": "ACCEPT",
+              "text": "Yes",
+              "selected": false
+            },
+            {
+              "value": "WARN",
+              "text": "Warn User When Cookie Is Offered",
+              "selected": true
+            }
+          ],
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 8,
+          "kind": "select",
+          "id": "SslCertFailActionDropdownList",
+          "name": null,
+          "label": "SSL Cert Verification Failure",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#SslCertFailActionDropdownList",
+          "cssPath": "#SslCertFailActionDropdownList",
+          "value": "VALID_CONFIRM",
+          "checked": null,
+          "options": [
+            {
+              "value": "VALID_DENIED",
+              "text": "Stop Accessing the Site",
+              "selected": false
+            },
+            {
+              "value": "VALID_CONFIRM",
+              "text": "Warn User Before Accessing",
+              "selected": true
+            }
+          ],
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 9,
+          "kind": "checkbox",
+          "id": "filePrintingToggle",
+          "name": "filePrintingToggle",
+          "label": "Enable File Printing",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#filePrintingToggle",
+          "cssPath": "#filePrintingToggle",
+          "value": "true",
+          "checked": true,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 10,
+          "kind": "number",
+          "id": "functionCodeNumber",
+          "name": "functionCodeNumber",
+          "label": "Functional Code",
+          "section": "#csWebBrowserSection",
+          "context": "modal:Web Browser Setup",
+          "dependency": "#csWebBrowserModalWindowArticle",
+          "selector": "#functionCodeNumber",
+          "cssPath": "#functionCodeNumber",
+          "value": "0",
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 11,
+          "kind": "action",
+          "id": "csWebBrowserModalCancel",
+          "name": null,
+          "label": "Cancel",
+          "section": null,
+          "context": "modal:Web Browser Setup",
+          "dependency": "#cswebbrowser",
+          "selector": "#csWebBrowserModalCancel",
+          "cssPath": "#csWebBrowserModalCancel",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 12,
+          "kind": "action",
+          "id": "csWebBrowserModalSave",
+          "name": null,
+          "label": "Save",
+          "section": null,
+          "context": "modal:Web Browser Setup",
+          "dependency": "#cswebbrowser",
+          "selector": "#csWebBrowserModalSave",
+          "cssPath": "#csWebBrowserModalSave",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 13,
+          "kind": "checkbox",
+          "id": "customServiceEnabled",
+          "name": null,
+          "label": "Enable",
+          "section": "#customServiceSection",
+          "context": "modal:Enable Add-on Apps",
+          "dependency": "#customservice",
+          "selector": "#customServiceEnabled",
+          "cssPath": "#customServiceEnabled",
+          "value": "true",
+          "checked": true,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 14,
+          "kind": "action",
+          "id": "customServiceModalCancel",
+          "name": null,
+          "label": "Cancel",
+          "section": null,
+          "context": "modal:Enable Add-on Apps",
+          "dependency": "#customservice",
+          "selector": "#customServiceModalCancel",
+          "cssPath": "#customServiceModalCancel",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 15,
+          "kind": "action",
+          "id": "customServiceModalSave",
+          "name": null,
+          "label": "Save",
+          "section": null,
+          "context": "modal:Enable Add-on Apps",
+          "dependency": "#customservice",
+          "selector": "#customServiceModalSave",
+          "cssPath": "#customServiceModalSave",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 16,
+          "kind": "radio",
+          "id": "radioButtonLabel0",
+          "name": "radioGroup",
+          "label": "Do Not Display",
+          "section": null,
+          "context": "modal:Display \"More Features\" on Feature List",
+          "dependency": "#optionalappfeaturelist",
+          "selector": "#radioButtonLabel0",
+          "cssPath": "#radioButtonLabel0",
+          "value": "false",
+          "checked": false,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 17,
+          "kind": "radio",
+          "id": "radioButtonLabel1",
+          "name": "radioGroup",
+          "label": "Display",
+          "section": null,
+          "context": "modal:Display \"More Features\" on Feature List",
+          "dependency": "#optionalappfeaturelist",
+          "selector": "#radioButtonLabel1",
+          "cssPath": "#radioButtonLabel1",
+          "value": "true",
+          "checked": true,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 18,
+          "kind": "action",
+          "id": "radioCancel",
+          "name": null,
+          "label": "Cancel",
+          "section": null,
+          "context": "modal:Display \"More Features\" on Feature List",
+          "dependency": "#optionalappfeaturelist",
+          "selector": "#radioCancel",
+          "cssPath": "#radioCancel",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 19,
+          "kind": "action",
+          "id": "radioSave",
+          "name": null,
+          "label": "Save",
+          "section": null,
+          "context": "modal:Display \"More Features\" on Feature List",
+          "dependency": "#optionalappfeaturelist",
+          "selector": "#radioSave",
+          "cssPath": "#radioSave",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "source": "manual-live",
+      "title": "Screen Default",
+      "url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "settings": [
+        {
+          "order": 1,
+          "kind": "select",
+          "id": "walkUpScreenList",
+          "name": null,
+          "label": "You can specify the screen to be displayed when Device is powered on.",
+          "section": "Screen Default",
+          "context": "main",
+          "dependency": null,
+          "selector": "#walkUpScreenList",
+          "cssPath": "#walkUpScreenList",
+          "value": "0",
+          "checked": null,
+          "options": [
+            {
+              "value": "0",
+              "text": "Home",
+              "selected": true
+            },
+            {
+              "value": "1",
+              "text": "Copy",
+              "selected": false
+            },
+            {
+              "value": "39",
+              "text": "Copy (ID Card)",
+              "selected": false
+            },
+            {
+              "value": "5",
+              "text": "Scan",
+              "selected": false
+            },
+            {
+              "value": "4",
+              "text": "Scan to Folder",
+              "selected": false
+            },
+            {
+              "value": "7",
+              "text": "Send from Folder",
+              "selected": false
+            },
+            {
+              "value": "3",
+              "text": "Email",
+              "selected": false
+            },
+            {
+              "value": "24",
+              "text": "Scan to Desktop",
+              "selected": false
+            },
+            {
+              "value": "9",
+              "text": "Job Flow Sheets",
+              "selected": false
+            },
+            {
+              "value": "109",
+              "text": "Secure Print",
+              "selected": false
+            },
+            {
+              "value": "110",
+              "text": "Sample Set",
+              "selected": false
+            },
+            {
+              "value": "111",
+              "text": "Delayed Print",
+              "selected": false
+            },
+            {
+              "value": "108",
+              "text": "Charge Print",
+              "selected": false
+            },
+            {
+              "value": "213",
+              "text": "Check Smart Card ID",
+              "selected": false
+            },
+            {
+              "value": "84",
+              "text": "Cloud On-Demand Print",
+              "selected": false
+            },
+            {
+              "value": "82",
+              "text": "Cloud Service Hub",
+              "selected": false
+            },
+            {
+              "value": "214",
+              "text": "Connect to Print Utility",
+              "selected": false
+            },
+            {
+              "value": "85",
+              "text": "Device Log Service",
+              "selected": false
+            },
+            {
+              "value": "211",
+              "text": "Paperless Fax Settings",
+              "selected": false
+            },
+            {
+              "value": "87",
+              "text": "Private Charge Print (All)",
+              "selected": false
+            },
+            {
+              "value": "86",
+              "text": "Settings Backup",
+              "selected": false
+            },
+            {
+              "value": "212",
+              "text": "Smart Card Registration",
+              "selected": false
+            },
+            {
+              "value": "219",
+              "text": "Switch Paperless Fax Operation",
+              "selected": false
+            },
+            {
+              "value": "88",
+              "text": "Updating for Add-on Apps",
+              "selected": false
+            },
+            {
+              "value": "83",
+              "text": "Working Folder",
+              "selected": false
+            },
+            {
+              "value": "36",
+              "text": "Jobs",
+              "selected": false
+            },
+            {
+              "value": "35",
+              "text": "Device",
+              "selected": false
+            },
+            {
+              "value": "81",
+              "text": "Help",
+              "selected": false
+            },
+            {
+              "value": "127",
+              "text": "Device Status",
+              "selected": false
+            }
+          ],
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "source": "manual-live",
+      "title": "",
+      "url": "https://192.168.0.107/home/index.html",
+      "settings": []
+    },
+    {
+      "source": "manual-live",
+      "title": "Home",
+      "url": "https://192.168.0.107/home/index.html#hashHome",
+      "settings": []
+    },
+    {
+      "source": "manual-live",
+      "title": "",
+      "url": "https://192.168.0.107/wuilib/login.html#hashLogin",
+      "settings": [
+        {
+          "order": 1,
+          "kind": "text",
+          "id": "loginName",
+          "name": null,
+          "label": "User ID",
+          "section": "#loginSection",
+          "context": "modal:Log In",
+          "dependency": "#loginButton",
+          "selector": "#loginName",
+          "cssPath": "#loginName",
+          "value": "",
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 2,
+          "kind": "password",
+          "id": "loginPsw",
+          "name": null,
+          "label": "Password",
+          "section": "#loginSection",
+          "context": "modal:Log In",
+          "dependency": "#loginButton",
+          "selector": "#loginPsw",
+          "cssPath": "#loginPsw",
+          "value": "",
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 3,
+          "kind": "action",
+          "id": "loginCancelButton",
+          "name": null,
+          "label": "Cancel",
+          "section": null,
+          "context": "modal:Log In",
+          "dependency": "#loginButton",
+          "selector": "#loginCancelButton",
+          "cssPath": "#loginCancelButton",
+          "value": null,
+          "checked": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "order": 4,
+          "kind": "action",
+          "id": "loginButton",
+          "name": null,
+          "label": "Log In",
+          "section": null,
+          "context": "modal:Log In",
+          "dependency": "#loginButton",
+          "selector": "#loginButton",
+          "cssPath": "#loginButton",
+          "value": null,
+          "checked": null,
+          "disabled": true,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "at": "2026-02-13T14:16:31.688Z",
+      "reason": "attached",
+      "page_url": "https://192.168.0.107/home/index.html",
+      "page_title": "",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 2,
+      "at": "2026-02-13T14:16:31.842Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/home/index.html",
+      "page_title": "",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 3,
+      "at": "2026-02-13T14:16:32.275Z",
+      "reason": "initial-load",
+      "page_url": "https://192.168.0.107/wuilib/login.html#hashLogin",
+      "page_title": "",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 4,
+      "at": "2026-02-13T14:16:32.703Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/wuilib/login.html#hashLogin",
+      "page_title": "",
+      "new_settings": 4,
+      "changed_settings": 0,
+      "total_discovered_on_page": 4
+    },
+    {
+      "seq": 5,
+      "at": "2026-02-13T14:16:35.159Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/home/index.html",
+      "page_title": "",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 6,
+      "at": "2026-02-13T14:16:35.781Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/home/index.html#hashHome",
+      "page_title": "Home",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 7,
+      "at": "2026-02-13T14:16:45.316Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 8,
+      "at": "2026-02-13T14:16:47.844Z",
+      "reason": "auto-login",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 2,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 9,
+      "at": "2026-02-13T14:16:49.669Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 10,
+      "at": "2026-02-13T14:16:50.572Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 11,
+      "at": "2026-02-13T14:16:51.473Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 12,
+      "at": "2026-02-13T14:16:52.380Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 13,
+      "at": "2026-02-13T14:16:53.293Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 14,
+      "at": "2026-02-13T14:16:54.202Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 15,
+      "at": "2026-02-13T14:16:55.115Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 16,
+      "at": "2026-02-13T14:16:55.518Z",
+      "reason": "navigate",
+      "page_url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "page_title": "Screen Default",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 0
+    },
+    {
+      "seq": 17,
+      "at": "2026-02-13T14:16:56.929Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "page_title": "Screen Default",
+      "new_settings": 1,
+      "changed_settings": 0,
+      "total_discovered_on_page": 1
+    },
+    {
+      "seq": 18,
+      "at": "2026-02-13T14:16:57.831Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashPreferences/hashApps",
+      "page_title": "Screen Default",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 1
+    },
+    {
+      "seq": 19,
+      "at": "2026-02-13T14:16:59.655Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 2
+    },
+    {
+      "seq": 20,
+      "at": "2026-02-13T14:17:00.561Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 10,
+      "changed_settings": 0,
+      "total_discovered_on_page": 12
+    },
+    {
+      "seq": 21,
+      "at": "2026-02-13T14:17:01.470Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 12
+    },
+    {
+      "seq": 22,
+      "at": "2026-02-13T14:17:02.385Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 12
+    },
+    {
+      "seq": 23,
+      "at": "2026-02-13T14:17:03.287Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 12
+    },
+    {
+      "seq": 24,
+      "at": "2026-02-13T14:17:04.211Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 3,
+      "changed_settings": 0,
+      "total_discovered_on_page": 15
+    },
+    {
+      "seq": 25,
+      "at": "2026-02-13T14:17:05.094Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 15
+    },
+    {
+      "seq": 26,
+      "at": "2026-02-13T14:17:06.003Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 15
+    },
+    {
+      "seq": 27,
+      "at": "2026-02-13T14:17:06.917Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 4,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 28,
+      "at": "2026-02-13T14:17:07.831Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 29,
+      "at": "2026-02-13T14:17:08.737Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 30,
+      "at": "2026-02-13T14:17:09.649Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 31,
+      "at": "2026-02-13T14:17:10.564Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 32,
+      "at": "2026-02-13T14:17:11.473Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 33,
+      "at": "2026-02-13T14:17:12.377Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 34,
+      "at": "2026-02-13T14:17:13.282Z",
+      "reason": "poll",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    },
+    {
+      "seq": 35,
+      "at": "2026-02-13T14:17:13.803Z",
+      "reason": "final",
+      "page_url": "https://192.168.0.107/apps/index.html#hashApps",
+      "page_title": "Apps",
+      "new_settings": 0,
+      "changed_settings": 0,
+      "total_discovered_on_page": 19
+    }
+  ]
+}

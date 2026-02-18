@@ -83,6 +83,26 @@ For detailed product usage, see each app’s README.
 
 ---
 
+## is_form Local Workflow
+
+Use the deterministic capture to build DB-backed form schema:
+
+```bash
+make form-transform
+make form-db-init
+make form-dev
+```
+
+Form UI default URL: [http://localhost:5051](http://localhost:5051)
+
+Editor UI includes:
+
+- Section search across labels and section titles
+- Collapsible section accordions with modal/page badges
+- Sticky save bar with unsaved-change count and reset
+
+---
+
 ## Mapper Contract Artifacts
 
 Run a crawl and generate the deterministic contract outputs:
