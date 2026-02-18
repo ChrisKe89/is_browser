@@ -17,7 +17,11 @@
     "test": "npm run test --workspaces --if-present",
     "typecheck": "tsc -p tsconfig.base.json --noEmit",
     "lint": "npm run typecheck",
-    "build": "tsc -p tsconfig.base.json"
+    "build": "tsc -p tsconfig.base.json",
+    "capture:local": "tsx src/capture-settings.ts --mode local",
+    "capture:live": "tsx src/capture-settings.ts --mode live",
+    "capture:manual": "tsx src/capture-manual.ts",
+    "yaml:ui-tree": "tsx src/generate-ui-tree-yaml.ts --dir output/20260214"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

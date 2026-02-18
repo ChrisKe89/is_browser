@@ -7,10 +7,11 @@ devices/reports/
 customer_settings/
 .env
 state/auth-state.json
-permissions/
 *.log
 *.tmp
 *.swp
 *.swo
 coverage/
+.next/
 .archive
+.claude

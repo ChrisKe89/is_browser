@@ -7,7 +7,6 @@ import {
 } from "@is-browser/env";
 import { readMap } from "@is-browser/contract";
 import { type FieldEntry, type UiMap } from "@is-browser/contract";
-import { isLoginPage, login } from "../../../is_mapper/src/login.js";
 import { mkdir } from "node:fs/promises";
 import {
   appendDeviceReport,
@@ -15,6 +14,7 @@ import {
   type LogEntry,
   writeDeviceLog,
 } from "./logging.js";
+import { isLoginPage, login } from "./auth.js";
 import { type SettingsFile } from "./settings.js";
 import { runRemotePanel } from "./remotePanel.js";
 import { buildResolvedApplyPlan } from "./plan.js";
@@ -312,7 +312,7 @@ export async function applySettings(
       timeout: NAV_TIMEOUT_MS,
     });
     if (await runtime.isLoginPage(page)) {
-      await runtime.login(page);
+      await runtime.login(page, baseUrl);
     }
 
     for (const skipped of resolvedPlan.skipped) {

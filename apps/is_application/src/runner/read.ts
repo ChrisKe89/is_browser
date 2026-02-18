@@ -4,7 +4,7 @@ import { PRINTER_URL } from "@is-browser/env";
 import { openBrowser, newPage } from "@is-browser/browser";
 import { readMap } from "@is-browser/contract";
 import { type FieldEntry, type UiMap } from "@is-browser/contract";
-import { isLoginPage, login } from "../../../is_mapper/src/login.js";
+import { isLoginPage, login } from "./auth.js";
 import { executePageNavigation, resolveLocatorByPriority } from "./engine.js";
 import { readSettings, type SettingsFile } from "./settings.js";
 
@@ -202,7 +202,7 @@ async function run(): Promise<void> {
   try {
     await page.goto(baseUrl, { waitUntil: "networkidle" });
     if (await isLoginPage(page)) {
-      await login(page);
+      await login(page, baseUrl);
     }
 
     for (const [pageId, items] of pageEntries) {

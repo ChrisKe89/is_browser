@@ -1,0 +1,747 @@
+containers:
+  - actions:
+      - actionKey: apps_index_html_hashapps_modal_display_more_features_on_feature_list_unsectioned_radiocancel_action
+        context: modal:Display "More Features" on Feature List
+        label: Cancel
+        locator:
+          fallbackSelectors:
+            - role=button[name='Cancel']
+            - "#radioCancel"
+          name: Cancel
+          role: button
+          selector: role=button[name='Cancel']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 18
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - radioCancel
+      - actionKey: apps_index_html_hashapps_modal_display_more_features_on_feature_list_unsectioned_radiosave_action
+        context: modal:Display "More Features" on Feature List
+        label: Save
+        locator:
+          fallbackSelectors:
+            - role=button[name='Save']
+            - "#radioSave"
+          name: Save
+          role: button
+          selector: role=button[name='Save']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 19
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - radioSave
+    containerKey: apps_index_html_hashapps_modal_display_more_features_on_feature_list
+    contexts:
+      - modal:Display "More Features" on Feature List
+    fields:
+      - context: modal:Display "More Features" on Feature List
+        controlType: radio_group
+        currentValue: null
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_display_more_features_on_feature_list_unsectioned_radiobuttonlabel0_radio_group
+        label: Do Not Display
+        locator:
+          fallbackSelectors:
+            - role=radio[name='Do Not Display']
+            - "#radioButtonLabel0"
+          name: Do Not Display
+          role: radio
+          selector: role=radio[name='Do Not Display']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options:
+          - label: Display
+            value: Display
+          - label: Do Not Display
+            value: Do Not Display
+        orderHint: 16
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - radioButtonLabel0
+          - radioButtonLabel1
+        valueType: enum
+    navPath:
+      - Home
+      - Apps
+    sourcePages:
+      - /apps/index.html#hashApps
+    title: Apps
+  - actions:
+      - actionKey: apps_index_html_hashapps_modal_edit_apps_screen_of_device_unsectioned_apppositioncancel_action
+        context: modal:Edit Apps Screen of Device
+        label: Cancel
+        locator:
+          fallbackSelectors:
+            - role=button[name='Cancel']
+            - "#appPositionCancel"
+          name: Cancel
+          role: button
+          selector: role=button[name='Cancel']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 1
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - appPositionCancel
+      - actionKey: apps_index_html_hashapps_modal_edit_apps_screen_of_device_unsectioned_apppositionsave_action
+        context: modal:Edit Apps Screen of Device
+        label: Save
+        locator:
+          fallbackSelectors:
+            - role=button[name='Save']
+            - "#appPositionSave"
+          name: Save
+          role: button
+          selector: role=button[name='Save']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 2
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - appPositionSave
+    containerKey: apps_index_html_hashapps_modal_edit_apps_screen_of_device
+    contexts:
+      - modal:Edit Apps Screen of Device
+    fields: []
+    navPath:
+      - Home
+      - Apps
+    sourcePages:
+      - /apps/index.html#hashApps
+    title: Apps
+  - actions:
+      - actionKey: apps_index_html_hashapps_modal_enable_add_on_apps_unsectioned_customservicemodalcancel_action
+        context: modal:Enable Add-on Apps
+        label: Cancel
+        locator:
+          fallbackSelectors:
+            - role=button[name='Cancel']
+            - "#customServiceModalCancel"
+          name: Cancel
+          role: button
+          selector: role=button[name='Cancel']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 14
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - customServiceModalCancel
+      - actionKey: apps_index_html_hashapps_modal_enable_add_on_apps_unsectioned_customservicemodalsave_action
+        context: modal:Enable Add-on Apps
+        label: Save
+        locator:
+          fallbackSelectors:
+            - role=button[name='Save']
+            - "#customServiceModalSave"
+          name: Save
+          role: button
+          selector: role=button[name='Save']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 15
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - customServiceModalSave
+    containerKey: apps_index_html_hashapps_modal_enable_add_on_apps
+    contexts:
+      - modal:Enable Add-on Apps
+    fields:
+      - context: modal:Enable Add-on Apps
+        controlType: checkbox
+        currentValue: true
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_enable_add_on_apps_customservicesection_customserviceenabled_checkbox
+        label: Enable
+        locator:
+          fallbackSelectors:
+            - role=checkbox[name='Enable']
+            - "#customServiceEnabled"
+          name: Enable
+          role: checkbox
+          selector: role=checkbox[name='Enable']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 13
+        sectionKey: "#customServiceSection"
+        sectionTitle: customServiceSection
+        sourceKeys:
+          - customServiceEnabled
+        valueType: boolean
+    navPath:
+      - Home
+      - Apps
+    sourcePages:
+      - /apps/index.html#hashApps
+    title: Apps
+  - actions:
+      - actionKey: apps_index_html_hashapps_modal_web_browser_setup_unsectioned_cswebbrowsermodalcancel_action
+        context: modal:Web Browser Setup
+        label: Cancel
+        locator:
+          fallbackSelectors:
+            - role=button[name='Cancel']
+            - "#csWebBrowserModalCancel"
+          name: Cancel
+          role: button
+          selector: role=button[name='Cancel']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 11
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - csWebBrowserModalCancel
+      - actionKey: apps_index_html_hashapps_modal_web_browser_setup_unsectioned_cswebbrowsermodalsave_action
+        context: modal:Web Browser Setup
+        label: Save
+        locator:
+          fallbackSelectors:
+            - role=button[name='Save']
+            - "#csWebBrowserModalSave"
+          name: Save
+          role: button
+          selector: role=button[name='Save']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        orderHint: 12
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - csWebBrowserModalSave
+    containerKey: apps_index_html_hashapps_modal_web_browser_setup
+    contexts:
+      - modal:Web Browser Setup
+    fields:
+      - context: modal:Web Browser Setup
+        controlType: select
+        currentValue: V5
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_browserversiondropdownlist_select
+        label: Web Applications Version
+        locator:
+          fallbackSelectors:
+            - role=combobox[name='Web Applications Version']
+            - "#browserVersionDropdownList"
+          name: Web Applications Version
+          role: combobox
+          selector: role=combobox[name='Web Applications Version']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options:
+          - label: V4
+            value: V4
+          - label: V5
+            value: V5
+        orderHint: 3
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - browserVersionDropdownList
+        valueType: enum
+      - context: modal:Web Browser Setup
+        controlType: checkbox
+        currentValue: true
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_cachedeletiontoggle_checkbox
+        label: Clear Cache upon Closing
+        locator:
+          fallbackSelectors:
+            - role=checkbox[name='Clear Cache upon Closing']
+            - "#cacheDeletionToggle"
+          name: Clear Cache upon Closing
+          role: checkbox
+          selector: role=checkbox[name='Clear Cache upon Closing']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 5
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - cacheDeletionToggle
+        valueType: boolean
+      - context: modal:Web Browser Setup
+        controlType: checkbox
+        currentValue: false
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_cachetoggle_checkbox
+        label: Use Cache
+        locator:
+          fallbackSelectors:
+            - role=checkbox[name='Use Cache']
+            - "#cacheToggle"
+          name: Use Cache
+          role: checkbox
+          selector: role=checkbox[name='Use Cache']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 6
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - cacheToggle
+        valueType: boolean
+      - context: modal:Web Browser Setup
+        controlType: checkbox
+        currentValue: true
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_cookiedeletiontoggle_checkbox
+        label: Delete Persistent Cookie upon Closing
+        locator:
+          fallbackSelectors:
+            - role=checkbox[name='Delete Persistent Cookie upon Closing']
+            - "#cookieDeletionToggle"
+          name: Delete Persistent Cookie upon Closing
+          role: checkbox
+          selector: role=checkbox[name='Delete Persistent Cookie upon Closing']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 4
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - cookieDeletionToggle
+        valueType: boolean
+      - context: modal:Web Browser Setup
+        controlType: select
+        currentValue: WARN
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_cookieusagedropdownlist_select
+        label: Save Cookies
+        locator:
+          fallbackSelectors:
+            - role=combobox[name='Save Cookies']
+            - "#cookieUsageDropdownList"
+          name: Save Cookies
+          role: combobox
+          selector: role=combobox[name='Save Cookies']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options:
+          - label: Yes
+            value: ACCEPT
+          - label: No
+            value: No
+          - label: No
+            value: REJECT
+          - label: Warn User When Cookie Is Offered
+            value: WARN
+          - label: Warn User When Cookie Is Offered
+            value: Warn User When Cookie Is Offered
+          - label: Yes
+            value: Yes
+        orderHint: 7
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - cookieUsageDropdownList
+        valueType: enum
+      - context: modal:Web Browser Setup
+        controlType: checkbox
+        currentValue: true
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_fileprintingtoggle_checkbox
+        label: Enable File Printing
+        locator:
+          fallbackSelectors:
+            - role=checkbox[name='Enable File Printing']
+            - "#filePrintingToggle"
+          name: Enable File Printing
+          role: checkbox
+          selector: role=checkbox[name='Enable File Printing']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 9
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - filePrintingToggle
+        valueType: boolean
+      - context: modal:Web Browser Setup
+        controlType: number
+        currentValue: "0"
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_functioncodenumber_number
+        label: Functional Code
+        locator:
+          fallbackSelectors:
+            - role=spinbutton[name='Functional Code']
+            - "#functionCodeNumber"
+          name: Functional Code
+          role: spinbutton
+          selector: role=spinbutton[name='Functional Code']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options: []
+        orderHint: 10
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - functionCodeNumber
+        valueType: number
+      - context: modal:Web Browser Setup
+        controlType: select
+        currentValue: VALID_CONFIRM
+        disabled: false
+        fieldKey: apps_index_html_hashapps_modal_web_browser_setup_cswebbrowsersection_sslcertfailactiondropdownlist_select
+        label: SSL Cert Verification Failure
+        locator:
+          fallbackSelectors:
+            - role=combobox[name='SSL Cert Verification Failure']
+            - "#SslCertFailActionDropdownList"
+          name: SSL Cert Verification Failure
+          role: combobox
+          selector: role=combobox[name='SSL Cert Verification Failure']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+        options:
+          - label: Stop Accessing the Site
+            value: Stop Accessing the Site
+          - label: Warn User Before Accessing
+            value: VALID_CONFIRM
+          - label: Stop Accessing the Site
+            value: VALID_DENIED
+          - label: Warn User Before Accessing
+            value: Warn User Before Accessing
+        orderHint: 8
+        sectionKey: "#csWebBrowserSection"
+        sectionTitle: csWebBrowserSection
+        sourceKeys:
+          - SslCertFailActionDropdownList
+        valueType: enum
+    navPath:
+      - Home
+      - Apps
+    sourcePages:
+      - /apps/index.html#hashApps
+    title: Apps
+  - actions: []
+    containerKey: apps_index_html_hashpreferences_hashapps_main
+    contexts:
+      - main
+    fields:
+      - context: main
+        controlType: select
+        currentValue: "0"
+        disabled: false
+        fieldKey: apps_index_html_hashpreferences_hashapps_main_screen_default_walkupscreenlist_select
+        label: You can specify the screen to be displayed when Device is powered on.
+        locator:
+          fallbackSelectors:
+            - role=combobox[name='You can specify the screen to be displayed when Device is powered on.']
+            - "#walkUpScreenList"
+          name: You can specify the screen to be displayed when Device is powered on.
+          role: combobox
+          selector: role=combobox[name='You can specify the screen to be displayed when Device is powered on.']
+          strategy: role
+        navPath:
+          - Home
+          - Apps
+          - hashPreferences/hashApps
+        options:
+          - label: Home
+            value: "0"
+          - label: Copy
+            value: "1"
+          - label: Charge Print
+            value: "108"
+          - label: Secure Print
+            value: "109"
+          - label: Sample Set
+            value: "110"
+          - label: Delayed Print
+            value: "111"
+          - label: Device Status
+            value: "127"
+          - label: Paperless Fax Settings
+            value: "211"
+          - label: Smart Card Registration
+            value: "212"
+          - label: Check Smart Card ID
+            value: "213"
+          - label: Connect to Print Utility
+            value: "214"
+          - label: Switch Paperless Fax Operation
+            value: "219"
+          - label: Scan to Desktop
+            value: "24"
+          - label: Email
+            value: "3"
+          - label: Device
+            value: "35"
+          - label: Jobs
+            value: "36"
+          - label: Copy (ID Card)
+            value: "39"
+          - label: Scan to Folder
+            value: "4"
+          - label: Scan
+            value: "5"
+          - label: Send from Folder
+            value: "7"
+          - label: Help
+            value: "81"
+          - label: Cloud Service Hub
+            value: "82"
+          - label: Working Folder
+            value: "83"
+          - label: Cloud On-Demand Print
+            value: "84"
+          - label: Device Log Service
+            value: "85"
+          - label: Settings Backup
+            value: "86"
+          - label: Private Charge Print (All)
+            value: "87"
+          - label: Updating for Add-on Apps
+            value: "88"
+          - label: Job Flow Sheets
+            value: "9"
+          - label: Charge Print
+            value: Charge Print
+          - label: Check Smart Card ID
+            value: Check Smart Card ID
+          - label: Cloud On-Demand Print
+            value: Cloud On-Demand Print
+          - label: Cloud Service Hub
+            value: Cloud Service Hub
+          - label: Connect to Print Utility
+            value: Connect to Print Utility
+          - label: Copy
+            value: Copy
+          - label: Copy (ID Card)
+            value: Copy (ID Card)
+          - label: Delayed Print
+            value: Delayed Print
+          - label: Device
+            value: Device
+          - label: Device Log Service
+            value: Device Log Service
+          - label: Device Status
+            value: Device Status
+          - label: Email
+            value: Email
+          - label: Help
+            value: Help
+          - label: Home
+            value: Home
+          - label: Job Flow Sheets
+            value: Job Flow Sheets
+          - label: Jobs
+            value: Jobs
+          - label: Paperless Fax Settings
+            value: Paperless Fax Settings
+          - label: Private Charge Print (All)
+            value: Private Charge Print (All)
+          - label: Sample Set
+            value: Sample Set
+          - label: Scan
+            value: Scan
+          - label: Scan to Desktop
+            value: Scan to Desktop
+          - label: Scan to Folder
+            value: Scan to Folder
+          - label: Secure Print
+            value: Secure Print
+          - label: Send from Folder
+            value: Send from Folder
+          - label: Settings Backup
+            value: Settings Backup
+          - label: Smart Card Registration
+            value: Smart Card Registration
+          - label: Switch Paperless Fax Operation
+            value: Switch Paperless Fax Operation
+          - label: Updating for Add-on Apps
+            value: Updating for Add-on Apps
+          - label: Working Folder
+            value: Working Folder
+        orderHint: 1
+        sectionKey: Screen Default
+        sectionTitle: Screen Default
+        sourceKeys:
+          - walkUpScreenList
+        valueType: enum
+    navPath:
+      - Home
+      - Apps
+      - hashPreferences/hashApps
+    sourcePages:
+      - /apps/index.html#hashPreferences/hashApps
+    title: Screen Default
+  - actions:
+      - actionKey: wuilib_login_html_hashlogin_modal_log_in_unsectioned_loginbutton_action
+        context: modal:Log In
+        label: Log In
+        locator:
+          fallbackSelectors:
+            - role=button[name='Log In']
+            - "#loginButton"
+          name: Log In
+          role: button
+          selector: role=button[name='Log In']
+          strategy: role
+        navPath:
+          - hashLogin
+        orderHint: 4
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - loginButton
+      - actionKey: wuilib_login_html_hashlogin_modal_log_in_unsectioned_logincancelbutton_action
+        context: modal:Log In
+        label: Cancel
+        locator:
+          fallbackSelectors:
+            - role=button[name='Cancel']
+            - "#loginCancelButton"
+          name: Cancel
+          role: button
+          selector: role=button[name='Cancel']
+          strategy: role
+        navPath:
+          - hashLogin
+        orderHint: 3
+        sectionKey: _unsectioned
+        sectionTitle: General
+        sourceKeys:
+          - loginCancelButton
+    containerKey: wuilib_login_html_hashlogin_modal_log_in
+    contexts:
+      - modal:Log In
+    fields:
+      - context: modal:Log In
+        controlType: text
+        currentValue: null
+        disabled: false
+        fieldKey: wuilib_login_html_hashlogin_modal_log_in_loginsection_loginname_text
+        label: User ID
+        locator:
+          fallbackSelectors:
+            - role=textbox[name='User ID']
+            - "#loginName"
+          name: User ID
+          role: textbox
+          selector: role=textbox[name='User ID']
+          strategy: role
+        navPath:
+          - hashLogin
+        options: []
+        orderHint: 1
+        sectionKey: "#loginSection"
+        sectionTitle: loginSection
+        sourceKeys:
+          - loginName
+        valueType: string
+      - context: modal:Log In
+        controlType: text_display
+        currentValue: ""
+        disabled: false
+        fieldKey: wuilib_login_html_hashlogin_modal_log_in_loginsection_loginname_text_display
+        label: User ID
+        locator:
+          fallbackSelectors:
+            - "#loginName"
+          selector: "#loginName"
+          strategy: id
+        navPath:
+          - hashLogin
+        options: []
+        orderHint: 1
+        sectionKey: "#loginSection"
+        sectionTitle: loginSection
+        sourceKeys:
+          - loginName
+        valueType: none
+      - context: modal:Log In
+        controlType: text
+        currentValue: ""
+        disabled: false
+        fieldKey: wuilib_login_html_hashlogin_modal_log_in_loginsection_loginpsw_text
+        label: Password
+        locator:
+          fallbackSelectors:
+            - role=textbox[name='Password']
+            - "#loginPsw"
+          name: Password
+          role: textbox
+          selector: role=textbox[name='Password']
+          strategy: role
+        navPath:
+          - hashLogin
+        options: []
+        orderHint: 2
+        sectionKey: "#loginSection"
+        sectionTitle: loginSection
+        sourceKeys:
+          - loginPsw
+        valueType: string
+    navPath:
+      - hashLogin
+    sourcePages:
+      - /wuilib/login.html#hashLogin
+    title: /wuilib/login.html#hashLogin
+generatedFrom:
+  capture:
+    - C:\Dev\is_browser\permissions\20260214-011630\settings-capture-manual-live.json
+  deterministic:
+    - C:\Dev\is_browser\apps\is_form\data\settings-deterministic-manual-live.json
+  layout:
+    - C:\Dev\is_browser\permissions\20260214-011630\ui-tree.layout.yaml
+  navigation:
+    - C:\Dev\is_browser\permissions\20260214-011630\ui-tree.navigation.yaml
+summary:
+  actions: 10
+  containers: 6
+  fields: 14
+  warnings: 0
+version: 1.0.0
+warnings: []
